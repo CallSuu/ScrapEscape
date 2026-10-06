@@ -1,0 +1,10 @@
+.gradle/
+build/
+work/
+.idea/
+*.iml
+.DS_Store
+application-local.properties
+.env
+*.log
+.superpowers/

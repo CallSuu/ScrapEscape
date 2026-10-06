@@ -1,0 +1,3 @@
+# 이 파일은 Git에 올라가지 않습니다. MySQL 비밀번호를 아래에 입력하세요.
+spring.datasource.username=root
+spring.datasource.password=
