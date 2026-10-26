@@ -1,0 +1,15 @@
+{
+  "note": "실제 테스트 DB 서버 응답. 게임과 묶음 ID는 검증 종료 후 삭제되어 재사용 불가.",
+  "request": {
+    "method": "GET",
+    "path": "/api/games/4eadc868-b9d4-4d4d-af04-b72588f9041b",
+    "body": null
+  },
+  "response": {
+    "status": 404,
+    "body": {
+      "code": "NOT_FOUND",
+      "message": "게임을 찾을 수 없습니다."
+    }
+  }
+}

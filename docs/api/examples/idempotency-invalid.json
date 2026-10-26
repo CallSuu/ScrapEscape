@@ -1,0 +1,21 @@
+{
+  "note": "실제 전용 테스트 DB HTTP 응답. 검증 후 해당 게임만 정리. restart 예시는 서버 프로세스 재시작 후 수집.",
+  "request": {
+    "method": "POST",
+    "path": "/api/games/62c35a2a-252a-498b-a0ca-095f7662a415/rests",
+    "headers": {
+      "Idempotency-Key": "wrong-key"
+    },
+    "body": {
+      "hours": 6
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {},
+    "body": {
+      "code": "INVALID_IDEMPOTENCY_KEY",
+      "message": "Idempotency-Key는 UUID 형식이어야 합니다."
+    }
+  }
+}

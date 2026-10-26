@@ -1,0 +1,763 @@
+{
+  "note": "새 테스트 판의 실제 화면 스냅샷 응답. 검증 후 해당 판 삭제.",
+  "request": {
+    "method": "GET",
+    "path": "/api/games/c0cece33-5d46-4f78-b8c5-0cfb2406eb8e/screen",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "state": {
+        "gameId": "c0cece33-5d46-4f78-b8c5-0cfb2406eb8e",
+        "status": "RUNNING",
+        "elapsedHours": 0,
+        "day": 1,
+        "hour": 8,
+        "remainingHours": 240,
+        "night": false,
+        "stamina": 10,
+        "maxStamina": 10,
+        "cleanerAmount": 1,
+        "cleanerCapacity": 5,
+        "inventoryCapacity": 4,
+        "chestCapacity": 16,
+        "inventory": [],
+        "chest": [],
+        "repairs": [
+          {
+            "partId": 1,
+            "name": "엔진 시동 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 7,
+                "name": "배터리 셀",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 3,
+            "name": "연료 공급 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 5,
+                "name": "플라스틱 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 8,
+                "name": "필터",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 6,
+            "name": "통신·항법 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 4,
+                "name": "회로 기판",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 7,
+                "name": "배터리 셀",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 10,
+                "name": "신호 모듈",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 7,
+            "name": "기체 보강 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 4,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 9,
+                "name": "내열 합금",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              }
+            ]
+          }
+        ],
+        "statistics": {
+          "explorations": 0,
+          "dayExplorations": 0,
+          "nightExplorations": 0,
+          "emptyExplorations": 0,
+          "collected": 0,
+          "cleaned": 0,
+          "discarded": 0,
+          "repairedParts": 0,
+          "diseaseCount": 0,
+          "treatmentCount": 0,
+          "medicalKitsUsed": 0,
+          "maxContamination": 0,
+          "stormExposureHours": 0
+        },
+        "stackLimit": 6,
+        "medicalKitAmount": 0,
+        "medicalKitCapacity": 2,
+        "contamination": 0,
+        "diseased": false,
+        "treatmentRemainingHours": null,
+        "consecutiveExplorations": 0,
+        "currentStorm": null,
+        "nextStorm": {
+          "startHour": 27,
+          "endHour": 29
+        },
+        "treatment": {
+          "allowed": false,
+          "unavailableReason": "의료 키트가 없습니다.",
+          "durationHours": 1,
+          "staminaCost": 0
+        },
+        "escape": {
+          "allowed": false,
+          "unavailableReason": "모든 부품을 먼저 수리하세요.",
+          "durationHours": 0,
+          "staminaCost": 0
+        },
+        "failureReason": null,
+        "rulesVersion": 2,
+        "secrets": {
+          "keyAmount": 0,
+          "keyCapacity": 2,
+          "keyProbabilityPercent": 10,
+          "discoveryProbabilityPercent": 15,
+          "rooms": [],
+          "statistics": {
+            "discoveredRooms": 0,
+            "openedRooms": 0,
+            "unopenedRooms": 0,
+            "keysAcquired": 0,
+            "keysUsed": 0,
+            "goodOutcomes": 0,
+            "badOutcomes": 0,
+            "materialsCollected": 0,
+            "materialsLost": 0
+          }
+        }
+      },
+      "locations": [
+        {
+          "locationId": 1,
+          "name": "고물상",
+          "description": "철 조각, 기어, 고무 부품을 찾는 집하장",
+          "materials": [
+            {
+              "materialId": 1,
+              "name": "철 조각",
+              "weight": 1
+            },
+            {
+              "materialId": 2,
+              "name": "기어",
+              "weight": 1
+            },
+            {
+              "materialId": 6,
+              "name": "고무 부품",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 0,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        },
+        {
+          "locationId": 2,
+          "name": "전자제품 매장",
+          "description": "구리 전선, 회로 기판, 배터리 셀을 찾는 매장",
+          "materials": [
+            {
+              "materialId": 3,
+              "name": "구리 전선",
+              "weight": 1
+            },
+            {
+              "materialId": 4,
+              "name": "회로 기판",
+              "weight": 1
+            },
+            {
+              "materialId": 7,
+              "name": "배터리 셀",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 0,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        },
+        {
+          "locationId": 3,
+          "name": "마트",
+          "description": "플라스틱, 고무, 필터가 남아 있는 마트",
+          "materials": [
+            {
+              "materialId": 5,
+              "name": "플라스틱 부품",
+              "weight": 1
+            },
+            {
+              "materialId": 6,
+              "name": "고무 부품",
+              "weight": 1
+            },
+            {
+              "materialId": 8,
+              "name": "필터",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 0,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        },
+        {
+          "locationId": 4,
+          "name": "정비소",
+          "description": "엔진과 기체를 수리할 내열 합금과 기계 재료",
+          "materials": [
+            {
+              "materialId": 1,
+              "name": "철 조각",
+              "weight": 1
+            },
+            {
+              "materialId": 2,
+              "name": "기어",
+              "weight": 1
+            },
+            {
+              "materialId": 9,
+              "name": "내열 합금",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 0,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        },
+        {
+          "locationId": 5,
+          "name": "통신 시설",
+          "description": "신호 모듈과 전자 부품이 남아 있는 시설",
+          "materials": [
+            {
+              "materialId": 3,
+              "name": "구리 전선",
+              "weight": 1
+            },
+            {
+              "materialId": 4,
+              "name": "회로 기판",
+              "weight": 1
+            },
+            {
+              "materialId": 10,
+              "name": "신호 모듈",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 0,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        },
+        {
+          "locationId": 6,
+          "name": "병원",
+          "description": "의료 키트 1개 확정 및 필터와 플라스틱 부품",
+          "materials": [
+            {
+              "materialId": 5,
+              "name": "플라스틱 부품",
+              "weight": 1
+            },
+            {
+              "materialId": 8,
+              "name": "필터",
+              "weight": 1
+            }
+          ],
+          "durationHours": 6,
+          "staminaCost": 2,
+          "rewards": [
+            {
+              "quantity": 0,
+              "probabilityPercent": 5
+            },
+            {
+              "quantity": 1,
+              "probabilityPercent": 15
+            },
+            {
+              "quantity": 2,
+              "probabilityPercent": 35
+            },
+            {
+              "quantity": 3,
+              "probabilityPercent": 45
+            }
+          ],
+          "cleanerProbabilityPercent": 50,
+          "canExplore": true,
+          "unavailableReason": null,
+          "medicalKitReward": 1,
+          "baseContamination": 10,
+          "consecutiveContamination": 0,
+          "stormExposureHours": 0,
+          "stormContamination": 0,
+          "expectedContaminationIncrease": 10,
+          "diseaseProbabilityAfterExploration": 0,
+          "secretRoom": null
+        }
+      ],
+      "actions": {
+        "rests": [
+          {
+            "hours": 1,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 1,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 1,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 2,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 2,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 2,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 3,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 3,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 4,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 4,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 4,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 5,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 5,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 5,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 6,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 6,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 6,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 7,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 7,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 7,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          },
+          {
+            "hours": 8,
+            "preview": {
+              "allowed": true,
+              "unavailableCode": null,
+              "unavailableReason": null,
+              "durationHours": 8,
+              "staminaCost": 0,
+              "projected": {
+                "elapsedHours": 8,
+                "stamina": 10,
+                "contamination": 0,
+                "cleanerAmount": 1,
+                "medicalKitAmount": 0,
+                "diseased": false,
+                "status": "RUNNING",
+                "failureReason": null,
+                "expiringBatchIds": []
+              }
+            }
+          }
+        ],
+        "items": [],
+        "repairs": [
+          {
+            "partId": 1,
+            "preview": {
+              "allowed": false,
+              "unavailableCode": "INSUFFICIENT_MATERIALS",
+              "unavailableReason": "세척된 재료가 부족합니다.",
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": null
+            }
+          },
+          {
+            "partId": 3,
+            "preview": {
+              "allowed": false,
+              "unavailableCode": "INSUFFICIENT_MATERIALS",
+              "unavailableReason": "세척된 재료가 부족합니다.",
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": null
+            }
+          },
+          {
+            "partId": 6,
+            "preview": {
+              "allowed": false,
+              "unavailableCode": "INSUFFICIENT_MATERIALS",
+              "unavailableReason": "세척된 재료가 부족합니다.",
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": null
+            }
+          },
+          {
+            "partId": 7,
+            "preview": {
+              "allowed": false,
+              "unavailableCode": "INSUFFICIENT_MATERIALS",
+              "unavailableReason": "세척된 재료가 부족합니다.",
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": null
+            }
+          }
+        ],
+        "treatment": {
+          "allowed": false,
+          "unavailableCode": "INSUFFICIENT_MEDICAL_KIT",
+          "unavailableReason": "의료 키트가 없습니다.",
+          "durationHours": 1,
+          "staminaCost": 0,
+          "projected": null
+        },
+        "escape": {
+          "allowed": false,
+          "unavailableCode": "REPAIRS_INCOMPLETE",
+          "unavailableReason": "모든 부품을 먼저 수리하세요.",
+          "durationHours": 0,
+          "staminaCost": 0,
+          "projected": null
+        }
+      }
+    }
+  }
+}

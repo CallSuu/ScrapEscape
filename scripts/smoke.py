@@ -20,9 +20,11 @@ def request(method, path, body=None, expected=200):
 
 state = request('POST', '/api/games', expected=201)
 game = '/api/games/' + state['gameId']
-assert state['stamina'] == 10 and len(state['repairs']) == 3
+assert state['stamina'] == 10 and len(state['repairs']) == 4
+assert state['remainingHours'] == 240 and state['stackLimit'] == 6
+assert state['inventoryCapacity'] == 4 and state['chestCapacity'] == 16
 cards = request('GET', game + '/locations')
-assert len(cards) == 3 and cards[0]['durationHours'] == 6
+assert len(cards) == 6 and cards[0]['durationHours'] == 6
 for _ in range(5):
     result = request('POST', game + '/explorations', {'locationId':1})
     state = result['state']
@@ -33,7 +35,8 @@ for _ in range(5):
 assert state['inventory'], '재료 0개가 연속 발생했습니다. 다시 실행하세요.'
 batch = state['inventory'][0]
 state = request('PATCH', game + f"/items/{batch['batchId']}/storage", {'storage':'CHEST'})['state']
-assert len(state['inventory']) == 0 and state['chest'][0]['batchId'] == batch['batchId']
+assert all(item['batchId'] != batch['batchId'] for item in state['inventory'])
+assert state['chest'][0]['batchId'] == batch['batchId']
 if state['stamina'] == 0:
     state = request('POST', game + '/rests', {'hours':1})['state']
 state = request('POST', game + f"/items/{batch['batchId']}/clean")['state']
@@ -41,10 +44,19 @@ assert state['chest'][0]['condition'] == 'CLEAN'
 state = request('DELETE', game + f"/items/{batch['batchId']}")['state']
 assert not state['chest'] and state['statistics']['discarded'] == batch['quantity']
 request('POST', game + '/rests', {'hours':1.5}, expected=400)
+request('POST', game + '/escape', expected=409)
+# 새 판에서 병원 확정 지급과 치료를 확인한다.
+medical = request('POST', '/api/games', expected=201)
+medical_path = '/api/games/' + medical['gameId']
+medical = request('POST', medical_path + '/explorations', {'locationId':6})['state']
+assert medical['medicalKitAmount'] == 1
+medical = request('POST', medical_path + '/treatments')['state']
+assert medical['medicalKitAmount'] == 0 and medical['contamination'] == 0
+request('POST', medical_path + '/treatments', expected=409)
 request('POST', game + f"/repairs/{state['repairs'][0]['partId']}", expected=409)
 while state['status'] == 'RUNNING':
     state = request('POST', game + '/rests', {'hours':8})['state']
-assert state['status'] == 'FAILED' and state['elapsedHours'] >= 168
+assert state['status'] == 'FAILED' and state['elapsedHours'] >= 240
 request('POST', game + '/explorations', {'locationId':1}, expected=409)
 print(json.dumps({'result':'PASS','gameId':state['gameId'],'elapsedHours':state['elapsedHours'],
                   'status':state['status'],'statistics':state['statistics']}, ensure_ascii=False, indent=2))

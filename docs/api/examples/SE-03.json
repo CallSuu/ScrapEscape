@@ -1,0 +1,326 @@
+{
+  "note": "실제 테스트 DB 서버 응답. 게임과 묶음 ID는 검증 종료 후 삭제되어 재사용 불가.",
+  "request": {
+    "method": "GET",
+    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/locations",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": [
+      {
+        "locationId": 1,
+        "name": "고물상",
+        "description": "철 조각, 기어, 고무 부품을 찾는 집하장",
+        "materials": [
+          {
+            "materialId": 1,
+            "name": "철 조각",
+            "weight": 1
+          },
+          {
+            "materialId": 2,
+            "name": "기어",
+            "weight": 1
+          },
+          {
+            "materialId": 6,
+            "name": "고무 부품",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 0,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      },
+      {
+        "locationId": 2,
+        "name": "전자제품 매장",
+        "description": "구리 전선, 회로 기판, 배터리 셀을 찾는 매장",
+        "materials": [
+          {
+            "materialId": 3,
+            "name": "구리 전선",
+            "weight": 1
+          },
+          {
+            "materialId": 4,
+            "name": "회로 기판",
+            "weight": 1
+          },
+          {
+            "materialId": 7,
+            "name": "배터리 셀",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 0,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      },
+      {
+        "locationId": 3,
+        "name": "마트",
+        "description": "플라스틱, 고무, 필터가 남아 있는 마트",
+        "materials": [
+          {
+            "materialId": 5,
+            "name": "플라스틱 부품",
+            "weight": 1
+          },
+          {
+            "materialId": 6,
+            "name": "고무 부품",
+            "weight": 1
+          },
+          {
+            "materialId": 8,
+            "name": "필터",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 0,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      },
+      {
+        "locationId": 4,
+        "name": "정비소",
+        "description": "엔진과 기체를 수리할 내열 합금과 기계 재료",
+        "materials": [
+          {
+            "materialId": 1,
+            "name": "철 조각",
+            "weight": 1
+          },
+          {
+            "materialId": 2,
+            "name": "기어",
+            "weight": 1
+          },
+          {
+            "materialId": 9,
+            "name": "내열 합금",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 0,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      },
+      {
+        "locationId": 5,
+        "name": "통신 시설",
+        "description": "신호 모듈과 전자 부품이 남아 있는 시설",
+        "materials": [
+          {
+            "materialId": 3,
+            "name": "구리 전선",
+            "weight": 1
+          },
+          {
+            "materialId": 4,
+            "name": "회로 기판",
+            "weight": 1
+          },
+          {
+            "materialId": 10,
+            "name": "신호 모듈",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 0,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      },
+      {
+        "locationId": 6,
+        "name": "병원",
+        "description": "의료 키트 1개 확정 및 필터와 플라스틱 부품",
+        "materials": [
+          {
+            "materialId": 5,
+            "name": "플라스틱 부품",
+            "weight": 1
+          },
+          {
+            "materialId": 8,
+            "name": "필터",
+            "weight": 1
+          }
+        ],
+        "durationHours": 6,
+        "staminaCost": 2,
+        "rewards": [
+          {
+            "quantity": 0,
+            "probabilityPercent": 5
+          },
+          {
+            "quantity": 1,
+            "probabilityPercent": 15
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 35
+          },
+          {
+            "quantity": 3,
+            "probabilityPercent": 45
+          }
+        ],
+        "cleanerProbabilityPercent": 50,
+        "canExplore": true,
+        "unavailableReason": null,
+        "medicalKitReward": 1,
+        "baseContamination": 10,
+        "consecutiveContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "diseaseProbabilityAfterExploration": 0,
+        "secretRoom": null
+      }
+    ]
+  }
+}

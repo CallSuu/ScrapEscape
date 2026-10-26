@@ -1,0 +1,49 @@
+{
+  "note": "실제HTTP 응답. 같은 새 테스트 판에 발견한 방2개와 열쇠2개 조건을 준비했다. 확률과 무관하게 조회·기억·선택 입장을 재현하기 위한 조건이다.",
+  "request": {
+    "method": "GET",
+    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/secret-rooms/1",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "locationId": 1,
+      "locationName": "고물상",
+      "buttonLabel": "?",
+      "discoveredHour": 17,
+      "opened": false,
+      "immediateAvailable": true,
+      "immediate": {
+        "allowed": true,
+        "unavailableReason": null,
+        "durationHours": 1,
+        "staminaCost": 1,
+        "keyCost": 1,
+        "baseContamination": 0,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 0,
+        "possibleExtraContamination": 15,
+        "rewardFreeSlots": 2,
+        "deadlineRisk": false
+      },
+      "revisit": {
+        "allowed": true,
+        "unavailableReason": null,
+        "durationHours": 5,
+        "staminaCost": 3,
+        "keyCost": 1,
+        "baseContamination": 10,
+        "stormExposureHours": 0,
+        "stormContamination": 0,
+        "expectedContaminationIncrease": 10,
+        "possibleExtraContamination": 15,
+        "rewardFreeSlots": 2,
+        "deadlineRisk": false
+      },
+      "openedHour": null,
+      "lastVisit": null
+    }
+  }
+}

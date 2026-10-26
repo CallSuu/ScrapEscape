@@ -1,0 +1,315 @@
+{
+  "note": "실제HTTP 응답. 같은 새 테스트 판에 발견한 방2개와 열쇠2개 조건을 준비했다. 확률과 무관하게 조회·기억·선택 입장을 재현하기 위한 조건이다.",
+  "request": {
+    "method": "POST",
+    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/secret-rooms/1/defer",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "message": "비밀의 방 위치를 기억했습니다. 나중에 다시 방문할 수 있습니다.",
+      "state": {
+        "gameId": "0dd34e9a-912c-4474-af6a-399e2d992115",
+        "status": "RUNNING",
+        "elapsedHours": 17,
+        "day": 2,
+        "hour": 1,
+        "remainingHours": 223,
+        "night": true,
+        "stamina": 10,
+        "maxStamina": 10,
+        "cleanerAmount": 1,
+        "cleanerCapacity": 5,
+        "inventoryCapacity": 4,
+        "chestCapacity": 16,
+        "inventory": [
+          {
+            "batchId": 1193,
+            "materialId": 5,
+            "name": "플라스틱 부품",
+            "quantity": 2,
+            "storage": "INVENTORY",
+            "acquiredHour": 6,
+            "condition": "DIRTY",
+            "expiresInHours": 37
+          },
+          {
+            "batchId": 1194,
+            "materialId": 8,
+            "name": "필터",
+            "quantity": 1,
+            "storage": "INVENTORY",
+            "acquiredHour": 6,
+            "condition": "DIRTY",
+            "expiresInHours": 37
+          }
+        ],
+        "chest": [],
+        "repairs": [
+          {
+            "partId": 1,
+            "name": "엔진 시동 장치",
+            "repaired": true,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 7,
+                "name": "배터리 셀",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 2,
+            "name": "동력 전달 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 3,
+            "name": "연료 공급 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 5,
+                "name": "플라스틱 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 8,
+                "name": "필터",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 6,
+            "name": "통신·항법 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 4,
+                "name": "회로 기판",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 7,
+                "name": "배터리 셀",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 10,
+                "name": "신호 모듈",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          }
+        ],
+        "statistics": {
+          "explorations": 1,
+          "dayExplorations": 1,
+          "nightExplorations": 0,
+          "emptyExplorations": 0,
+          "collected": 3,
+          "cleaned": 4,
+          "discarded": 4,
+          "repairedParts": 1,
+          "diseaseCount": 0,
+          "treatmentCount": 0,
+          "medicalKitsUsed": 1,
+          "maxContamination": 10,
+          "stormExposureHours": 0
+        },
+        "stackLimit": 6,
+        "medicalKitAmount": 0,
+        "medicalKitCapacity": 2,
+        "contamination": 0,
+        "diseased": false,
+        "treatmentRemainingHours": null,
+        "consecutiveExplorations": 0,
+        "currentStorm": null,
+        "nextStorm": {
+          "startHour": 46,
+          "endHour": 49
+        },
+        "treatment": {
+          "allowed": false,
+          "unavailableReason": "의료 키트가 없습니다.",
+          "durationHours": 1,
+          "staminaCost": 0
+        },
+        "escape": {
+          "allowed": false,
+          "unavailableReason": "모든 부품을 먼저 수리하세요.",
+          "durationHours": 0,
+          "staminaCost": 0
+        },
+        "failureReason": null,
+        "rulesVersion": 2,
+        "secrets": {
+          "keyAmount": 2,
+          "keyCapacity": 2,
+          "keyProbabilityPercent": 10,
+          "discoveryProbabilityPercent": 15,
+          "rooms": [
+            {
+              "locationId": 1,
+              "locationName": "고물상",
+              "buttonLabel": "?",
+              "discoveredHour": 17,
+              "opened": false,
+              "immediateAvailable": false,
+              "immediate": {
+                "allowed": false,
+                "unavailableReason": "즉시 입장 기회가 끝났습니다. 기억한 방으로 다시 방문하세요.",
+                "durationHours": 1,
+                "staminaCost": 1,
+                "keyCost": 1,
+                "baseContamination": 0,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 0,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 2,
+                "deadlineRisk": false
+              },
+              "revisit": {
+                "allowed": true,
+                "unavailableReason": null,
+                "durationHours": 5,
+                "staminaCost": 3,
+                "keyCost": 1,
+                "baseContamination": 10,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 10,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 2,
+                "deadlineRisk": false
+              },
+              "openedHour": null,
+              "lastVisit": null
+            },
+            {
+              "locationId": 2,
+              "locationName": "전자제품 매장",
+              "buttonLabel": "?",
+              "discoveredHour": 17,
+              "opened": false,
+              "immediateAvailable": false,
+              "immediate": {
+                "allowed": false,
+                "unavailableReason": "즉시 입장 기회가 끝났습니다. 기억한 방으로 다시 방문하세요.",
+                "durationHours": 1,
+                "staminaCost": 1,
+                "keyCost": 1,
+                "baseContamination": 0,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 0,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 2,
+                "deadlineRisk": false
+              },
+              "revisit": {
+                "allowed": true,
+                "unavailableReason": null,
+                "durationHours": 5,
+                "staminaCost": 3,
+                "keyCost": 1,
+                "baseContamination": 10,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 10,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 2,
+                "deadlineRisk": false
+              },
+              "openedHour": null,
+              "lastVisit": null
+            }
+          ],
+          "statistics": {
+            "discoveredRooms": 2,
+            "openedRooms": 0,
+            "unopenedRooms": 2,
+            "keysAcquired": 2,
+            "keysUsed": 0,
+            "goodOutcomes": 0,
+            "badOutcomes": 0,
+            "materialsCollected": 0,
+            "materialsLost": 0
+          }
+        }
+      },
+      "loot": null,
+      "secretFindings": null,
+      "secretRoom": null
+    }
+  }
+}

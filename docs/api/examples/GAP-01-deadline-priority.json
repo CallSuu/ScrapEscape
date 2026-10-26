@@ -1,0 +1,257 @@
+{
+  "note": "최종 확정된 TIME_LIMIT 우선 규칙의 실제 HTTP 예시. 경과232시간·발병162시간 상태에서 밤 탐색9시간 후241시간. 질병 기한234시간이 먼저지만 두 기한 모두 초과하면 TIME_LIMIT 유지.",
+  "request": {
+    "method": "POST",
+    "path": "/api/games/4857923c-481a-4b60-a0bd-881a591e323c/explorations",
+    "body": {
+      "locationId": 1
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "message": "재료 4개를 가져왔습니다. 세척액 1회분도 얻었습니다. 오염 노출 한계에 도달했습니다.",
+      "state": {
+        "gameId": "4857923c-481a-4b60-a0bd-881a591e323c",
+        "status": "FAILED",
+        "elapsedHours": 241,
+        "day": 11,
+        "hour": 9,
+        "remainingHours": 0,
+        "night": false,
+        "stamina": 5,
+        "maxStamina": 10,
+        "cleanerAmount": 2,
+        "cleanerCapacity": 5,
+        "inventoryCapacity": 4,
+        "chestCapacity": 16,
+        "inventory": [
+          {
+            "batchId": 1200,
+            "materialId": 1,
+            "name": "철 조각",
+            "quantity": 3,
+            "storage": "INVENTORY",
+            "acquiredHour": 241,
+            "condition": "DIRTY",
+            "expiresInHours": 48
+          },
+          {
+            "batchId": 1201,
+            "materialId": 2,
+            "name": "기어",
+            "quantity": 1,
+            "storage": "INVENTORY",
+            "acquiredHour": 241,
+            "condition": "DIRTY",
+            "expiresInHours": 48
+          }
+        ],
+        "chest": [],
+        "repairs": [
+          {
+            "partId": 1,
+            "name": "엔진 시동 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 7,
+                "name": "배터리 셀",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 2,
+            "name": "동력 전달 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 5,
+            "name": "비행 제어 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 4,
+                "name": "회로 기판",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 5,
+                "name": "플라스틱 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 10,
+                "name": "신호 모듈",
+                "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 7,
+            "name": "기체 보강 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 4,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 9,
+                "name": "내열 합금",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              }
+            ]
+          }
+        ],
+        "statistics": {
+          "explorations": 1,
+          "dayExplorations": 0,
+          "nightExplorations": 1,
+          "emptyExplorations": 0,
+          "collected": 4,
+          "cleaned": 0,
+          "discarded": 0,
+          "repairedParts": 0,
+          "diseaseCount": 0,
+          "treatmentCount": 0,
+          "medicalKitsUsed": 0,
+          "maxContamination": 10,
+          "stormExposureHours": 0
+        },
+        "stackLimit": 6,
+        "medicalKitAmount": 0,
+        "medicalKitCapacity": 2,
+        "contamination": 10,
+        "diseased": true,
+        "treatmentRemainingHours": 0,
+        "consecutiveExplorations": 1,
+        "currentStorm": null,
+        "nextStorm": null,
+        "treatment": {
+          "allowed": false,
+          "unavailableReason": "종료된 게임입니다.",
+          "durationHours": 1,
+          "staminaCost": 0
+        },
+        "escape": {
+          "allowed": false,
+          "unavailableReason": "종료된 게임입니다.",
+          "durationHours": 0,
+          "staminaCost": 0
+        },
+        "failureReason": "TIME_LIMIT",
+        "rulesVersion": 2,
+        "secrets": {
+          "keyAmount": 0,
+          "keyCapacity": 2,
+          "keyProbabilityPercent": 10,
+          "discoveryProbabilityPercent": 15,
+          "rooms": [],
+          "statistics": {
+            "discoveredRooms": 0,
+            "openedRooms": 0,
+            "unopenedRooms": 0,
+            "keysAcquired": 0,
+            "keysUsed": 0,
+            "goodOutcomes": 0,
+            "badOutcomes": 0,
+            "materialsCollected": 0,
+            "materialsLost": 0
+          }
+        }
+      },
+      "loot": {
+        "quantity": 4,
+        "collectedQuantity": 4,
+        "leftBehindQuantity": 0,
+        "materials": [
+          {
+            "materialId": 1,
+            "name": "철 조각",
+            "quantity": 3,
+            "collectedQuantity": 3
+          },
+          {
+            "materialId": 2,
+            "name": "기어",
+            "quantity": 1,
+            "collectedQuantity": 1
+          }
+        ],
+        "cleanerFound": true,
+        "cleanerAdded": 1,
+        "medicalKitsAdded": 0
+      },
+      "secretFindings": {
+        "keyFound": false,
+        "keysAdded": 0,
+        "roomDiscovered": false,
+        "roomLocationId": null
+      },
+      "secretRoom": null
+    }
+  }
+}

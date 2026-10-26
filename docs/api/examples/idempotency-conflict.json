@@ -1,0 +1,21 @@
+{
+  "note": "실제 전용 테스트 DB HTTP 응답. 검증 후 해당 게임만 정리. restart 예시는 서버 프로세스 재시작 후 수집.",
+  "request": {
+    "method": "POST",
+    "path": "/api/games/62c35a2a-252a-498b-a0ca-095f7662a415/rests",
+    "headers": {
+      "Idempotency-Key": "96e29407-feb9-458e-b008-35d1edeac3b1"
+    },
+    "body": {
+      "hours": 5
+    }
+  },
+  "response": {
+    "status": 409,
+    "headers": {},
+    "body": {
+      "code": "IDEMPOTENCY_KEY_REUSED",
+      "message": "같은 요청 번호를 다른 행동이나 입력에 사용할 수 없습니다."
+    }
+  }
+}

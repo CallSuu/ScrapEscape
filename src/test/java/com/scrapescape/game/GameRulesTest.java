@@ -20,4 +20,8 @@ class GameRulesTest {
         assertEquals(8,GameRules.restRecovery(6));
         assertEquals(10,GameRules.restRecovery(8));
     }
+    @Test void diseaseProbabilityUsesNonOverlappingBoundaries() {
+        for(int c=0;c<=100;c++)assertEquals(c<60?0:c<80?30:c<90?40:60,GameRules.diseaseProbability(c));
+    }
+
 }
