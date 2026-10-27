@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1000" gradientUnits="userSpaceOnUse"><stop stop-color="#afbaa4"/><stop offset="1" stop-color="#465e4d"/></linearGradient>
+ <linearGradient id="street" x2="0" y2="1000" gradientUnits="userSpaceOnUse"><stop stop-color="#8a8e77"/><stop offset="1" stop-color="#384e40"/></linearGradient>
+ <linearGradient id="haze"><stop stop-color="#d5c89b" stop-opacity=".1"/><stop offset="1" stop-color="#d5c89b" stop-opacity=".4"/></linearGradient>
+ <pattern id="windows" width="42" height="48" patternUnits="userSpaceOnUse"><path d="M10 10h19v23H10Z" fill="#304b40"/><path d="M11 11h16v4H11" fill="#b0ba98" opacity=".5"/></pattern>
+ <symbol id="block" viewBox="0 0 180 500"><path d="M0 500V44l21-22 26 9 22-31h98l13 43v457" fill="currentColor"/><path d="M12 46h155v442H12" fill="url(#windows)"/><path d="m113 22-10 37 12 23-12 48 15 40" stroke="#354c40" stroke-width="5"/></symbol>
+</defs>
+<path fill="url(#sky)" d="M0 0h1600v1000H0z"/>
+<circle cx="1060" cy="140" r="92" fill="#e1d6ac" opacity=".45"/>
+<g color="#637b67" opacity=".55"><use href="#block" x="430" y="135" width="130" height="360"/><use href="#block" x="585" y="50" width="135" height="415"/><use href="#block" x="775" y="110" width="105" height="355"/><use href="#block" x="920" y="70" width="145" height="425"/></g>
+<path d="M0 570 415 425l355 28 312-29 518 120v456H0" fill="url(#street)"/>
+<!-- Roads split toward six nearby abandoned facilities. -->
+<g fill="#999b80" opacity=".64"><path d="m620 1000 83-255-98-95L66 581l34-34 615 81 87 94 180 278Z"/><path d="m740 780-65-142 208-151 46 10-171 168 111 101Z"/><path d="m778 757 147-154 610-80 46 42-592 98-142 128Z"/></g>
+<g stroke="#c3c2a0" stroke-width="3" stroke-dasharray="18 23" opacity=".5"><path d="m796 1000-56-250-84-97L97 567"/><path d="m746 745 170-115 635-89"/><path d="m735 650 168-153"/></g>
+<g color="#607866"><use href="#block" x="-28" y="-30" width="230" height="620"/><use href="#block" x="224" y="80" width="170" height="480"/><use href="#block" x="1260" y="-10" width="230" height="600"/><use href="#block" x="1501" y="180" width="160" height="430"/></g>
+<!-- Foreground hospital, workshop and market facades. -->
+<path d="M28 641V339h275v302" fill="#738571"/><path d="M46 360h239v240H46" fill="url(#windows)"/><path d="M98 368h134v67H98" fill="#435c4b"/><path d="M152 378h25v16h16v25h-16v16h-25v-16h-16v-25h16Z" fill="#c9d3b8"/>
+<path d="M314 567V392l63-62h164l52 62v175" fill="#73836a"/><path d="M349 419h212v140H349" fill="#3b5144"/><path d="M363 441h184m-184 26h184m-184 26h184m-184 26h184" stroke="#627a63" stroke-width="7"/>
+<path d="M1076 581V375h341v206" fill="#6d806b"/><path d="M1061 389h371l-27 58h-322Z" fill="#9ba17d"/><path d="M1098 454h77v120h-77m100-120h77v120h-77m99-120h91v120h-91" fill="#3b5747"/>
+<path d="m91 640 84-17 48 18-64 20m1127-53 73-26 52 44-111 11m-598 236 52-26 59 51-66 14" fill="#334e3c"/>
+<path d="m610 809 45-15-11-37m227 83 68 6-22 52m328-259-21 35 34 23m-912-74 30 28-13 24" stroke="#304b3d" stroke-width="5"/>
+<path d="M986 578v-167m-48 23 48-23 52 23m-51-41v-26" stroke="#324d3c" stroke-width="8"/><path d="M1005 474h119v36h-119m-14-69H872v36h119" fill="#a8ac86" stroke="#3e5945" stroke-width="3"/>
+<path d="M0 0h1600v1000H0" fill="url(#haze)"/>
+</svg>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101714">
+  <title>Scrap Escape</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script type="module" src="/js/app.mjs"></script>
+</head>
+<body>
+  <div id="se-app">
+    <main id="se-main"></main>
+    <section id="se-exploration-page" class="se-exploration-page" aria-labelledby="se-exploration-title" hidden>
+      <header class="se-exploration-page__header">
+        <button id="se-exploration-back" type="button">← 돌아가기</button>
+        <div><p id="se-page-location">오염 도시 입구</p><h2 id="se-exploration-title" tabindex="-1">어느 길로 갈까?</h2></div>
+      </header>
+      <div id="se-exploration-content"></div>
+    </section>
+    <section id="se-messages" aria-live="polite" aria-atomic="true"></section>
+    <button id="se-retry" type="button" hidden>다시 시도</button>
+    <div id="se-overlay" hidden>
+      <section class="se-dialog" role="dialog" aria-modal="true" aria-labelledby="se-panel-title">
+        <header class="se-dialog__header">
+          <h2 id="se-panel-title" tabindex="-1"></h2>
+          <button id="se-panel-close" type="button" aria-label="닫기">×</button>
+        </header>
+        <div id="se-panel-content"></div>
+      </section>
+    </div>
+  </div>
+  <noscript>이 게임은 JavaScript를 켜야 실행할 수 있습니다.</noscript>
+</body>
+</html>

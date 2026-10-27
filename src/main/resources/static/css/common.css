@@ -1,0 +1,40 @@
+:root {
+  color-scheme: dark;
+  --se-color-bg: #101714; --se-color-panel: #1b2520; --se-color-text: #eef3eb;
+  --se-color-muted: #b7c4b9; --se-color-accent: #b5d783; --se-color-warning: #f0b35a;
+  --se-color-danger: #f08080; --se-color-border: #46544b;
+  --se-space-1: 4px; --se-space-2: 8px; --se-space-3: 12px; --se-space-4: 16px; --se-space-6: 24px;
+  --se-radius: 12px; --se-hud-top: 132px; --se-hud-bottom: 208px;
+  font-family: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  color: var(--se-color-text); background: var(--se-color-bg);
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 1024px; }
+button, input, select { font: inherit; }
+button { min-height: 40px; cursor: pointer; color: inherit; background: #26372e; border: 1px solid var(--se-color-border); border-radius: 8px; padding: 8px 16px; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--se-color-accent); outline-offset: 4px; }
+[hidden] { display: none !important; }
+#se-app { position: relative; height: 100dvh; min-height: 720px; overflow: hidden; }
+#se-messages { position: absolute; left: 308px; right: 448px; bottom: 28px; z-index: 3; max-height: 128px; overflow: auto; border-left: 2px solid var(--se-color-accent); padding: 12px 16px; font-size: 13px; line-height: 1.7; background: #101714e8; opacity: 0; }
+#se-messages.se-message--visible { opacity: 1; white-space: pre-line; }
+#se-retry { position: absolute; left: 308px; bottom: 168px; z-index: 8; background: #35472b; }
+#se-overlay { position: absolute; inset: 0; z-index: 5; pointer-events: none; background: #07100938; }
+.se-dialog { pointer-events: auto; position: absolute; top: var(--se-hud-top); bottom: var(--se-hud-bottom); left: 24px; right: 24px; max-width: 1200px; margin-inline: auto; background: #17221aF5; border: 1px solid #60705a; border-radius: 16px; box-shadow: 0 24px 72px #0008; display: flex; flex-direction: column; }
+.se-dialog__header { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--se-color-border); }
+.se-dialog__header h2 { margin: 0; font-size: 19px; }
+#se-panel-close { width: 44px; height: 44px; min-height: 44px; padding: 0; font-size: 28px; line-height: 1; background: transparent; }
+#se-panel-content { min-height: 0; flex: 1; overflow: auto; padding: 20px; }
+#se-panel-content > p { color: var(--se-color-muted); line-height: 1.8; }
+/* Exploration is a scene, not a dialog. Its contents leave room for the HUD. */
+.se-exploration-page { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.se-exploration-page__header { position: absolute; top: 24px; left: 408px; right: 220px; min-height: 48px; display: flex; align-items: center; gap: 20px; }
+.se-exploration-page__header button { pointer-events: auto; min-width: 112px; background: #14231ee8; }
+.se-exploration-page__header p { margin: 0 0 2px; color: #cedfc0; font-size: 10px; letter-spacing: 1px; }
+.se-exploration-page__header h2 { margin: 0; font-size: 21px; text-shadow: 0 2px 8px #000; }
+#se-exploration-content { position: absolute; inset: 88px 24px 148px; pointer-events: none; }
+#se-app:is([data-page='exploration'],[data-page='exploration-result'],[data-page='secret-room']) #se-messages { left: 368px; bottom: 24px; max-height: 88px; font-size: 11px; padding: 8px 12px; }
+#se-app:is([data-page='exploration'],[data-page='exploration-result'],[data-page='secret-room']) #se-retry { left: 368px; bottom: 24px; min-height: 36px; font-size: 12px; }
+#se-app:is([data-page='exploration'],[data-page='exploration-result'],[data-page='secret-room'])[data-pending='true'] #se-messages { bottom: 70px; max-height: 38px; }
+
+#se-app:is([data-page='exploration-result'],[data-page='secret-room']) #se-exploration-content { top: 132px; }

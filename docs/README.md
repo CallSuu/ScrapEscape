@@ -17,6 +17,18 @@
 
 ## 프론트엔드 연동
 
+- [탐색 보상·비밀의 방 전체 화면 학습/검증](frontend/Scrap_Escape_탐색결과_학습가이드.md)
+
+- [두 번째 단계: 탐색 카드·실행·결과 학습 가이드](frontend/Scrap_Escape_탐색화면_학습가이드.md)
+
+- [첫 화면 실행·HTML/CSS/JavaScript 학습 가이드](frontend/Scrap_Escape_프론트_첫화면_학습가이드.md)
+
+두 사람 분업용 명세서(각 문서에 백엔드 현황·API·공통 계약·담당 범위·AI 전달 프롬프트 포함):
+
+- [본인 A: 메인·HUD·탐색·비밀의 방·통합](frontend/Scrap_Escape_본인담당_개발명세서.md)
+- [팀원 B: 안전지대·재료 관리·수리·결과](frontend/Scrap_Escape_팀원담당_개발명세서.md)
+
+
 - [화면 영역·API·버튼 제한·공통 통신 명세](frontend/Scrap_Escape_화면_연동_명세.md)
 - [화면 조회·미리보기·통신 검증](backend/Scrap_Escape_화면연동_구현_검증.md)
 
