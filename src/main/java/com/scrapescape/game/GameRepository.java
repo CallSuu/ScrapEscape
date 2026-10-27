@@ -81,7 +81,7 @@ public class GameRepository {
         List<RewardProbability> probabilities=night?List.of(new RewardProbability(0,5),new RewardProbability(2,20),new RewardProbability(3,35),new RewardProbability(4,40)):
             List.of(new RewardProbability(0,5),new RewardProbability(1,15),new RewardProbability(2,35),new RewardProbability(3,45));
         return jdbc.query("SELECT * FROM location ORDER BY location_id",(r,n)->new LocationCard(r.getLong("location_id"),
-            r.getString("name"),r.getString("description"),candidates(r.getLong("location_id")),hours,cost,probabilities,50,reason==null,reason,
+            r.getString("name"),r.getString("description"),candidates(r.getLong("location_id")),hours,cost,probabilities,GameRules.CLEANER_PROBABILITY_PERCENT,reason==null,reason,
             r.getLong("location_id")==6?1:0,10,consecutive,exposure,5*exposure,increase,
             g.diseased()?0:GameRules.diseaseProbability(Math.min(100,g.contamination()+increase)),null));
     }
@@ -95,8 +95,8 @@ public class GameRepository {
             id.toString(),material,quantity,hour);
     }
     void progress(UUID id,int hours,int staminaDelta,int cleanerDelta) {
-        jdbc.update("UPDATE game SET elapsed_hours=elapsed_hours+?,stamina=LEAST(10,stamina+?),cleaner_amount=LEAST(5,cleaner_amount+?) WHERE game_id=?",
-            hours,staminaDelta,cleanerDelta,id.toString());
+        jdbc.update("UPDATE game SET elapsed_hours=elapsed_hours+?,stamina=LEAST(?,stamina+?),cleaner_amount=LEAST(?,cleaner_amount+?) WHERE game_id=?",
+            hours,GameRules.MAX_STAMINA,staminaDelta,GameRules.CLEANER_CAPACITY,cleanerDelta,id.toString());
     }
     void exploration(UUID id,boolean night,int generated,int collected,int medicalAdded) {
         jdbc.update("""

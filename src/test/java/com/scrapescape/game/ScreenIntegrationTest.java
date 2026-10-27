@@ -44,11 +44,11 @@ class ScreenIntegrationTest {
         assertEquals(before,service.state(id));assertTrue(service.secretRoom(id,1).immediateAvailable());
     }
     @Test void restPreviewCapsRecoveryAndMatchesExecutedAction() throws Exception {
-        var id=fresh();jdbc.update("UPDATE game SET stamina=3,contamination=25,consecutive_explorations=3 WHERE game_id=?",id.toString());
+        var id=fresh();jdbc.update("UPDATE game SET stamina=8,contamination=25,consecutive_explorations=3 WHERE game_id=?",id.toString());
         var rests=screen(id).path("actions").path("rests");
-        assertEquals(6,rests.get(2).path("preview").path("projected").path("stamina").asInt());
+        assertEquals(11,rests.get(2).path("preview").path("projected").path("stamina").asInt());
         assertEquals(25,rests.get(2).path("preview").path("projected").path("contamination").asInt());
-        var p=rests.get(5).path("preview").path("projected");assertEquals(10,p.path("stamina").asInt());assertEquals(15,p.path("contamination").asInt());
+        var p=rests.get(5).path("preview").path("projected");assertEquals(15,p.path("stamina").asInt());assertEquals(15,p.path("contamination").asInt());
         service.rest(id,6);matches(p,id);assertEquals(0,service.state(id).consecutiveExplorations());
     }
     @Test void deadlinesWarnWithoutBlockingAndKeepTimeLimitPriority() throws Exception {
@@ -81,7 +81,7 @@ class ScreenIntegrationTest {
     }
     @Test void cleanInsufficientResourcesAndDiscardRemainDistinct() throws Exception {
         var id=fresh();long b=batch(id,1,2,"DIRTY","INVENTORY",0);jdbc.update("UPDATE game SET stamina=0,cleaner_amount=0 WHERE game_id=?",id.toString());
-        var i=item(screen(id),b);assertEquals("INSUFFICIENT_STAMINA",i.path("clean").path("unavailableCode").asText());assertTrue(i.path("discard").path("allowed").asBoolean());
+        var i=item(screen(id),b);assertEquals("INSUFFICIENT_CLEANER",i.path("clean").path("unavailableCode").asText());assertTrue(i.path("discard").path("allowed").asBoolean());
         jdbc.update("UPDATE game SET stamina=1 WHERE game_id=?",id.toString());assertEquals("INSUFFICIENT_CLEANER",item(screen(id),b).path("clean").path("unavailableCode").asText());
         var discard=item(screen(id),b).path("discard").path("projected");service.discard(id,b);matches(discard,id);
     }
@@ -102,4 +102,13 @@ class ScreenIntegrationTest {
         assertTrue(p.path("allowed").asBoolean());assertEquals("SUCCESS",p.path("projected").path("status").asText());service.escape(id);matches(p.path("projected"),id);
         mvc.perform(get("/api/games/"+UUID.randomUUID()+"/screen")).andExpect(status().isNotFound());
     }
+    @Test void zeroStaminaCanCleanWithMatchingPreviewAndNoStaminaCost() throws Exception {
+        var id=fresh();long b=batch(id,1,4,"DIRTY","INVENTORY",0);
+        jdbc.update("UPDATE game SET stamina=0,cleaner_amount=1 WHERE game_id=?",id.toString());
+        var preview=item(screen(id),b).path("clean");assertTrue(preview.path("allowed").asBoolean());
+        assertEquals(0,preview.path("staminaCost").asInt());assertEquals(1,preview.path("durationHours").asInt());
+        var result=service.clean(id,b);assertEquals(0,result.state().stamina());assertEquals(1,result.state().elapsedHours());assertEquals(0,result.state().cleanerAmount());
+        matches(preview.path("projected"),id);
+    }
+
 }

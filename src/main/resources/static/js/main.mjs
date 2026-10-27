@@ -1,3 +1,5 @@
+import { explorationSharedInfo } from './exploration.mjs';
+
 export function createMainView(root, context) {
   // Static HTML describes structure; server-supplied values are always textContent.
   root.className = 'se-main';
@@ -23,15 +25,18 @@ export function createMainView(root, context) {
       </nav>
       <section class="se-main__status se-main__hud" aria-label="플레이어 상태">
         <h2>생존 상태 <span data-value="condition"></span></h2>
-        <label>체력 <strong data-value="stamina"></strong><progress data-gauge="stamina" max="10"></progress></label>
+        <label>체력 <strong data-value="stamina"></strong><progress data-gauge="stamina" max="15"></progress></label>
         <label>오염도 <strong data-value="contamination"></strong><progress data-gauge="contamination" max="100"></progress></label>
         <p data-value="disease"></p><p class="se-main__muted" data-value="consecutive"></p>
       </section>
+      <div class="se-main__inventory-stack">
+      <aside class="se-main__exploration-note" aria-label="탐색 안내" role="note" hidden><strong>탐색 안내</strong><p data-value="exploration-cost"></p><p data-value="exploration-rewards"></p><p class="se-main__exploration-risk" data-value="exploration-risk"></p></aside>
       <section class="se-main__inventory se-main__hud" aria-label="휴대품">
         <h2>휴대 인벤토리 <span data-value="slots"></span></h2>
         <div class="se-main__slots"></div>
         <div class="se-main__supplies"><span data-value="cleaner"></span><span data-value="medical"></span><span data-value="keys"></span></div>
       </section>
+      </div>
       <nav class="se-main__menu" aria-label="게임 메뉴"><button type="button" data-action="results" hidden>결과 보기</button><button type="button" data-action="restart">새 게임</button></nav>
     </div>`;
   const get = key => root.querySelector('[data-value="' + key + '"]');
@@ -50,12 +55,20 @@ export function createMainView(root, context) {
     render(screen, flags) {
       const panel = context.getPanel(), atLocation = ['exploration-result', 'secret-room'].includes(panel?.name);
       const location = screen?.locations.find(l => l.locationId === panel?.locationId);
-      root.dataset.scene = atLocation ? 'location' : panel?.name === 'exploration' ? 'city' : 'camp';
+      root.dataset.scene = ['safe-zone','camp-action','aircraft-repair'].includes(panel?.name) ? 'forest-camp' : atLocation ? 'location' : ['exploration','exploration-choice'].includes(panel?.name) ? 'city' : 'camp';
       const imageId = [1, 2, 3, 4, 5, 6].includes(location?.locationId) ? location.locationId : 1;
       root.style.setProperty('--se-location-image', 'url("/assets/locations/location-' + imageId + '.svg")');
-      root.querySelector('.se-main__clock .se-main__eyebrow').textContent = atLocation ? '현재 위치 · ' + (location?.name || '탐색지') : root.dataset.scene === 'city' ? '현재 위치 · 오염 도시 입구' : '현재 위치 · 숲의 불시착 지점';
+      root.querySelector('.se-main__clock .se-main__eyebrow').textContent = atLocation ? '현재 위치 · ' + (location?.name || '탐색지') : root.dataset.scene === 'forest-camp' ? '현재 위치 · 숲속 야영지' : root.dataset.scene === 'city' ? '현재 위치 · 오염 도시 입구' : '현재 위치 · 숲의 불시착 지점';
       root.querySelector('.se-main__welcome').hidden = Boolean(screen);
       root.querySelector('.se-main__playing').hidden = !screen;
+      const showExplorationNote = Boolean(screen && ['exploration','exploration-choice'].includes(panel?.name));
+      root.querySelector('.se-main__exploration-note').hidden = !showExplorationNote;
+      if (showExplorationNote) {
+        const info = explorationSharedInfo(screen.locations, screen.state);
+        get('exploration-cost').textContent = info.cost;
+        get('exploration-rewards').textContent = info.rewards;
+        get('exploration-risk').textContent = info.risk;
+      }
       root.querySelectorAll('[data-action="start"], [data-action="restart"]').forEach(button => { button.disabled = flags.busy || flags.hasPending; });
       if (!screen) { root.dataset.night = 'false'; return; }
       const s = screen.state;
@@ -79,9 +92,10 @@ export function createMainView(root, context) {
         const item = s.inventory[i], tile = document.createElement('div'); tile.className = 'se-main__item';
         if (!item) { tile.textContent = '빈칸'; tile.classList.add('se-main__item--empty'); }
         else {
+          tile.dataset.condition = item.condition;
           const label = document.createElement('strong'), detail = document.createElement('small');
           label.textContent = item.name + ' ×' + item.quantity;
-          detail.textContent = item.condition === 'DIRTY' ? '미세척 · ' + item.expiresInHours + 'h' : item.condition === 'CLEAN' ? '세척 완료' : '사용 불가';
+          detail.textContent = item.condition === 'DIRTY' ? '미세척 · ' + item.expiresInHours + 'h' : item.condition === 'CLEAN' ? '✓ 세척 완료' : '사용 불가';
           tile.dataset.urgency = item.condition === 'UNUSABLE' || item.condition === 'DIRTY' && item.expiresInHours <= 6 ? 'danger' : item.condition === 'DIRTY' && item.expiresInHours <= 12 ? 'warning' : 'normal';
           tile.append(label, detail);
         }

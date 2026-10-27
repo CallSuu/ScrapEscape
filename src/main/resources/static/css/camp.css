@@ -1,0 +1,14 @@
+.se-camp { position: absolute; inset: 0; color: var(--se-color-text); }
+.se-camp__intro { position: absolute; top: 144px; left: 50%; transform: translateX(-50%); text-align: center; margin: 0; padding: 10px 20px; border-radius: 9px; background: #102018b3; font-size: 15px; line-height: 1.7; text-shadow: 0 2px 6px #000; }
+.se-camp__intro span { color: #d6decb; font-size: 12px; }
+.se-camp__spot { pointer-events: auto; position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 155px; padding: 10px 14px; border-color: #b7c7a28c; background: #10221bdf; box-shadow: 0 4px 18px #0006; }
+.se-camp__spot:hover { background: #26432ceF; border-color: #d0e6a5; }
+.se-camp__pin { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid #c5dba3; border-radius: 50%; background: #364b2f; font-size: 22px; color: #e5efc5; }
+.se-camp__spot strong { font-size: 14px; }
+.se-camp__spot small { font-size: 10px; color: #c5d3bb; }
+.se-camp__spot--storage { left: 19%; top: 61%; }
+.se-camp__spot--rest { left: 66%; top: 68%; }
+.se-camp__spot--treatment { left: 87%; top: 53%; }
+.se-camp__spot--repair { left: 47%; top: 37%; }
+.se-camp__hint { position: absolute; bottom: 154px; left: 50%; transform: translateX(-50%); font-size: 11px; padding: 6px 12px; background: #13221ade; border-radius: 6px; color: #ccd9c4; text-align: center; }
+@media (max-height: 760px) { .se-camp__intro { top: 130px; padding: 6px 14px; font-size: 13px; } .se-camp__intro span { font-size: 11px; } .se-camp__spot { gap: 3px; padding: 7px 10px; min-width: 145px; } .se-camp__spot--rest { top: 65%; } .se-camp__hint { bottom: 140px; } }

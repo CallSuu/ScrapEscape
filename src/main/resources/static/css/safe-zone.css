@@ -1,0 +1,58 @@
+.se-safe { display: grid; grid-template-columns: 220px minmax(300px,1fr) 290px; gap: 16px; color: var(--se-color-text,#eef3eb); font: 13px/1.55 system-ui,sans-serif; }
+.se-safe * { box-sizing: border-box; }
+.se-safe h3 { font-size: 15px; margin: 0 0 10px; color: #d2e7b9; }
+.se-safe h4 { font-size: 13px; margin: 0 0 6px; }
+.se-safe p { margin: 6px 0; white-space: pre-line; }
+.se-safe button, .se-safe select { font: inherit; color: inherit; border: 1px solid var(--se-color-border,#46544b); background: #26372e; border-radius: 7px; padding: 7px 10px; min-height: 36px; cursor: pointer; }
+.se-safe button:disabled { opacity: .48; cursor: not-allowed; }
+.se-safe button:focus-visible, .se-safe select:focus-visible { outline: 3px solid var(--se-color-accent,#b5d783); outline-offset: 2px; }
+.se-safe__survival > section, .se-safe__selection, .se-safe__escape { padding: 12px; border: 1px solid #415248; background: #1b2d23; border-radius: 9px; margin-bottom: 12px; }
+.se-safe__survival select { margin-left: 8px; }
+.se-safe__survival > section > button { width: 100%; margin-top: 6px; }
+.se-safe__muted { color: var(--se-color-muted,#b7c4b9); font-size: 11px; }
+.se-safe__reason { color: #f0c185; font-size: 11px; }
+.se-safe__slots { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; margin-bottom: 16px; }
+.se-safe__item { min-height: 66px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; overflow-wrap: anywhere; }
+.se-safe__item strong { font-size: 11px; }
+.se-safe__item small { font-size: 10px; }
+.se-safe__item[data-urgency='warning'] small { color: #f0b35a; }
+.se-safe__item[data-urgency='danger'] small { color: #ff9292; }
+.se-safe__item[aria-pressed='true'] { outline: 2px solid #b5d783; outline-offset: 1px; background: #354b32; }
+.se-safe__empty { display: grid; place-items: center; min-height: 66px; border: 1px dashed #4a5a4d; border-radius: 7px; font-size: 11px; color: #8c9e8a; }
+.se-safe__item-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.se-safe__item-actions button { flex: 1; padding-inline: 7px; }
+.se-safe__discard { padding: 10px; margin-top: 10px; border: 1px solid #a86d61; background: #442a25; border-radius: 7px; }
+.se-safe__discard button { margin: 4px 4px 0 0; }
+.se-safe__part { padding: 10px; border-bottom: 1px solid #435347; }
+.se-safe__part ul { padding-left: 16px; margin: 4px 0; font-size: 11px; columns: 2; column-gap: 10px; }
+.se-safe__part li { break-inside: avoid; }
+.se-safe__part li[data-enough='true'] { color: #c0df9c; }
+.se-safe__part button { width: 100%; }
+.se-safe__escape { margin-top: 14px; }
+.se-safe__escape > button { width: 100%; font-weight: 700; background: #425c32; }
+@media (max-width: 1350px) { .se-safe { grid-template-columns: 195px minmax(280px,1fr) 265px; gap: 12px; font-size: 12px; } }
+
+.se-safe[data-area='storage'] { display: block; width: 100%; }
+.se-safe[data-area='storage'] > .se-safe__survival, .se-safe[data-area='storage'] > .se-safe__maintenance { display: none; }
+.se-safe:is([data-area='rest'],[data-area='treatment']) { display: block; width: 100%; }
+.se-safe:is([data-area='rest'],[data-area='treatment']) > .se-safe__storage, .se-safe:is([data-area='rest'],[data-area='treatment']) > .se-safe__maintenance { display: none; }
+.se-safe:is([data-area='rest'],[data-area='treatment']) > .se-safe__survival { display: grid; grid-template-columns: 280px minmax(0,1fr); align-items: start; gap: 20px; }
+.se-safe[data-area='rest'] .se-safe__survival > section:nth-child(3), .se-safe[data-area='treatment'] .se-safe__survival > section:nth-child(2) { display: none; }
+
+.se-safe[data-area='storage'] .se-safe__storage { display: grid; grid-template-columns: minmax(210px,.85fr) minmax(340px,1.5fr) minmax(285px,1.1fr); grid-template-rows: auto 1fr; grid-template-areas: 'inventory-title chest-title selection' 'inventory chest selection'; column-gap: 24px; align-items: start; }
+.se-safe[data-area='storage'] [data-info='inventory-count'] { grid-area: inventory-title; }
+.se-safe[data-area='storage'] [data-info='chest-count'] { grid-area: chest-title; }
+.se-safe[data-area='storage'] [data-grid='inventory'] { grid-area: inventory; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.se-safe[data-area='storage'] [data-grid='chest'] { grid-area: chest; }
+.se-safe[data-area='storage'] .se-safe__selection { grid-area: selection; margin: 0; }
+.se-safe[data-area='storage'] .se-safe__slots { align-content: start; margin-bottom: 0; gap: 8px; }
+.se-safe[data-area='storage'] .se-safe__item, .se-safe[data-area='storage'] .se-safe__empty { min-height: 76px; }
+.se-safe:is([data-area='rest'],[data-area='treatment']) .se-safe__survival > section { margin-bottom: 0; padding: 18px; }
+.se-safe:is([data-area='rest'],[data-area='treatment']) { font-size: 14px; }
+.se-safe[data-area='storage'] .se-safe__item-actions { display: grid; grid-template-columns: 1fr 1fr; }
+.se-safe[data-area='storage'] .se-safe__item-actions [data-action='discard'] { grid-column: 1 / -1; }
+@media(max-height:760px) { .se-safe[data-area='storage'] .se-safe__item, .se-safe[data-area='storage'] .se-safe__empty { min-height: 62px; } .se-safe[data-area='storage'] .se-safe__storage { column-gap: 18px; } }
+
+.se-safe__item[data-condition='CLEAN'] { border: 2px solid #68d5ce; box-shadow: inset 0 0 12px #60cfc31a; }
+.se-safe__item[data-condition='CLEAN'] small { color: #a4efdf; }
+.se-safe__item[aria-pressed='true'] { background: #3d5434; outline-width: 3px; }

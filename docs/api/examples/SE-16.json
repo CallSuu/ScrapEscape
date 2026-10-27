@@ -1,25 +1,25 @@
 {
-  "note": "새 테스트 판의 실제 화면 스냅샷 응답. 검증 후 해당 판 삭제.",
+  "note": "새 판의 실제 화면 응답. 체력15, 빈 인벤토리, 초기화된 통계. 이 판은 검증 후 삭제한다.",
   "request": {
     "method": "GET",
-    "path": "/api/games/c0cece33-5d46-4f78-b8c5-0cfb2406eb8e/screen",
+    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/screen",
     "body": null
   },
   "response": {
     "status": 200,
     "body": {
       "state": {
-        "gameId": "c0cece33-5d46-4f78-b8c5-0cfb2406eb8e",
+        "gameId": "930f2f5b-efc3-4298-9335-7cf12032d35f",
         "status": "RUNNING",
         "elapsedHours": 0,
         "day": 1,
         "hour": 8,
         "remainingHours": 240,
         "night": false,
-        "stamina": 10,
-        "maxStamina": 10,
+        "stamina": 15,
+        "maxStamina": 15,
         "cleanerAmount": 1,
-        "cleanerCapacity": 5,
+        "cleanerCapacity": 8,
         "inventoryCapacity": 4,
         "chestCapacity": 16,
         "inventory": [],
@@ -53,6 +53,32 @@
                 "materialId": 7,
                 "name": "배터리 셀",
                 "requiredQuantity": 1,
+                "availableQuantity": 0
+              }
+            ]
+          },
+          {
+            "partId": 2,
+            "name": "동력 전달 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 2,
+                "name": "기어",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
                 "availableQuantity": 0
               }
             ]
@@ -120,32 +146,6 @@
                 "availableQuantity": 0
               }
             ]
-          },
-          {
-            "partId": 7,
-            "name": "기체 보강 장치",
-            "repaired": false,
-            "canCraft": false,
-            "ingredients": [
-              {
-                "materialId": 1,
-                "name": "철 조각",
-                "requiredQuantity": 4,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 6,
-                "name": "고무 부품",
-                "requiredQuantity": 2,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 9,
-                "name": "내열 합금",
-                "requiredQuantity": 3,
-                "availableQuantity": 0
-              }
-            ]
           }
         ],
         "statistics": {
@@ -172,8 +172,8 @@
         "consecutiveExplorations": 0,
         "currentStorm": null,
         "nextStorm": {
-          "startHour": 27,
-          "endHour": 29
+          "startHour": 26,
+          "endHour": 28
         },
         "treatment": {
           "allowed": false,
@@ -250,7 +250,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 0,
@@ -303,7 +303,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 0,
@@ -356,7 +356,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 0,
@@ -409,7 +409,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 0,
@@ -462,7 +462,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 0,
@@ -510,7 +510,7 @@
               "probabilityPercent": 45
             }
           ],
-          "cleanerProbabilityPercent": 50,
+          "cleanerProbabilityPercent": 80,
           "canExplore": true,
           "unavailableReason": null,
           "medicalKitReward": 1,
@@ -535,7 +535,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 1,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -556,7 +556,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 2,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -577,7 +577,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 3,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -598,7 +598,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 4,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -619,7 +619,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 5,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -640,7 +640,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 6,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -661,7 +661,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 7,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -682,7 +682,7 @@
               "staminaCost": 0,
               "projected": {
                 "elapsedHours": 8,
-                "stamina": 10,
+                "stamina": 15,
                 "contamination": 0,
                 "cleanerAmount": 1,
                 "medicalKitAmount": 0,
@@ -708,6 +708,17 @@
             }
           },
           {
+            "partId": 2,
+            "preview": {
+              "allowed": false,
+              "unavailableCode": "INSUFFICIENT_MATERIALS",
+              "unavailableReason": "세척된 재료가 부족합니다.",
+              "durationHours": 3,
+              "staminaCost": 0,
+              "projected": null
+            }
+          },
+          {
             "partId": 3,
             "preview": {
               "allowed": false,
@@ -720,17 +731,6 @@
           },
           {
             "partId": 6,
-            "preview": {
-              "allowed": false,
-              "unavailableCode": "INSUFFICIENT_MATERIALS",
-              "unavailableReason": "세척된 재료가 부족합니다.",
-              "durationHours": 3,
-              "staminaCost": 0,
-              "projected": null
-            }
-          },
-          {
-            "partId": 7,
             "preview": {
               "allowed": false,
               "unavailableCode": "INSUFFICIENT_MATERIALS",

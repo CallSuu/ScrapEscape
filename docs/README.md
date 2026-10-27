@@ -17,6 +17,12 @@
 
 ## 프론트엔드 연동
 
+- [도시 건물 선택·넓은 창 배치](frontend/Scrap_Escape_도시선택_창배치_학습가이드.md)
+
+- [숲속 야영지·항공기 정비 화면](frontend/Scrap_Escape_야영지_화면_학습가이드.md)
+
+- [안전지대·최종 결과 사용법/CRUD/검증](frontend/Scrap_Escape_안전지대_학습가이드.md)
+
 - [탐색 보상·비밀의 방 전체 화면 학습/검증](frontend/Scrap_Escape_탐색결과_학습가이드.md)
 
 - [두 번째 단계: 탐색 카드·실행·결과 학습 가이드](frontend/Scrap_Escape_탐색화면_학습가이드.md)

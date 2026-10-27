@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" role="img" aria-labelledby="title desc">
+<title id="title">개인 비행기 상면도</title><desc id="desc">흰색과 푸른색의 쌍발 프로펠러 비행기. 손상된 엔진, 날개와 기체에 정비 위치가 표시되는 도안.</desc>
+<defs><linearGradient id="body" x2="1"><stop stop-color="#a5b5b2"/><stop offset=".48" stop-color="#e5e6d7"/><stop offset="1" stop-color="#80999b"/></linearGradient><linearGradient id="wing" x2="0" y2="1"><stop stop-color="#e8e2ca"/><stop offset=".6" stop-color="#bac2b5"/><stop offset="1" stop-color="#527c8c"/></linearGradient><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#8cb5a6" stroke-opacity=".09"/></pattern><filter id="shadow"><feDropShadow dy="8" stdDeviation="9" flood-opacity=".45"/></filter></defs>
+<rect width="900" height="650" rx="18" fill="#172a29"/><rect width="900" height="650" rx="18" fill="url(#grid)"/>
+<g stroke="#649481" stroke-opacity=".5" fill="none"><circle cx="450" cy="325" r="270" stroke-dasharray="4 12"/><path d="M450 16V634M24 325H876" stroke-dasharray="5 8"/></g>
+<g filter="url(#shadow)" stroke="#45636b" stroke-width="3" stroke-linejoin="round">
+<path d="M422 248L125 340 74 397 406 344ZM478 248L775 340 826 397 494 344Z" fill="url(#wing)"/>
+<path d="M420 500L276 565 269 602 432 573ZM480 500L624 565 631 602 468 573Z" fill="#548699"/>
+<path d="M450 35C421 50 413 90 414 150L415 490 434 571 450 616 466 571 485 490 486 150C487 90 479 50 450 35Z" fill="url(#body)"/>
+<path d="M423 127Q450 103 477 127L475 162 425 162Z" fill="#314c59"/><path d="M450 120V162" stroke="#8ca4a6"/>
+<path d="M414 182L423 184 424 474 414 465ZM486 182L477 184 476 474 486 465Z" fill="#31748b" stroke="none"/>
+<path d="M450 514L441 578 450 616 459 578Z" fill="#1f607c"/>
+<g fill="#ccd1be"><path d="M310 231Q322 208 334 231L339 340Q322 356 305 340Z"/><path d="M566 231Q578 208 590 231L595 340Q578 356 561 340Z"/></g>
+<g stroke="#b8c6c2" stroke-width="9" stroke-linecap="round"><path d="M284 231H360M540 231H616"/></g><g fill="#243e49"><circle cx="322" cy="231" r="10"/><circle cx="578" cy="231" r="10"/></g>
+<g stroke="#9baea8" stroke-width="2"><path d="M150 352L400 291M500 291L750 352M414 380H486M421 449H479M425 195H475"/></g>
+<g stroke="#563f35" stroke-width="5" fill="none"><path d="M286 337l18-5-8 17 20-7M578 276l-12 12 17 8-10 15M417 423l16 8-9 14 14 12M700 354l-9 14 18 7"/></g>
+<g fill="#2f5d70" stroke="none"><rect x="428" y="210" width="9" height="18" rx="3"/><rect x="463" y="210" width="9" height="18" rx="3"/><rect x="428" y="246" width="9" height="18" rx="3"/><rect x="463" y="246" width="9" height="18" rx="3"/></g>
+</g></svg>

@@ -1,8 +1,8 @@
 {
-  "note": "실제HTTP 응답. 재료 이동·세척·폐기를 일정하게 시연하기 위해 이 새 테스트 판에 철 조각4개 묶음을 준비했다.",
+  "note": "실제 HTTP 응답. 체력15·세척액 최대8/탐색80%·세척 체력0 규칙의 테스트 판. 특정 재료·키트·방·수리 조건은 이 판에만 준비했으며 검증 후 삭제한다.",
   "request": {
     "method": "POST",
-    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/items/1195/clean",
+    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/items/4413/clean",
     "body": null
   },
   "response": {
@@ -10,44 +10,23 @@
     "body": {
       "message": "철 조각 4개를 세척했습니다.",
       "state": {
-        "gameId": "0dd34e9a-912c-4474-af6a-399e2d992115",
+        "gameId": "930f2f5b-efc3-4298-9335-7cf12032d35f",
         "status": "RUNNING",
         "elapsedHours": 7,
         "day": 1,
         "hour": 15,
         "remainingHours": 233,
         "night": false,
-        "stamina": 7,
-        "maxStamina": 10,
+        "stamina": 13,
+        "maxStamina": 15,
         "cleanerAmount": 1,
-        "cleanerCapacity": 5,
+        "cleanerCapacity": 8,
         "inventoryCapacity": 4,
         "chestCapacity": 16,
-        "inventory": [
-          {
-            "batchId": 1193,
-            "materialId": 5,
-            "name": "플라스틱 부품",
-            "quantity": 2,
-            "storage": "INVENTORY",
-            "acquiredHour": 6,
-            "condition": "DIRTY",
-            "expiresInHours": 47
-          },
-          {
-            "batchId": 1194,
-            "materialId": 8,
-            "name": "필터",
-            "quantity": 1,
-            "storage": "INVENTORY",
-            "acquiredHour": 6,
-            "condition": "DIRTY",
-            "expiresInHours": 47
-          }
-        ],
+        "inventory": [],
         "chest": [
           {
-            "batchId": 1195,
+            "batchId": 4413,
             "materialId": 1,
             "name": "철 조각",
             "quantity": 4,
@@ -186,7 +165,7 @@
           "dayExplorations": 1,
           "nightExplorations": 0,
           "emptyExplorations": 0,
-          "collected": 3,
+          "collected": 2,
           "cleaned": 4,
           "discarded": 0,
           "repairedParts": 0,
@@ -205,8 +184,8 @@
         "consecutiveExplorations": 1,
         "currentStorm": null,
         "nextStorm": {
-          "startHour": 46,
-          "endHour": 49
+          "startHour": 26,
+          "endHour": 28
         },
         "treatment": {
           "allowed": true,
@@ -223,7 +202,7 @@
         "failureReason": null,
         "rulesVersion": 2,
         "secrets": {
-          "keyAmount": 0,
+          "keyAmount": 1,
           "keyCapacity": 2,
           "keyProbabilityPercent": 10,
           "discoveryProbabilityPercent": 15,
@@ -232,7 +211,7 @@
             "discoveredRooms": 0,
             "openedRooms": 0,
             "unopenedRooms": 0,
-            "keysAcquired": 0,
+            "keysAcquired": 1,
             "keysUsed": 0,
             "goodOutcomes": 0,
             "badOutcomes": 0,

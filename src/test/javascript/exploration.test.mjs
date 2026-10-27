@@ -21,7 +21,7 @@ test('shared header includes common costs and probabilities but not hospital-onl
  const {default:fs}=await import('node:fs');const screen=JSON.parse(fs.readFileSync(new URL('../../../docs/api/examples/SE-16.json',import.meta.url))).response.body;
  const info=explorationSharedInfo(screen.locations,screen.state);
  assert.match(info.cost,/시간 6h/);assert.match(info.cost,/체력 2/);assert.match(info.cost,/오염 \+10/);
- assert.match(info.rewards,/0개 5%/);assert.match(info.rewards,/세척액 50%/);assert.match(info.rewards,/열쇠 10%/);
+ assert.match(info.rewards,/0개 5%/);assert.match(info.rewards,/세척액 80%/);assert.match(info.rewards,/열쇠 10%/);
  assert.doesNotMatch(info.rewards,/키트/);assert.equal(info.risk,'');
 });
 test('shared header refreshes night disease costs and warns without blocking cards',async()=>{

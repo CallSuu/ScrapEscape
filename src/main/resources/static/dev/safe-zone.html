@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Scrap Escape 안전지대 개발 화면</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/css/safe-zone.css"><link rel="stylesheet" href="/css/result.css"><style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101714;color:#eef3eb}*{box-sizing:border-box}body{margin:24px;min-width:1000px}button{font:inherit;min-height:38px;padding:8px 14px;background:#26372e;border:1px solid #60705a;border-radius:7px;color:inherit;cursor:pointer}button:disabled{opacity:.48;cursor:not-allowed}button:focus-visible{outline:3px solid #b5d783;outline-offset:2px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}#dev-status,#dev-message{white-space:pre-line}#dev-shell{border:1px solid #60705a;border-radius:12px;padding:16px}#dev-shell header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}#dev-close{font-size:24px}[hidden]{display:none!important}
+</style><script type="module" src="/dev/safe-zone-preview.mjs"></script></head><body>
+<h1>안전지대 · 최종 결과 개발 화면</h1><p>실제 API를 사용하는 별도 테스트 판입니다. 버튼을 눌러야 생성되며 새로고침 후 이어하기는 제공하지 않습니다.</p>
+<nav aria-label="개발용 조작"><button id="dev-start" type="button">테스트 판 시작</button><button id="dev-safe" type="button" disabled>안전지대</button><button id="dev-result" type="button" disabled>결과 보기</button><button id="dev-explore" type="button" disabled>병원 탐색</button><button id="dev-rest" type="button" disabled>6시간 휴식</button><button id="dev-retry" type="button" hidden>다시 시도</button></nav>
+<p id="dev-status" aria-live="polite">시작 전입니다.</p><p id="dev-message" role="status"></p>
+<section id="dev-shell" hidden><header><h2 id="dev-title" tabindex="-1"></h2><button id="dev-close" type="button" aria-label="닫기">×</button></header><div id="dev-content"></div></section>
+</body></html>

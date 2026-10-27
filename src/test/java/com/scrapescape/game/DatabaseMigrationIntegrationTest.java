@@ -40,6 +40,11 @@ class DatabaseMigrationIntegrationTest {
             assertEquals(10,db.queryForObject("SELECT COUNT(*) FROM material",Integer.class));
             assertEquals(6,db.queryForObject("SELECT COUNT(*) FROM location",Integer.class));
             assertEquals(0,flyway.migrate().migrationsExecuted);
+            String capProbe=UUID.randomUUID().toString();db.update("INSERT INTO game(game_id,rules_version) VALUES (?,2)",capProbe);
+            assertEquals(15,db.queryForObject("SELECT stamina FROM game WHERE game_id=?",Integer.class,capProbe));
+            db.update("UPDATE game SET stamina=15,cleaner_amount=8 WHERE game_id=?",capProbe);
+            assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET cleaner_amount=9 WHERE game_id=?",capProbe));
+            assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET stamina=16 WHERE game_id=?",capProbe));
             if(legacy) {
                 assertEquals(12,db.queryForObject("SELECT elapsed_hours FROM game WHERE game_id=?",Integer.class,game));
                 assertEquals(1,db.queryForObject("SELECT rules_version FROM game WHERE game_id=?",Integer.class,game));
@@ -60,12 +65,14 @@ class DatabaseMigrationIntegrationTest {
             Flyway.configure().dataSource(target).target("4").load().migrate();
             var db=new JdbcTemplate(target);String id=UUID.randomUUID().toString();
             db.update("INSERT INTO game(game_id,rules_version,elapsed_hours,stamina,contamination) VALUES (?,2,12,7,25)",id);
+            db.update("UPDATE game SET cleaner_amount=4 WHERE game_id=?",id);
             db.update("INSERT INTO item_batch(game_id,material_id,quantity,storage_type,acquired_hour,item_condition) VALUES (?,1,4,'INVENTORY',6,'DIRTY')",id);
-            var flyway=Flyway.configure().dataSource(target).load();assertEquals(2,flyway.migrate().migrationsExecuted);
+            var flyway=Flyway.configure().dataSource(target).load();assertEquals(4,flyway.migrate().migrationsExecuted);
             assertEquals(0,db.queryForObject("SELECT secret_key_amount FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(12,db.queryForObject("SELECT elapsed_hours FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(7,db.queryForObject("SELECT stamina FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(25,db.queryForObject("SELECT contamination FROM game WHERE game_id=?",Integer.class,id));
+            assertEquals(4,db.queryForObject("SELECT cleaner_amount FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(4,db.queryForObject("SELECT quantity FROM item_batch WHERE game_id=?",Integer.class,id));
             assertEquals(0,db.queryForObject("SELECT COUNT(*) FROM game_secret_room WHERE game_id=?",Integer.class,id));
             assertEquals(0,flyway.migrate().migrationsExecuted);

@@ -43,7 +43,7 @@ class GameServiceIntegrationTest {
         for(var i:repair.ingredients()) batch(id,i.materialId(),i.requiredQuantity()+extra,"CLEAN","CHEST",0);
     }
     @Test void createsInitialStateAndFourDifferentRepairs() {
-        State s=fresh();assertEquals(10,s.stamina());assertEquals(1,s.cleanerAmount());
+        State s=fresh();assertEquals(15,s.stamina());assertEquals(1,s.cleanerAmount());
         assertEquals(8,s.hour());assertEquals(240,s.remainingHours());assertEquals(4,s.repairs().size());
         assertEquals(4,s.inventoryCapacity());assertEquals(16,s.chestCapacity());
         assertEquals(4,s.repairs().stream().map(Repair::partId).distinct().count());assertTrue(s.inventory().isEmpty());
@@ -57,13 +57,13 @@ class GameServiceIntegrationTest {
     @Test void zeroLootStillConsumesTimeAndCanFindCleaner() {
         var s=fresh();random.set(0,0,0); // 수량 0, 후보 0, 세척액 발견
         var result=service.explore(s.gameId(),1);assertEquals(0,result.loot().quantity());
-        assertEquals(6,result.state().elapsedHours());assertEquals(8,result.state().stamina());
+        assertEquals(6,result.state().elapsedHours());assertEquals(13,result.state().stamina());
         assertEquals(2,result.state().cleanerAmount());assertEquals(1,result.state().statistics().emptyExplorations());assertEquals(0,count(s.gameId()));
     }
     @Test void nightLootUsesTwoTypesAndSevenHours() {
         var s=fresh();updateTime(s.gameId(),12);random.set(99,1,99);
         var result=service.explore(s.gameId(),1);assertEquals(4,result.loot().quantity());
-        assertEquals(2,result.state().inventory().size());assertEquals(19,result.state().elapsedHours());assertEquals(7,result.state().stamina());
+        assertEquals(2,result.state().inventory().size());assertEquals(19,result.state().elapsedHours());assertEquals(12,result.state().stamina());
         assertEquals(1,result.state().statistics().nightExplorations());
     }
     @Test void fullInventoryOrInsufficientStaminaRejectsWithoutProgress() {
@@ -74,7 +74,7 @@ class GameServiceIntegrationTest {
         assertThrows(GameException.class,()->service.explore(s.gameId(),1));assertEquals(0,service.state(s.gameId()).elapsedHours());
     }
     @Test void unknownLocationDoesNotConsumeAnything() {
-        var s=fresh();assertThrows(GameException.class,()->service.explore(s.gameId(),999));assertEquals(10,service.state(s.gameId()).stamina());
+        var s=fresh();assertThrows(GameException.class,()->service.explore(s.gameId(),999));assertEquals(15,service.state(s.gameId()).stamina());
     }
     @Test void movingPreservesQuantityAndAcquisitionAndChecksDestination() {
         var s=fresh();long b=batch(s.gameId(),1,4,"DIRTY","INVENTORY",0);
@@ -86,7 +86,7 @@ class GameServiceIntegrationTest {
     @Test void cleansEntireBatchAndProtectsItDuringHourFortyEight() {
         var s=fresh();long b=batch(s.gameId(),1,4,"DIRTY","CHEST",0);updateTime(s.gameId(),47);
         var cleaned=service.clean(s.gameId(),b).state();assertEquals(Condition.CLEAN,cleaned.chest().get(0).condition());
-        assertEquals(48,cleaned.elapsedHours());assertEquals(0,cleaned.cleanerAmount());assertEquals(9,cleaned.stamina());
+        assertEquals(48,cleaned.elapsedHours());assertEquals(0,cleaned.cleanerAmount());assertEquals(15,cleaned.stamina());
         assertEquals(4,cleaned.statistics().cleaned());
     }
     @Test void restExpiresUnwashedItemsAndOldItemsNeedExplicitDiscard() {
@@ -96,9 +96,9 @@ class GameServiceIntegrationTest {
         var discarded=service.discard(s.gameId(),b).state();assertEquals(0,count(s.gameId()));assertEquals(2,discarded.statistics().discarded());
     }
     @Test void cleanerAndRestNeverExceedCaps() {
-        var s=fresh();jdbc.update("UPDATE game SET cleaner_amount=5,stamina=9 WHERE game_id=?",s.gameId().toString());
+        var s=fresh();jdbc.update("UPDATE game SET cleaner_amount=8,stamina=9 WHERE game_id=?",s.gameId().toString());
         random.set(0,0,0);var result=service.explore(s.gameId(),1);assertTrue(result.loot().cleanerFound());assertEquals(0,result.loot().cleanerAdded());
-        var rested=service.rest(s.gameId(),6).state();assertEquals(10,rested.stamina());assertEquals(5,rested.cleanerAmount());
+        var rested=service.rest(s.gameId(),6).state();assertEquals(15,rested.stamina());assertEquals(8,rested.cleanerAmount());
     }
     @Test void unavailableCleanerCannotConsumeTime() {
         var s=fresh();long b=batch(s.gameId(),1,2,"DIRTY","CHEST",0);
@@ -242,6 +242,17 @@ class GameServiceIntegrationTest {
             var state=service.state(s.gameId());assertEquals(1,success);assertEquals(0,state.medicalKitAmount());
             assertEquals(40,state.contamination());assertEquals(1,state.elapsedHours());assertEquals(1,state.statistics().medicalKitsUsed());
         } finally {executor.shutdownNow();}
+    }
+
+    @Test void cleanerProbabilityIsEightyPercentAtExactBoundary() {
+        for(int roll:new int[]{0,79,80,99}) {
+            var s=fresh();random.set(0,0,roll,99,99,99);
+            var r=service.explore(s.gameId(),1);
+            assertEquals(roll<80,r.loot().cleanerFound());
+            assertEquals(roll<80?1:0,r.loot().cleanerAdded());
+            assertEquals(8,r.state().cleanerCapacity());
+            assertEquals(80,service.locations(s.gameId()).get(0).cleanerProbabilityPercent());
+        }
     }
 
 }

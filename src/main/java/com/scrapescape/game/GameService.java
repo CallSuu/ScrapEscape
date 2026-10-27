@@ -38,7 +38,7 @@ public class GameService {
         String escapeReason=common!=null?common:repaired!=repairs.size()||repairs.size()!=4?"모든 부품을 먼저 수리하세요.":null;
         int deadline=g.rulesVersion()==1?168:GameRules.DEADLINE;
         return new State(id,g.status(),g.elapsed(),(8+g.elapsed())/24+1,(8+g.elapsed())%24,Math.max(0,deadline-g.elapsed()),
-            GameRules.isNight(g.elapsed()),g.stamina(),10,g.cleaner(),5,g.rulesVersion()==1?3:GameRules.INVENTORY_CAPACITY,
+            GameRules.isNight(g.elapsed()),g.stamina(),GameRules.MAX_STAMINA,g.cleaner(),GameRules.CLEANER_CAPACITY,g.rulesVersion()==1?3:GameRules.INVENTORY_CAPACITY,
             g.rulesVersion()==1?8:GameRules.CHEST_CAPACITY,items.stream().filter(i->i.storage()==Storage.INVENTORY).toList(),
             items.stream().filter(i->i.storage()==Storage.CHEST).toList(),repairs,
             new Statistics(g.explorations(),g.dayExplorations(),g.nightExplorations(),g.emptyExplorations(),g.collected(),
@@ -92,7 +92,7 @@ public class GameService {
             int firstQuantity=1+random.nextInt(total-1);
             generated.put(first,firstQuantity);generated.put(candidates.get(secondIndex),total-firstQuantity);
         }
-        boolean cleanerFound=random.nextInt(100)<50;int cleanerAdded=cleanerFound&&g.cleaner()<5?1:0;
+        boolean cleanerFound=random.nextInt(100)<GameRules.CLEANER_PROBABILITY_PERCENT;int cleanerAdded=cleanerFound&&g.cleaner()<GameRules.CLEANER_CAPACITY?1:0;
         var found=new ArrayList<MaterialLoot>();int collected=0;
         for(var entry:generated.entrySet()) {
             int accepted=free>0?entry.getValue():0;
@@ -142,13 +142,44 @@ public class GameService {
         }
         return result(id,"재료의 보관 위치를 변경했습니다.",null);
     }
+    @Transactional public ActionResult moveMany(UUID id,List<Long> batchIds,Storage to) {
+        if(to==null||batchIds==null||batchIds.isEmpty()||batchIds.size()>20||batchIds.stream().anyMatch(b->b==null||b<=0)
+            ||new HashSet<>(batchIds).size()!=batchIds.size())throw invalid("중복 없는 재료 묶음 1~20개와 보관 위치를 선택하세요.");
+        Game g=running(id);
+        for(long batchId:batchIds)if(repo.item(g,batchId).storage()==to)
+            throw GameException.conflict("SAME_STORAGE","이미 해당 위치에 보관 중인 재료가 포함되어 있습니다.");
+        // One outer transaction rolls back all prior moves if any later move cannot fit.
+        for(long batchId:batchIds)move(id,batchId,to);
+        return result(id,"선택한 재료 "+batchIds.size()+"묶음을 이동했습니다.",null);
+    }
+    private List<Item> selectedBatches(Game game,List<Long> batchIds) {
+        if(batchIds==null||batchIds.isEmpty()||batchIds.size()>20||batchIds.stream().anyMatch(b->b==null||b<=0)
+            ||new HashSet<>(batchIds).size()!=batchIds.size())throw invalid("중복 없는 재료 묶음 1~20개를 선택하세요.");
+        return batchIds.stream().map(b->repo.item(game,b)).toList();
+    }
+    @Transactional public ActionResult cleanMany(UUID id,List<Long> batchIds) {
+        Game g=running(id);var batches=selectedBatches(g,batchIds);
+        if(g.cleaner()<batches.size())throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
+        for(var batch:batches)if(batch.condition()!=Condition.DIRTY||g.elapsed()-batch.acquiredHour()>=48)
+            throw GameException.conflict("NOT_CLEANABLE","세척할 수 없는 재료가 포함되어 있습니다.");
+        // Clean every selected row before merging or advancing time, which may remove rows.
+        for(var batch:batches)repo.clean(id,batch);
+        for(var batch:batches)repo.mergeClean(g,batch.materialId(),batch.storage());
+        repo.progress(id,batches.size(),0,-batches.size());repo.finish(id);
+        return result(id,"선택한 재료 "+batches.size()+"묶음을 세척했습니다.",null);
+    }
+    @Transactional public ActionResult discardMany(UUID id,List<Long> batchIds) {
+        Game g=running(id);var batches=selectedBatches(g,batchIds);
+        for(var batch:batches){repo.delete(id,batch.batchId());repo.discarded(id,batch.quantity());}
+        return result(id,"선택한 재료 "+batches.size()+"묶음을 폐기했습니다.",null);
+    }
     @Transactional public ActionResult clean(UUID id,long batchId) {
         Game g=running(id);Item batch=repo.item(g,batchId);
         if(batch.condition()!=Condition.DIRTY||g.elapsed()-batch.acquiredHour()>=48)
             throw GameException.conflict("NOT_CLEANABLE","이 재료는 세척할 수 없습니다.");
-        requireStamina(g,1);if(g.cleaner()<1)throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
+        if(g.cleaner()<1)throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
         repo.clean(id,batch);repo.mergeClean(g,batch.materialId(),batch.storage());
-        repo.progress(id,1,-1,-1);repo.finish(id);
+        repo.progress(id,1,0,-1);repo.finish(id);
         return result(id,batch.name()+" "+batch.quantity()+"개를 세척했습니다.",null);
     }
     @Transactional public ActionResult discard(UUID id,long batchId) {

@@ -1,0 +1,15 @@
+.se-result { color: var(--se-color-text,#eef3eb); max-width: 1280px; margin-inline: auto; text-align: center; font: 13px/1.6 system-ui,sans-serif; }
+.se-result__eyebrow { color: #c4d8a7; font-size: 11px; letter-spacing: 2px; margin: 0; }
+.se-result__title { color: #c9e7a1; font-size: 34px; margin: 4px 0; }
+.se-result[data-outcome='FAILED'] .se-result__title { color: #f0a49a; }
+.se-result__reason, .se-result__time, .se-result__repairs { margin: 6px 0; }
+.se-result__repairs { font-size: 11px; color: #bbcab7; }
+.se-result__stats { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; margin: 16px 0; }
+.se-result__stats > div { padding: 9px; background: #22352a; border: 1px solid #415543; border-radius: 8px; }
+.se-result__stats dt { font-size: 11px; color: #c0cdbb; }
+.se-result__stats dd { font-size: 22px; margin: 0; color: #e1edce; font-weight: 700; }
+.se-result__restart { font: inherit; min-height: 42px; padding: 9px 32px; background: #b5d783; border: 1px solid #a4c975; border-radius: 8px; color: #1b2c17; cursor: pointer; font-weight: 700; }
+.se-result__restart:disabled { opacity: .48; cursor: not-allowed; }
+.se-result__restart:focus-visible { outline: 3px solid #b5d783; outline-offset: 4px; }
+
+@media(max-height:760px) { .se-result__title { font-size: 28px; } .se-result__stats { gap: 7px; margin-block: 12px; } .se-result__stats > div { padding: 6px 8px; } .se-result__stats dd { font-size: 20px; } }

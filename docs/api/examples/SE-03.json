@@ -1,8 +1,8 @@
 {
-  "note": "실제 테스트 DB 서버 응답. 게임과 묶음 ID는 검증 종료 후 삭제되어 재사용 불가.",
+  "note": "실제 HTTP 응답. 체력15·세척액 최대8/탐색80%·세척 체력0 규칙의 테스트 판. 특정 재료·키트·방·수리 조건은 이 판에만 준비했으며 검증 후 삭제한다.",
   "request": {
     "method": "GET",
-    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/locations",
+    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/locations",
     "body": null
   },
   "response": {
@@ -49,7 +49,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -102,7 +102,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -155,7 +155,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -208,7 +208,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -261,7 +261,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -309,7 +309,7 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 50,
+        "cleanerProbabilityPercent": 80,
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 1,

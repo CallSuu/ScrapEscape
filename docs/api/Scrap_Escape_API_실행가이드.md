@@ -228,3 +228,18 @@ curl -i -X POST "http://localhost:8080/api/games/$GAME_ID/rests" \
 `GET /api/games/{gameId}/screen`은 현재 상태·탐색 카드·휴식1~8h/묶음별 행동/수리/치료/탈출 미리보기를 함께 제공한다. 선택창 진입과 행동 완료 후 이 응답으로 화면을 갱신한다. [화면 연동 명세](../frontend/Scrap_Escape_화면_연동_명세.md)에 위치별 필드와 공통 통신 모듈 사용법을 정리했다.
 
 클라이언트 공통 모듈은 서버의 `/js/game-api.mjs`에서 ES module로 가져온다. JavaScript 테스트는 `node --test src/test/javascript/*.test.mjs`. Node는 테스트에만 필요하며 서버는 기존 Spring Boot다.
+
+## 다중 이동·체력15
+
+최신 API는19개이며 체력 초기/최대15를 사용한다. V7은 이전 판 잔여 체력을 보존한다. 다중 선택 이동은 PATCH /api/games/{id}/items/storage, 본문 {"batchIds":[실제ID들],"storage":"CHEST"}이다. 모든 이동이 하나의 트랜잭션이며 오류 시 부분 이동이 없다. 자세한 요청·응답은 전체 명세 SE-17과 examples/SE-17.json을 참고한다.
+
+## 세척 보급 조정
+
+세척액 최대8회분·탐색 획득80%, 세척은1시간/액1회분/체력0이다. V8은 현재 보유량을 보존한다. 기존 API 경로와 입력은 유지한다. 실제 최신 예시는 examples/SE-01~17.json이다.
+
+
+## 2026-10-28 일괄 세척·폐기 (SE-18/19)
+
+`POST /api/games/{id}/items/clean`, `DELETE /api/games/{id}/items`는 모두 JSON `{"batchIds":[실제ID1,실제ID2]}`를 받는다. Idempotency-Key를 행동마다 발급하고 재시도에는 같은 값을 유지한다. 세척은 선택 묶음 수만큼 액과 시간이 필요하며 액 부족409 INSUFFICIENT_CLEANER는 전체 취소다. 폐기는 확인 후 전체 삭제하며 추가 시간·체력 비용이 없다. 예시: examples/SE-18.json, examples/SE-19.json. 기존SE-01~17 예시는 해당 기존 동작을 검증한 기록이다.
+
+현재 Java/MySQL130개·JavaScript72개 통과. 상세 검증 기록은 backend 구현현황의 2026-10-28 추가 항목을 참고한다. 개인 DB가 아닌 scrap_escape_test에서 검증했다.

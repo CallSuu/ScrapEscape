@@ -1,8 +1,8 @@
 {
-  "note": "실제HTTP 응답. 같은 새 테스트 판에 발견한 방2개와 열쇠2개 조건을 준비했다. 확률과 무관하게 조회·기억·선택 입장을 재현하기 위한 조건이다.",
+  "note": "실제 HTTP 응답. 체력15·세척액 최대8/탐색80%·세척 체력0 규칙의 테스트 판. 특정 재료·키트·방·수리 조건은 이 판에만 준비했으며 검증 후 삭제한다.",
   "request": {
     "method": "GET",
-    "path": "/api/games/0dd34e9a-912c-4474-af6a-399e2d992115/secret-rooms",
+    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/secret-rooms",
     "body": null
   },
   "response": {
@@ -12,7 +12,7 @@
         "locationId": 1,
         "locationName": "고물상",
         "buttonLabel": "?",
-        "discoveredHour": 17,
+        "discoveredHour": 14,
         "opened": false,
         "immediateAvailable": true,
         "immediate": {
@@ -26,7 +26,7 @@
           "stormContamination": 0,
           "expectedContaminationIncrease": 0,
           "possibleExtraContamination": 15,
-          "rewardFreeSlots": 2,
+          "rewardFreeSlots": 4,
           "deadlineRisk": false
         },
         "revisit": {
@@ -40,7 +40,7 @@
           "stormContamination": 0,
           "expectedContaminationIncrease": 10,
           "possibleExtraContamination": 15,
-          "rewardFreeSlots": 2,
+          "rewardFreeSlots": 4,
           "deadlineRisk": false
         },
         "openedHour": null,
@@ -50,12 +50,12 @@
         "locationId": 2,
         "locationName": "전자제품 매장",
         "buttonLabel": "?",
-        "discoveredHour": 17,
+        "discoveredHour": 14,
         "opened": false,
-        "immediateAvailable": false,
+        "immediateAvailable": true,
         "immediate": {
-          "allowed": false,
-          "unavailableReason": "즉시 입장 기회가 끝났습니다. 기억한 방으로 다시 방문하세요.",
+          "allowed": true,
+          "unavailableReason": null,
           "durationHours": 1,
           "staminaCost": 1,
           "keyCost": 1,
@@ -64,7 +64,7 @@
           "stormContamination": 0,
           "expectedContaminationIncrease": 0,
           "possibleExtraContamination": 15,
-          "rewardFreeSlots": 2,
+          "rewardFreeSlots": 4,
           "deadlineRisk": false
         },
         "revisit": {
@@ -78,7 +78,7 @@
           "stormContamination": 0,
           "expectedContaminationIncrease": 10,
           "possibleExtraContamination": 15,
-          "rewardFreeSlots": 2,
+          "rewardFreeSlots": 4,
           "deadlineRisk": false
         },
         "openedHour": null,

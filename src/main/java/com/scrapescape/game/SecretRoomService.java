@@ -81,7 +81,7 @@ public class SecretRoomService {
             if(collected>0)games.add(game.id(),material.materialId(),collected,game.elapsed()+preview.durationHours());
             materials=List.of(new MaterialLoot(material.materialId(),material.name(),total,collected));
         } else if(roll<80) {
-            if(random.nextInt(2)==0){outcome=RoomOutcome.CLEANER;cleaner=Math.min(2,5-game.cleaner());}
+            if(random.nextInt(2)==0){outcome=RoomOutcome.CLEANER;cleaner=Math.min(2,GameRules.CLEANER_CAPACITY-game.cleaner());}
             else {outcome=RoomOutcome.MEDICAL_KIT;medical=game.medicalKits()<2?1:0;}
         } else if(roll<90&&!dirty.isEmpty()) {
             outcome=RoomOutcome.MATERIAL_LOSS;int remaining=Math.min(1+random.nextInt(2),dirty.stream().mapToInt(Item::quantity).sum());

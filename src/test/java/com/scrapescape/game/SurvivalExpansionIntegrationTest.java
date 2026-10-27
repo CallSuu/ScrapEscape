@@ -42,7 +42,7 @@ class SurvivalExpansionIntegrationTest {
     @Test void diseaseCostsTimeAndStaminaWithoutBlockingExploration() {
         var id=fresh();jdbc.update("UPDATE game SET diseased=TRUE,disease_started_hour=0 WHERE game_id=?",id.toString());
         random.set(0,0,99,99);var state=service.explore(id,1).state();
-        assertEquals(8,state.elapsedHours());assertEquals(6,state.stamina());
+        assertEquals(8,state.elapsedHours());assertEquals(11,state.stamina());
     }
     @Test void cureDropsContaminationBySixtyAndDoesNotImmediatelyRelapse() throws Exception {
         var id=fresh();jdbc.update("UPDATE game SET contamination=100,diseased=TRUE,disease_started_hour=0,medical_kit_amount=1 WHERE game_id=?",id.toString());

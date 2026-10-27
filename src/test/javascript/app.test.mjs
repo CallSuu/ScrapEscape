@@ -25,6 +25,8 @@ test('all mutation commands map to existing backend routes and payloads',async()
  const cases=[
   [{type:'EXPLORE',locationId:6},'POST','/explorations',{locationId:6}],
   [{type:'MOVE_ITEM',batchId:3,storage:'CHEST'},'PATCH','/items/3/storage',{storage:'CHEST'}],
+  [{type:'CLEAN_ITEMS',batchIds:[3,4]},'POST','/items/clean',{batchIds:[3,4]}],
+  [{type:'DISCARD_ITEMS',batchIds:[3,4]},'DELETE','/items',{batchIds:[3,4]}],
   [{type:'CLEAN_ITEM',batchId:3},'POST','/items/3/clean',undefined],
   [{type:'DISCARD_ITEM',batchId:3},'DELETE','/items/3',undefined],
   [{type:'REPAIR_PART',partId:2},'POST','/repairs/2',undefined],
@@ -150,3 +152,33 @@ test('receipt survives a successful expedition whose screen refresh needs retry 
  const pending=await c.dispatch({type:'EXPLORE',locationId:3});assert.equal(pending.ok,false);assert.equal(c.getPanel().name,'exploration');assert.equal(c.getFlags().hasPending,true);
  const retried=await c.dispatch({type:'RETRY'});assert.equal(retried.ok,true);assert.equal(explorationPosts,1);assert.equal(c.getPanel().name,'exploration-result');assert.equal(c.getPanel().locationId,3);assert.equal(c.getPanel().receipt.loot.materials[0].collectedQuantity,2);assert.equal(panels.filter(p=>p?.name==='exploration-result').length,1);
 });
+test('camp actions and aircraft are accepted navigation targets and Back returns camp without mutations',async()=>{
+ const {c,calls}=setup();await c.dispatch({type:'START_GAME'});await c.navigate({name:'safe-zone'});
+ for(const target of [{name:'camp-action',area:'storage'},{name:'camp-action',area:'rest'},{name:'camp-action',area:'treatment'},{name:'aircraft-repair'}]){const before=calls.filter(x=>x.method!=='GET').length;await c.navigate(target);assert.deepEqual(c.getPanel(),target);await c.navigate(null);assert.deepEqual(c.getPanel(),{name:'safe-zone'});assert.equal(calls.filter(x=>x.method!=='GET').length,before);}
+ await c.navigate(null);assert.equal(c.getPanel(),null);
+});
+test('invalid camp area is rejected instead of mounting controls',async()=>{const {c}=setup();await c.dispatch({type:'START_GAME'});await c.navigate({name:'safe-zone'});await c.navigate({name:'camp-action',area:'anything'});assert.deepEqual(c.getPanel(),{name:'safe-zone'});});
+test('closing camp rest during uncertain action keeps retry but never reopens the dialog',async()=>{
+ let broken=true;const {c}=setup({fetch:async(path,o,s)=>{if(o.method==='GET')return reply(s);if(path==='/api/games')return reply(s.state,201);if(broken)throw new TypeError('lost');return reply({state:s.state,message:'휴식 완료'});}});
+ await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'rest'});await c.dispatch({type:'REST',hours:6});await c.navigate(null);assert.deepEqual(c.getPanel(),{name:'safe-zone'});assert.equal(c.getFlags().hasPending,true);broken=false;await c.dispatch({type:'RETRY'});assert.deepEqual(c.getPanel(),{name:'safe-zone'});
+});
+test('camp dialog Back is local and can close even when the server cannot be reached',async()=>{
+ let offline=false;const {c,calls}=setup({fetch:async(path,o,s)=>{if(o.method==='GET'){if(offline)throw new TypeError('offline');return reply(s);}return reply(s.state,201);}});
+ await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'storage'});offline=true;const before=calls.length;await c.navigate(null);assert.deepEqual(c.getPanel(),{name:'safe-zone'});assert.equal(calls.length,before);
+});
+test('building confirmation is informational until explicit selection and Back stays in the city',async()=>{
+ const {c,calls}=setup();await c.dispatch({type:'START_GAME'});await c.navigate({name:'exploration'});const before=calls.filter(r=>r.method!=='GET').length;await c.navigate({name:'exploration-choice',locationId:6});assert.deepEqual(c.getPanel(),{name:'exploration-choice',locationId:6});assert.equal(calls.filter(r=>r.method!=='GET').length,before);await c.navigate(null);assert.deepEqual(c.getPanel(),{name:'exploration'});assert.equal(calls.filter(r=>r.method!=='GET').length,before);
+});
+test('closing building confirmation offline returns to the city without a request',async()=>{
+ let offline=false;const {c,calls}=setup({fetch:async(path,o,s)=>{if(o.method==='GET'){if(offline)throw new TypeError('offline');return reply(s);}return reply(s.state,201);}});await c.dispatch({type:'START_GAME'});await c.navigate({name:'exploration-choice',locationId:2});offline=true;const before=calls.length;await c.navigate(null);assert.deepEqual(c.getPanel(),{name:'exploration'});assert.equal(calls.length,before);
+});
+test('storage and aircraft actions stay open while rest and treatment return to camp',async()=>{
+ const {c}=setup();await c.dispatch({type:'START_GAME'});
+ for(const command of [{type:'MOVE_ITEM',batchId:1,storage:'CHEST'},{type:'CLEAN_ITEM',batchId:1},{type:'DISCARD_ITEM',batchId:1}]){await c.navigate({name:'camp-action',area:'storage'});assert.equal((await c.dispatch(command)).ok,true);assert.deepEqual(c.getPanel(),{name:'camp-action',area:'storage'});}
+ await c.navigate({name:'aircraft-repair'});await c.dispatch({type:'REPAIR_PART',partId:1});assert.deepEqual(c.getPanel(),{name:'aircraft-repair'});
+ for(const command of [{type:'REST',hours:6},{type:'TREAT'}]){await c.navigate({name:'camp-action',area:command.type==='REST'?'rest':'treatment'});await c.dispatch(command);assert.deepEqual(c.getPanel(),{name:'safe-zone'});}
+});
+test('bulk movement is one mutation and keeps the storage window after snapshot confirmation',async()=>{const {c,calls}=setup();await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'storage'});const before=calls.length;const r=await c.dispatch({type:'MOVE_ITEMS',batchIds:[4,7],storage:'CHEST'});assert.equal(r.ok,true);assert.deepEqual(c.getPanel(),{name:'camp-action',area:'storage'});const mutations=calls.slice(before).filter(x=>x.method!=='GET');assert.equal(mutations.length,1);assert.ok(mutations[0].path.endsWith('/items/storage'));assert.deepEqual(JSON.parse(mutations[0].body),{batchIds:[4,7],storage:'CHEST'});});
+test('failed action and confirmed uncertain bulk retry both keep storage open',async()=>{let mode='domain';const {c}=setup({fetch:async(path,o,s)=>{if(o.method==='GET')return reply(s);if(path==='/api/games')return reply(s.state,201);if(mode==='domain')return reply({code:'STORAGE_FULL',message:'공간 부족'},409);if(mode==='network')throw new TypeError('lost');return reply({state:s.state,message:'완료'});}});await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'storage'});await c.dispatch({type:'MOVE_ITEMS',batchIds:[1,2],storage:'CHEST'});assert.equal(c.getPanel().name,'camp-action');mode='network';await c.dispatch({type:'MOVE_ITEMS',batchIds:[1,2],storage:'CHEST'});assert.equal(c.getPanel().name,'camp-action');assert.equal(c.getFlags().hasPending,true);mode='ok';await c.dispatch({type:'RETRY'});assert.deepEqual(c.getPanel(),{name:'camp-action',area:'storage'});});
+test('confirmed rest retry still returns to camp',async()=>{let lost=true;const {c}=setup({fetch:async(path,o,s)=>{if(o.method==='GET')return reply(s);if(path==='/api/games')return reply(s.state,201);if(lost)throw new TypeError('lost');return reply({state:s.state,message:'휴식 완료'});}});await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'rest'});await c.dispatch({type:'REST',hours:6});assert.equal(c.getPanel().name,'camp-action');lost=false;await c.dispatch({type:'RETRY'});assert.deepEqual(c.getPanel(),{name:'safe-zone'});});
+test('failed game after cleaning still opens final result',async()=>{const {c}=setup({fetch:async(path,o,s)=>{if(o.method==='GET')return reply(s);if(path==='/api/games')return reply(s.state,201);s.state.status='FAILED';return reply({state:s.state,message:'기한 초과'});}});await c.dispatch({type:'START_GAME'});await c.navigate({name:'camp-action',area:'storage'});await c.dispatch({type:'CLEAN_ITEM',batchId:1});assert.deepEqual(c.getPanel(),{name:'result'});});

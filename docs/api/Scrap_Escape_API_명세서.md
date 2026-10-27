@@ -1,6 +1,6 @@
 # Scrap Escape — 백엔드 API 명세서
 
-작성 기준:2026-10-26 실제 코드·Flyway V1~V6·HTTP 검증. API 수:16개. 기본 주소:`http://localhost:8080`.
+작성 기준:현재 코드·Flyway V1~V8·HTTP 검증. API 수:19개. 기본 주소:`http://localhost:8080`.
 
 [기획 대비 구현 현황](../backend/Scrap_Escape_백엔드_구현현황.md) · [OpenAPI3.1 JSON](openapi.json) · [초보자용 실행 가이드](Scrap_Escape_API_실행가이드.md)
 
@@ -14,7 +14,7 @@
 - HTTP200은 요청 처리가 끝났다는 의미다. 행동 결과가 FAILED일 수 있으므로 `state.status`와 `failureReason`을 확인한다.
 - 진행 중인 rulesVersion2만 변경 가능. 종료 판은409 GAME_ENDED, 초기 규칙 판1은409 LEGACY_GAME. 두 경우 조회는 가능하다.
 - 게임 행을 FOR UPDATE로 잠그고 한 행동의 자원·재료·시간·결과를 트랜잭션으로 반영한다. 검증 오류409/404 또는 DB500이면 해당 요청 변경은 롤백한다.
-- 생성 포함 모든 변경 API 11개는 선택 헤더 `Idempotency-Key`를 지원한다. 프론트엔드는 행동마다 새 UUID를 만들고, 같은 행동의 네트워크 재시도에만 같은 번호를 사용한다. 상세 규칙은 아래를 참고한다.
+- 생성 포함 모든 변경 API 14개는 선택 헤더 `Idempotency-Key`를 지원한다. 프론트엔드는 행동마다 새 UUID를 만들고, 같은 행동의 네트워크 재시도에만 같은 번호를 사용한다. 상세 규칙은 아래를 참고한다.
 - 성공한 다른 행동(이동·폐기 등0시간 포함)·defer는 즉시 입장 기회를 끝낸다. 잘못된 요청은 롤백하므로 기회를 소모하지 않는다.
 - 게임 시간은 실제 초 타이머가 아니다. elapsedHours=0은1일08:00. 날짜=floor((8+elapsedHours)/24)+1,시각=(8+elapsedHours)%24.
 - 샘플은 전용 테스트 DB의 실제 응답이다. 준비한 조건이 포함돼 있으며 게임 UUID·묶음 ID는 정리 후 재사용할 수 없다.
@@ -52,6 +52,9 @@
 | SE-14 | POST | `/api/games/{id}/secret-rooms/{locationId}/defer` | 방 선택창 닫기·지나치기 | 200 ActionResult |
 | SE-15 | POST | `/api/games/{id}/secret-rooms/{locationId}/open` | 비밀의 방 선택 입장 | 200 ActionResult |
 | SE-16 | GET | `/api/games/{id}/screen` | 화면 상태·카드·안전지대 행동 미리보기 | 200 GameScreen |
+| SE-17 | PATCH | `/api/games/{id}/items/storage` | 선택한 여러 묶음 일괄 이동 | 200 ActionResult |
+| SE-18 | POST | `/api/games/{id}/items/clean` | 선택한 여러 묶음 일괄 세척 | 200 ActionResult |
+| SE-19 | DELETE | `/api/games/{id}/items` | 선택한 여러 묶음 일괄 폐기 | 200 ActionResult |
 
 ## 3. API별 상세 명세
 
@@ -63,7 +66,7 @@
 
 - 요청 본문: 없음.
 - 성공: **201**, `State`.
-- 비용: 초기화: 경과0시간, 1일08:00, 체력10, 세척액1, 키트·오염·열쇠0.
+- 비용: 초기화: 경과0시간, 1일08:00, 체력15, 세척액1, 키트·오염·열쇠0.
 - 처리 규칙: 부품7종 중 중복 없이4개 선택. 폭풍24~48시간 간격·1~3시간 지속 일정을 생성. 새 판 rulesVersion=2. 로그인 없이 UUID로 구분한다.
 - DB 변화: game·game_repair·game_recipe·radiation_storm INSERT.
 - 주요409: 요청 번호를 다른 행동에 재사용한 경우 IDEMPOTENCY_KEY_REUSED. 헤더가 없으면 고유409 조건 없음.
@@ -112,7 +115,7 @@ curl -X GET 'http://localhost:8080/api/games/{id}/locations'
 - 요청 본문: `{"locationId": 1}` (ExploreRequest)
 - 성공: **200**, `ActionResult`.
 - 비용: 낮6시간·체력2 / 밤7시간·체력3. 질병이면 각각+2. 기본 오염+10, 연속3회째부터+5, 폭풍시간당+5.
-- 처리 규칙: 성공 탐색이어도 재료0 가능. 낮0/1/2/3개=5/15/35/45%, 밤0/2/3/4개=5/20/35/40%. 총1개면1종,2개 이상이면 서로 다른2종으로 분배. 빈칸이1개면 첫 선택 종류만 저장하고 나머지는 현장에 남긴다. 세척액은 독립50%로1회분, 병원은 키트1개 확정(한도까지). 종료 판정 후 진행 중일 때만 열쇠10%·방15%를 독립 판정. 방 자동 입장 없음.
+- 처리 규칙: 성공 탐색이어도 재료0 가능. 낮0/1/2/3개=5/15/35/45%, 밤0/2/3/4개=5/20/35/40%. 총1개면1종,2개 이상이면 서로 다른2종으로 분배. 빈칸이1개면 첫 선택 종류만 저장하고 나머지는 현장에 남긴다. 세척액은 독립80%로1회분, 병원은 키트1개 확정(한도까지). 종료 판정 후 진행 중일 때만 열쇠10%·방15%를 독립 판정. 방 자동 입장 없음.
 - DB 변화: 재료 INSERT, 시간·체력·오염·질병·보급품·통계 UPDATE, 방 최초 발견 INSERT.
 - 주요409: `INVENTORY_FULL` / `INSUFFICIENT_STAMINA`
 - [요청·실제 응답 전체 예시](examples/SE-04.json)
@@ -145,7 +148,7 @@ curl -X PATCH 'http://localhost:8080/api/games/{id}/items/{batchId}/storage' \
 
 - 요청 본문: 없음.
 - 성공: **200**, `ActionResult`.
-- 비용: 1시간·체력1·세척액1.
+- 비용: 1시간·체력0·세척액1.
 - 처리 규칙: 양쪽 저장소의 DIRTY 묶음 전체. 시작 시48시간 미만이어야 한다. 세척 중48시간이 되어도 대상은 보호한다. 같은 종류 CLEAN은6개씩 정리하고 초과분은 기존 다른 묶음으로 남긴다.
 - DB 변화: 상태·수량·자원·시간·통계 UPDATE, 합쳐진 행 DELETE.
 - 주요409: `NOT_CLEANABLE` / `INSUFFICIENT_STAMINA` / `INSUFFICIENT_CLEANER`
@@ -193,7 +196,7 @@ curl -X POST 'http://localhost:8080/api/games/{id}/repairs/{partId}'
 
 - 요청 본문: `{"hours": 6}` (RestRequest)
 - 성공: **200**, `ActionResult`.
-- 비용: 1~8시간. 회복=hours+(6시간 이상이면2), 최대 체력10.
+- 비용: 1~8시간. 회복=hours+(6시간 이상이면2), 최대 체력15.
 - 처리 규칙: 4시간 이상 한 번에 쉬면 오염−10·연속 탐색0. 짧은 휴식에는 해당 효과 없음. 체력0·최대 체력에서도 휴식 가능. 질병 치료·기한 초기화는 하지 않으며 만료·72시간·240시간을 진행한다. 폭풍 오염 없음.
 - DB 변화: 체력·시간·오염·연속 횟수 UPDATE, 만료·실패 판정.
 - 주요409: 추가 고유 코드 없음. 변경 행동은 공통409 적용.
@@ -544,10 +547,10 @@ IMMEDIATE 또는 REVISIT를 지정한다. 이미 끝난 즉시 기회는 사용�
 | `hour` | int | 아니오 | 현재 시각0~23. |
 | `remainingHours` | int | 아니오 | 생존 제한까지 남은 시간. 새 규칙240시간, 이전 규칙 판168시간. |
 | `night` | boolean | 아니오 | 20:00 이상~다음06:00 미만. |
-| `stamina` | int | 아니오 | 현재 체력0~10. |
-| `maxStamina` | int | 아니오 | 최대 체력10. |
-| `cleanerAmount` | int | 아니오 | 세척액0~5회분. |
-| `cleanerCapacity` | int | 아니오 | 세척액 한도5. |
+| `stamina` | int | 아니오 | 현재 체력0~15. |
+| `maxStamina` | int | 아니오 | 최대 체력15. |
+| `cleanerAmount` | int | 아니오 | 세척액0~8회분. |
+| `cleanerCapacity` | int | 아니오 | 세척액 한도8. |
 | `inventoryCapacity` | int | 아니오 | 새 판4칸. 이전 규칙 조회는3칸. |
 | `chestCapacity` | int | 아니오 | 새 판16칸. 이전 규칙 조회는8칸. |
 | `inventory` | List<Item> | 아니오 | 현재 소지 재료 묶음. |
@@ -638,7 +641,7 @@ IMMEDIATE 또는 REVISIT를 지정한다. 이미 끝난 즉시 기회는 사용�
 | `durationHours` | int | 아니오 | 현재 낮·밤·질병 기준 시간. |
 | `staminaCost` | int | 아니오 | 현재 기준 체력 비용. |
 | `rewards` | List<RewardProbability> | 아니오 | 총 재료 수량 확률 분포. |
-| `cleanerProbabilityPercent` | int | 아니오 | 세척액1회분 발견 확률50%. |
+| `cleanerProbabilityPercent` | int | 아니오 | 세척액1회분 발견 확률80%. |
 | `canExplore` | boolean | 아니오 | 게임·슬롯·체력 기준 탐색 가능 여부. |
 | `unavailableReason` | String | 예 | 탐색 불가 이유 또는 null. |
 | `medicalKitReward` | int | 아니오 | 병원1, 나머지0. 한도 도달 시 실제 지급은0. |
@@ -696,12 +699,12 @@ IMMEDIATE 또는 REVISIT를 지정한다. 이미 끝난 즉시 기회는 사용�
 
 | 장소 ID | 이름 | 재료 ID | 보급 |
 |---|---|---|---|
-|1|고물상|1,2,6|세척액50%|
-|2|전자제품 매장|3,4,7|세척액50%|
-|3|마트|5,6,8|세척액50%|
-|4|정비소|1,2,9|세척액50%|
-|5|통신 시설|3,4,10|세척액50%|
-|6|병원|5,8|의료 키트1확정·세척액50%|
+|1|고물상|1,2,6|세척액80%|
+|2|전자제품 매장|3,4,7|세척액80%|
+|3|마트|5,6,8|세척액80%|
+|4|정비소|1,2,9|세척액80%|
+|5|통신 시설|3,4,10|세척액80%|
+|6|병원|5,8|의료 키트1확정·세척액80%|
 
 | 재료 ID | 이름 |
 |---|---|
@@ -749,3 +752,50 @@ IMMEDIATE 또는 REVISIT를 지정한다. 이미 끝난 즉시 기회는 사용�
 ## 9. 검증 근거
 
 Controller의16개HTTP작업,GameModels의공개요청·응답record,Service/Repository의검증·트랜잭션·수량·시간규칙을 대조했다. 실제 HTTP응답을 예시 파일로 수집하고 OpenAPI스키마와 맞는지 확인한다. 구체적 실행 결과는 동봉된 구현 현황의 검증 항목을 참고한다.
+
+## SE-17. 여러 재료 묶음 일괄 이동
+
+`PATCH /api/games/{id}/items/storage`
+
+```json
+{"batchIds":[101,102],"storage":"CHEST"}
+```
+
+위 ID는 구조 설명용이며 실행할 때 해당 판에서 조회한 batchId를 사용한다. batchIds는1~20개의 중복 없는 양수이며 각 값과 storage는 null 불가다. 출발 위치가 섞이면 이미 목적지에 있는 항목이 있으므로409 SAME_STORAGE. INVENTORY→CHEST와 CHEST→INVENTORY 모두 지원한다. 1개 입력도 허용하며 기존 SE-05는 유지한다.
+
+- 비용:0시간·체력0. 성공한 이동은 방의 즉시 입장 기회를 종료한다.
+- 처리: 해당 게임 행을 잠그고 모든 항목의 소유 판/출발 위치를 확인한 뒤 동일 트랜잭션에서 이동한다. DIRTY/UNUSABLE은 별도 묶음, CLEAN은 같은 재료의 목적지 여유를 채우고 최대6개로 정리한다. source batchId가 병합으로 사라질 수 있다.
+- DB: item_batch 위치/수량 UPDATE, 소진된 CLEAN source DELETE, 방 즉시 기회 UPDATE, Idempotency-Key 사용 시 api_request INSERT/UPDATE. 테이블 신설은 없다.
+- 성공:200 ActionResult, message에 이동한 선택 묶음 수. loot/secretFindings/secretRoom은null. 프론트는 GET screen으로 최신 목록을 확인하고 성공한 경우만 야영지로 복귀한다.
+- 오류:400 INVALID_REQUEST(빈/20개 초과/중복/음수/0/null/잘못된 storage),404 NOT_FOUND(판/묶음 없음·다른 판 묶음),409 SAME_STORAGE/STORAGE_FULL/GAME_ENDED/LEGACY_GAME 및 공통 Idempotency 오류. 어느 항목이든 실패하면 앞서 반영한 이동·방 기회·요청 기록까지 전체 롤백한다.
+- 재시도: 같은 UUID·같은 입력 배열 순서와 목적지는 원래 응답을 재사용한다. source가 병합되어 없어졌더라도 재실행하지 않는다. 다른 순서도 다른 DTO이므로 같은 키로 재사용하지 않는다.
+- [실제 HTTP 예시](examples/SE-17.json). MySQL 통합 검증은 전체 이동·후속 공간 부족 롤백·CLEAN 병합·원래 응답 재사용·중복/타 판/종료/목적지 검증을 포함한다.
+
+## 체력15 규칙과 예시 갱신
+
+MAX_STAMINA=15, 새 판 초기15, 휴식 상한15로 변경했다. 낮/밤/질병/세척 비용과 휴식 회복 공식은 유지한다. V7은 기존 stamina 값을 보존하고 DB 기본값/제약만0~15로 바꾼다. 기존 판을 자동 회복시키지 않는다. 새로고침/서버 재시작으로 마이그레이션을 적용한다.
+
+SE-01~SE-17 정상 예시와 OpenAPI 정상 예시는 현재 서버에서 다시 수집했다. 추가 경계/중복 예시 파일은 과거 시점의 체력10 기록이 남아 있으며 해당 note를 읽는다. 요청 재사용 응답도 원래 시점의 최대 체력일 수 있으므로 항상 새 screen을 조회한다.
+
+## 세척 보급 조정 — 2026-10-28
+
+세척액은 최대8회분, 일반 탐색에서 독립80%로1회분 획득한다. 초기 지급1회분과 방 결과의 확률/보상2회분은 유지하며, 비밀의 방 보상도8 상한으로 제한한다. V8은 DB 보유량 제약만0~8로 바꾸며 기존 양을 채우거나 삭제하지 않는다.
+
+SE-06 세척은1시간·세척액1회분, 체력0이다. 체력0에서도 가능하며 INSUFFICIENT_STAMINA는 세척의 제한 사유가 아니다. 세척 가능 상태/남은 수명/세척액·게임 종료/기한 규칙과 선택 묶음 만료 보호는 유지한다. GameScreen.clean.staminaCost=0이며 projected와 실제 실행의 체력이 일치한다. 정상/최종 결과 조회 응답의 구조와API19개는 유지했다.
+
+SE-01~17 예시와 OpenAPI 정상 예시는 현재 서버에서 다시 수집했다. 추가 경계/재시도 파일은 변경 전의 역사적 기록일 수 있으므로 현재 수치는 이 절과 최신 screen을 따른다.
+
+
+### SE-18·SE-19. 선택 묶음 일괄 세척·폐기 (2026-10-28)
+
+- SE-18: `POST /api/games/{id}/items/clean`
+- SE-19: `DELETE /api/games/{id}/items` (JSON 본문 필요)
+- 공통 요청: `{"batchIds":[123,124]}`. 필수 배열, 1~20개 양의 정수, 중복 금지. 휴대품·상자를 함께 선택할 수 있다.
+- 정상200 ActionResult. 선택 Idempotency-Key/Idempotency-Replayed 계약을 동일하게 적용한다. 병합·폐기로 ID가 없어져도 같은 요청 번호의 재전송은 최초 응답을 반환한다.
+- 오류400 INVALID_REQUEST: 빈 배열/누락/null/범위/중복. 404 NOT_FOUND: 다른 판 또는 없는 묶음. 409 GAME_ENDED/LEGACY_GAME: 공통 변경 제한.
+- 세척: 선택 묶음 수가 세척액보다 많으면409 INSUFFICIENT_CLEANER. 하나라도 CLEAN/UNUSABLE/이미48h 만료이면409 NOT_CLEANABLE. **어떤 재료나 세척액도 변경하지 않는다.** 모든 선택을 시작 시 검사하고 모두 CLEAN으로 바꾼 뒤 같은 재료·저장소를 최대6개씩 합친다. 묶음당 시간1h·액1·체력0. 선택 재료는 처리 중 만료되지 않으며, 선택 외 미세척 재료는 전체 소요 시간만큼 만료될 수 있다. 생존/질병 기한 도달은 기존 규칙대로200 FAILED 결과.
+- 세척 DB: item_batch UPDATE(CLEAN/수량), 병합으로 비워진 행 DELETE; game.cleaned에 실제 재료 수량 합산, cleaner_amount는 선택 묶음 수만큼 감소, elapsed_hours 증가, finish에서 만료·엔딩 처리.
+- 폐기: 상태와 저장소에 관계없이 선택한 행을 모두 DELETE, game.discarded에 실제 재료 수량 합산. 시간·체력·세척액 비용 없음.
+- 두 작업 모두 게임 잠금과 한 트랜잭션으로 처리한다. 선택 검증·SQL 처리 도중 오류 시 api_request를 포함해 전체 롤백.
+- 프론트: 선택 재료를 한 번 더 눌러 해제. 세척액 부족은 버튼 비활성+사유. 폐기는 전체 이름·수량 확인 후 요청, 취소는 서버 변경 없음. 처리 뒤 저장소 창 유지. 휴식은 체력 소모0 문구를 생략하고 실제 회복량·소요 시간만 표시한다.
+- 실제 응답: [SE-18 일괄 세척](examples/SE-18.json), [SE-19 일괄 폐기](examples/SE-19.json). 기존 한 묶음 API는 유지한다.

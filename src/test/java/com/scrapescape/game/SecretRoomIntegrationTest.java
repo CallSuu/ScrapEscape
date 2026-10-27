@@ -81,7 +81,7 @@ class SecretRoomIntegrationTest {
     @Test void immediateRewardConsumesExactlyOneKeyAndCannotBeRepeated() {
         var id=fresh();room(id,1,true,2);random.set(0,0,1,99);
         var result=service.openRoom(id,1,RoomMode.IMMEDIATE);
-        assertEquals(1,result.state().elapsedHours());assertEquals(9,result.state().stamina());
+        assertEquals(1,result.state().elapsedHours());assertEquals(14,result.state().stamina());
         assertEquals(4,result.loot().collectedQuantity());assertEquals(1,result.state().secrets().keyAmount());
         assertEquals(4,result.state().statistics().collected());assertEquals(0,result.state().statistics().explorations());
         assertEquals(result.secretRoom(),result.state().secrets().rooms().get(0).lastVisit());
@@ -94,9 +94,9 @@ class SecretRoomIntegrationTest {
     }
     @Test void suppliesRespectCleanerAndMedicalCaps() {
         var id=fresh();room(id,1,true,2);room(id,2,false,2);
-        jdbc.update("UPDATE game SET cleaner_amount=4,medical_kit_amount=2 WHERE game_id=?",id.toString());
+        jdbc.update("UPDATE game SET cleaner_amount=7,medical_kit_amount=2 WHERE game_id=?",id.toString());
         random.set(50,0,99);var cleaner=service.openRoom(id,1,RoomMode.IMMEDIATE);
-        assertEquals(1,cleaner.loot().cleanerAdded());assertEquals(5,cleaner.state().cleanerAmount());
+        assertEquals(1,cleaner.loot().cleanerAdded());assertEquals(8,cleaner.state().cleanerAmount());
         random.set(50,1,99);var medical=service.openRoom(id,2,RoomMode.REVISIT);
         assertEquals(RoomOutcome.MEDICAL_KIT,medical.secretRoom().outcome());assertEquals(0,medical.loot().medicalKitsAdded());
         assertEquals(2,medical.state().medicalKitAmount());assertEquals(2,medical.state().secrets().statistics().goodOutcomes());
@@ -132,7 +132,7 @@ class SecretRoomIntegrationTest {
     void revisitCostsIncludeTimeOfDayAndDisease(int start,boolean diseased,int hours,int cost) {
         var id=fresh();room(id,6,false,1);jdbc.update("UPDATE game SET elapsed_hours=?,diseased=?,disease_started_hour=0 WHERE game_id=?",start,diseased,id.toString());
         random.set(90,99);var card=service.secretRoom(id,6);assertEquals(hours,card.revisit().durationHours());assertEquals(cost,card.revisit().staminaCost());
-        var result=service.openRoom(id,6,RoomMode.REVISIT);assertEquals(start+hours,result.state().elapsedHours());assertEquals(10-cost,result.state().stamina());
+        var result=service.openRoom(id,6,RoomMode.REVISIT);assertEquals(start+hours,result.state().elapsedHours());assertEquals(15-cost,result.state().stamina());
         assertEquals(1,result.state().consecutiveExplorations());assertEquals(0,result.state().statistics().explorations());
         assertEquals(0,result.state().medicalKitAmount());assertEquals(0,result.state().secrets().keyAmount());
     }

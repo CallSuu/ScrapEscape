@@ -27,6 +27,8 @@ public final class GameModels {
                                     int contaminationIncrease,int stormExposureHours,Loot loot,int lostQuantity) {}
     public record ExploreRequest(@NotNull @Positive Long locationId) {}
     public record MoveRequest(@NotNull Storage storage) {}
+    public record MoveManyRequest(@NotNull @Size(min=1,max=20) List<@NotNull @Positive Long> batchIds,@NotNull Storage storage) {}
+    public record BatchItemsRequest(@NotNull @Size(min=1,max=20) List<@NotNull @Positive Long> batchIds) {}
     public record RestRequest(@NotNull @Min(1) @Max(8) Integer hours) {}
     public record Item(long batchId,long materialId,String name,int quantity,Storage storage,int acquiredHour,
                        Condition condition,Integer expiresInHours) {}

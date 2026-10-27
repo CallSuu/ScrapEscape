@@ -13,7 +13,7 @@ final class GamePreviews {
         var batches=items.stream().map(b->{
             Storage to=b.storage()==Storage.INVENTORY?Storage.CHEST:Storage.INVENTORY;
             String clean=b.condition()!=Condition.DIRTY||b.expiresInHours()==null||b.expiresInHours()<=0?"NOT_CLEANABLE":
-                s.stamina()<1?"INSUFFICIENT_STAMINA":s.cleanerAmount()<1?"INSUFFICIENT_CLEANER":null;
+                s.cleanerAmount()<1?"INSUFFICIENT_CLEANER":null;
             long occupied=items.stream().filter(i->i.storage()==to).count();
             int headroom=b.condition()==Condition.CLEAN?items.stream().filter(i->i.storage()==to&&i.condition()==Condition.CLEAN&&i.materialId()==b.materialId())
                 .mapToInt(i->s.stackLimit()-i.quantity()).sum():0;
@@ -28,7 +28,7 @@ final class GamePreviews {
     }
     private static SafeActionPreview preview(State s,Action action,String code,int hours,Item selected) {
         code=s.rulesVersion()!=2?"LEGACY_GAME":s.status()!=Status.RUNNING?"GAME_ENDED":code;
-        int cost=action==Action.CLEAN?1:0;
+        int cost=0;
         if(code!=null)return new SafeActionPreview(false,code,message(code),hours,cost,null);
         int end=s.elapsedHours()+hours,stamina=s.stamina()-cost,contamination=s.contamination(),cleaner=s.cleanerAmount(),kits=s.medicalKitAmount();
         boolean diseased=s.diseased();

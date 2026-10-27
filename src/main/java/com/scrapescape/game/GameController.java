@@ -33,6 +33,21 @@ public class GameController {
                                          @RequestHeader(value="Idempotency-Key",required=false) String key) {
         return action(key,"PATCH /api/games/"+id+"/items/"+batchId+"/storage",request,()->service.move(id,batchId,request.storage()));
     }
+    @PatchMapping("/{id}/items/storage")
+    public ResponseEntity<JsonNode> moveMany(@PathVariable UUID id,@Valid @RequestBody MoveManyRequest request,
+                                             @RequestHeader(value="Idempotency-Key",required=false) String key) {
+        return action(key,"PATCH /api/games/"+id+"/items/storage",request,()->service.moveMany(id,request.batchIds(),request.storage()));
+    }
+    @PostMapping("/{id}/items/clean")
+    public ResponseEntity<JsonNode> cleanMany(@PathVariable UUID id,@Valid @RequestBody BatchItemsRequest request,
+                                              @RequestHeader(value="Idempotency-Key",required=false) String key) {
+        return action(key,"POST /api/games/"+id+"/items/clean",request,()->service.cleanMany(id,request.batchIds()));
+    }
+    @DeleteMapping("/{id}/items")
+    public ResponseEntity<JsonNode> discardMany(@PathVariable UUID id,@Valid @RequestBody BatchItemsRequest request,
+                                                @RequestHeader(value="Idempotency-Key",required=false) String key) {
+        return action(key,"DELETE /api/games/"+id+"/items",request,()->service.discardMany(id,request.batchIds()));
+    }
     @PostMapping("/{id}/items/{batchId}/clean")
     public ResponseEntity<JsonNode> clean(@PathVariable UUID id,@PathVariable long batchId,
                                           @RequestHeader(value="Idempotency-Key",required=false) String key) {

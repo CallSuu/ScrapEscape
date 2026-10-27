@@ -1,12 +1,14 @@
 # Scrap Escape 프론트엔드 개발 명세서 — 팀원 담당
 
-담당: **B — 팀원** · 기준일:2026-10-27 · 분업 계약v1.3 · 공통 계약 SHA-256 앞16자:`88058b6edd2c0434`
+담당: **B — 팀원** · 기준일:2026-10-27 · 분업 계약v1.9 · 공통 계약 SHA-256 앞16자:`b80a30f00955f2c6`
+
+현재 실행 방식(2026-10-27): 사용자의 추가 요청으로 기존 팀원 담당도 이 채팅에서 구현했다. 같은 frontend/main-exploration 브랜치의 실제 제품 모듈을 사용하며, 별도 B 브랜치 생성/병합 없이 연결되어 있다. 아래 역할 분담은 파일 책임과 추후 협업 기준으로 유지한다.
 
 이 파일 하나에 현재 백엔드 현황·실행법·공통 인터페이스·본인 작업 범위·완료 기준·AI 전달 프롬프트가 포함되어 있다. 저장소와 기획안에 접근할 수 있는 담당자는 다른 담당자 명세서를 받지 않아도 자기 작업을 시작할 수 있다.
 
-## 공통 계약 v1.3 — 양쪽 문서에서 동일하게 유지
+## 공통 계약 v1.9 — 양쪽 문서에서 동일하게 유지
 
-이 절은 두 담당자에게 동일한 내용이다. 변경이 필요하면 A(본인)가 두 문서를 함께 수정하고 B(팀원)와 확인한다. 기획의 과거 수치와 이 문서가 다르면 **현재 저장소의 API 구현·OpenAPI를 대조한 뒤 차이를 공유**한다. 임의로 서버/다른 담당자의 계약을 변경하지 않는다. 이 문서의 화면 모듈·파일·Context는 앞으로 구현할 프론트 계약이며, 기존 구현이라고 오해하지 않는다.
+이 절은 두 담당자에게 동일한 내용이다. 변경이 필요하면 A(본인)가 두 문서를 함께 수정하고 B(팀원)와 확인한다. 기획의 과거 수치와 이 문서가 다르면 **현재 저장소의 API 구현·OpenAPI를 대조한 뒤 차이를 공유**한다. 임의로 서버/다른 담당자의 계약을 변경하지 않는다. 이 문서의 화면 모듈·Context 계약은 현재 구현에 사용된다. 아래 분업 소유권은 협업 기준이며, 이번에는 사용자의 요청에 따라 A/B 모듈을 같은 브랜치에서 함께 구현했다.
 
 ### C1. 목적·기준·준비물
 
@@ -14,7 +16,7 @@
 - 저장소: https://github.com/CallSuu/ScrapEscape . 백엔드 확인 기준 커밋: **e339210**, 기준 브랜치 `backend/bootstrap`. 새 계약 문서를 전달하는 커밋은 이 커밋의 후손이어야 한다.
 - 역할 A=본인(앱 통합·메인/HUD·탐색·비밀의 방), 역할 B=팀원(안전지대·결과). 이 두 명세서가 정하는 공통 계약이 같아야 한다.
 - 필요한 전달물: 이 담당 명세서 + 게임 기획안 + 저장소 읽기 권한/클론. 문서만으로 백엔드 파일이 생성되는 것은 아니다. 첨부 이미지는 배치 참고이며 복제 대상이 아니다.
-- 기준일:2026-10-27. 현재 A의 시작·메인/HUD·탐색 선택·탐색 보상·비밀의 방 선택/결과 화면을 구현했다. MySQL115개·JS46개 통과. B의 안전지대·최종 결과 제품 모듈과 두 브랜치 최종 통합은 아직 별도 작업이다.
+- 기준일:2026-10-27. 현재 A 화면에 B의 안전지대·최종 결과 제품 모듈도 연결했다. 사용자가 두 역할의 구현을 이 채팅에서 함께 진행하도록 변경해 frontend/main-exploration에서 구현했다. MySQL124개·JS68개 통과. 실제 테스트 서버에서 안전지대 행동·4개 수리 후 명시적 탈출·시간/질병 실패·결과 재열기·새 게임 복귀를 확인했다. 최종 디자인과 자연 탐색 플레이 밸런스는 남아 있다.
 - Java17, Spring Boot3.5.16, Gradle Wrapper8.14.3, MySQL, IntelliJ IDEA. 프론트는 **HTML/CSS/순수 JavaScript ES modules(.mjs)**, 같은 Spring Boot 서버에서 제공한다. React/Vue/Vite/TypeScript 컴파일·npm 빌드·새 백엔드·별도 프론트 포트는 도입하지 않는다. 아래 타입 표기는 문서용이며 실행 파일은 JavaScript다.
 - 화면 목표: 데스크톱 가로 **1440×900** 기본, **1280×720·1920×1080**에서도 버튼·HUD가 겹치지 않음. 모바일 전용 UI는 이번 범위 제외.
 
@@ -28,7 +30,7 @@
 | 보상 후보 확률 | 동일 상대 가중치1, 총수량2이상이면2종으로 나누고 첫 선택 재료를 우선 저장 | SE-03·04 |
 | 체력·시간·낮/밤 | 행동 기반 시간, 낮6h/체력2·밤7h/3, 출발 시각 판정 | SE-03·04·09 |
 | 인벤토리·보관함 |4칸·16칸, 묶음 최대6, 전량 이동·공간 부족 차단 | SE-05, V3·V4 |
-| 세척·합치기 |한 묶음1h/체력1/액1, CLEAN을6개씩 자동 정리, DIRTY 획득 시각 분리 | SE-06 및 이동 내부 처리 |
+| 세척·합치기 |한 묶음1h/체력0/액1, CLEAN을6개씩 자동 정리, DIRTY 획득 시각 분리 | SE-06 및 이동 내부 처리 |
 | 재료 만료·폐기 |DIRTY48시간 후 UNUSABLE, 자동 삭제 없음, 직접 전체 폐기 | SE-07 및 finish |
 | 휴식 |1~8h,6h 이상 체력+2보너스,4h 이상 오염−10·연속 초기화 | SE-09 |
 | 오염·연속 탐색 |0~100, 탐색+10·연속3회째부터+5 | SE-04 및 상태 |
@@ -44,7 +46,7 @@
 | 방 결과 |좋음80%·나쁨20%, 보상 새 획득 시각, 미세척 인벤토리만 손실 | SE-15 |
 | 기본·확장 통계 |획득·세척·폐기·탐색·수리·질병·폭풍, 방·열쇠·손실 통계 | State.statistics·secrets.statistics |
 | 화면에 줄 상태 정보 |체력·오염·질병 기한·보급품·폭풍·슬롯·만료 잔여 시간, ? 표시·입장 제한 | SE-02·03·13. 실제 UI는 별도 |
-| 무결성·오류 처리 |게임 행 잠금, 트랜잭션, 외래 키·수량 제약, 공통 오류 JSON | 각 변경 API·V1~V6 |
+| 무결성·오류 처리 |게임 행 잠금, 트랜잭션, 외래 키·수량 제약, 공통 오류 JSON | 각 변경 API·V1~V8 |
 | 재전송 중복 방지 |UUID 요청 번호·원래 응답 저장·동시/재시작/종료 후 재사용 | 변경 API11개·V6·14개 회귀 테스트 |
 | 화면 조회·안전지대 미리보기 |읽기 전용 스냅샷·실행 제한/예상 상태·만료 경고 | SE-16·신규11개 통합 테스트 |
 | 기존 DB 보존 |Flyway, 기존 조합·이름 보존,6개 초과 묶음 분할, 이전 규칙 판 조회 | 마이그레이션 테스트·LEGACY_GAME |
@@ -56,13 +58,13 @@
 
 #### 화면에서 틀리기 쉬운 확정 규칙
 
-1. 시작1일08:00·체력10·세척액1/5·키트0/2·열쇠0/2. 경과240h 생존 제한. `day==10` 또는 날짜 자정으로 실패를 직접 판정하지 않는다. 상태/남은 시간은 응답 기준.
+1. 시작1일08:00·체력15·세척액1/8·키트0/2·열쇠0/2. 경과240h 생존 제한. `day==10` 또는 날짜 자정으로 실패를 직접 판정하지 않는다. 상태/남은 시간은 응답 기준.
 2. 인벤토리4칸·상자16칸·묶음6개. 같은 재료라도 DIRTY는 획득 시각이 다르면 별도 묶음이다. 슬롯은 종류 수나 총수량이 아니라 배열 길이. 세척액/키트/열쇠는 별도 수치로 슬롯을 쓰지 않는다.
 3. 낮 탐색6h/체력2, 밤(20:00~06:00)7h/3. 출발 시각 기준. 질병이면 탐색/재방문에2h·체력2 추가. 병이 있어도 탐색 가능하다.
 4. 일반 탐색 총수량은 낮0/1/2/3=5/15/35/45%, 밤0/2/3/4=5/20/35/40%. **최대4개는 총수량이며4종류라는 뜻이 아니다.** 최대2종, 빈손도 정상 행동이다. 공간에 못 담은 것은 leftBehindQuantity로 보고된다.
-5. 일반 탐색 세척액50%·1회분(통 상한5). 병원은 키트1개 확정(상한2). 가득 차면 실제 추가0일 수 있다. 키트·세척액 발견과 실제 추가량을 구분한다.
-6. DIRTY48h 후 UNUSABLE, CLEAN은 만료 없음. 세척은 묶음 전체1h/체력1/액1. 소멸 직전 시작한 세척 대상은 보호되고 다른 묶음은 만료될 수 있다. 폐기는 묶음 전체이며 되돌리기 API 없음.
-7. 휴식1~8h, 체력=시간+(6h 이상이면2), 상한10.4h 이상이면 오염−10/연속 탐색 초기화. 실제 회복량은 projected−현재. 휴식으로 질병 치료/기한 초기화 안 됨.
+5. 일반 탐색 세척액80%·1회분(통 상한8). 병원은 키트1개 확정(상한2). 가득 차면 실제 추가0일 수 있다. 키트·세척액 발견과 실제 추가량을 구분한다.
+6. DIRTY48h 후 UNUSABLE, CLEAN은 만료 없음. 세척은 묶음 전체1h/체력0/액1. 소멸 직전 시작한 세척 대상은 보호되고 다른 묶음은 만료될 수 있다. 폐기는 묶음 전체이며 되돌리기 API 없음.
+7. 휴식1~8h, 체력=시간+(6h 이상이면2), 상한15.4h 이상이면 오염−10/연속 탐색 초기화. 실제 회복량은 projected−현재. 휴식으로 질병 치료/기한 초기화 안 됨.
 8. 오염 기본+10·연속3회째부터+5, 폭풍 실제 노출1h당+5. 폭풍 시작 간격24~48h·지속1~3h. 안전지대 행동은 폭풍 오염 없음. 화면에서 난수를 생성하지 않는다.
 9. 발병 확률은 오염0~59=0%,60~79=30%,80~89=40%,90~100=60%. 발병72h 내 치료. 치료1h·키트1·오염−60·질병 제거. 완료가 기한 이상이면 실패하며 치료/키트 소비가 성립하지 않는다. 둘 다 기한 초과면 TIME_LIMIT 우선 유지.
 10.7종 조합 중 서버가 고른4개만 수리. 제작/장착3h, 양쪽 보관함 CLEAN 재료 합산, 완성품 슬롯 없음.4개 수리해도 자동 성공 아님: 탈출 POST를 선택해야 SUCCESS.
@@ -72,7 +74,7 @@
 14. 성공한 다른 행동/방 지나치기는 즉시 입장 기회를 끝낸다. GET/실패 요청은 소모하지 않는다. 키를 못 얻어도 위치 기억·재방문 선택 가능.
 15. 기한 위험은 **경고이고 실행 허용**. 자원 부족·종료 상태는 실행 비활성. 클라이언트는 비용·수량·만료·성공을 임의로 반영하지 않고 새 screen으로 그린다.
 
-### C3. API16개와 데이터 계약
+### C3. API19개와 데이터 계약
 
 기본 주소 `http://localhost:8080`. `{id}`는 동적으로 받은 게임 UUID, 나머지ID는 응답의 정수다. 고정 게임UUID·batchId 금지. 본문 있는 요청만 JSON. DTO 필드는 필수이며 null 불가. 없는 본문에는 `{}`를 임의로 넣지 않아도 된다.
 
@@ -94,6 +96,7 @@
 | SE-14 | `POST /api/games/{id}/secret-rooms/{locationId}/defer` | 없음 | 200 ActionResult |
 | SE-15 | `POST /api/games/{id}/secret-rooms/{locationId}/open` | `{mode:"IMMEDIATE"\|"REVISIT"}` | 200 ActionResult |
 | SE-16 | `GET /api/games/{id}/screen` | 없음 | 200 GameScreen |
+| SE-17 | `PATCH /api/games/{id}/items/storage` | `{batchIds:number[],storage:Storage}` | 200 ActionResult |
 
 
 명세 원문: [전체 API](../api/Scrap_Escape_API_명세서.md) · [OpenAPI](../api/openapi.json) · [실제 screen 예시](../api/examples/SE-16.json) · [기한 경계](../api/examples/screen-deadline.json) · [종료 판](../api/examples/screen-ended.json). 예시의 게임ID는 검증 후 삭제됐으므로 API에 재사용하지 않는다.
@@ -381,8 +384,8 @@ Java `GameModels`/OpenAPI에서 확인한 현재 DTO 목록이다. null은 숨�
 | 소유자 | 수정·생성 허용 경로 |
 |---|---|
 | A | `src/main/resources/static/index.html` |
-| A | `src/main/resources/static/css/common.css`, `main.css`, `exploration.css`, `exploration-result.css`, `secret-room.css` |
-| A | `src/main/resources/static/js/app.mjs`, `main.mjs`, `exploration.mjs`, `exploration-result.mjs`, `secret-room.mjs` |
+| A | `src/main/resources/static/css/common.css`, `main.css`, `exploration.css`, `exploration-result.css`, `secret-room.css`, `camp.css`, `aircraft-repair.css` |
+| A | `src/main/resources/static/js/app.mjs`, `main.mjs`, `exploration.mjs`, `exploration-result.mjs`, `secret-room.mjs`, `camp.mjs`, `aircraft-repair.mjs` |
 | A | `src/main/resources/static/assets/main/**`, `assets/locations/**` |
 | A | `src/test/javascript/main.test.mjs`, `exploration.test.mjs`, `exploration-result.test.mjs`, `secret-room.test.mjs`, `app.test.mjs`（필요한 검증에 한함） |
 | B | `src/main/resources/static/css/safe-zone.css`, `result.css` |
@@ -409,6 +412,8 @@ B는 index.html/app.mjs/common.css를 편집하지 않는다. A가 다음 공통
 ```typescript
 type Flags = { busy: boolean; hasPending: boolean };
 type Panel = null | { name:"safe-zone" } | { name:"exploration" }
+  | { name:"exploration-choice"; locationId:number }
+  | { name:"camp-action"; area:"storage"|"rest"|"treatment" } | { name:"aircraft-repair" }
   | { name:"secret-room"; locationId:number; fromDiscovery?:boolean }
   | { name:"exploration-result"; locationId:number; activity:"EXPLORE"|"OPEN_ROOM"; receipt:ActionResult }
   | { name:"result" };
@@ -416,6 +421,7 @@ type Command =
   | {type:"START_GAME"}
   | {type:"EXPLORE"; locationId:number}
   | {type:"MOVE_ITEM"; batchId:number; storage:Storage}
+  | {type:"MOVE_ITEMS"; batchIds:number[]; storage:Storage}
   | {type:"CLEAN_ITEM"; batchId:number}
   | {type:"DISCARD_ITEM"; batchId:number}
   | {type:"REPAIR_PART"; partId:number}
@@ -450,10 +456,13 @@ interface View {
 | 파일 | 이름 있는 export | mount 위치 |
 |---|---|---|
 | A `js/main.mjs` | `createMainView` | `#se-main`（상시） |
-| A `js/exploration.mjs` | `createExplorationView` | `#se-exploration-content`（전체 탐색 화면 활성 중） |
+| A `js/exploration.mjs` | `createExplorationView` | `#se-exploration-content`（도시 건물 선택 배경） |
+| A `js/exploration.mjs` | `createExplorationChoiceView` | `#se-panel-content`（선택한 건물 하나의 수색 정보·선택하기） |
 | A `js/exploration-result.mjs` | `createExplorationResultView` | `#se-exploration-content`. receipt는 context.getPanel()에서 읽음 |
 | A `js/secret-room.mjs` | `createSecretRoomView` | `#se-exploration-content`. locationId는 context.getPanel()에서 읽음 |
-| B `js/safe-zone.mjs` | `createSafeZoneView` | `#se-panel-content` |
+| A `js/camp.mjs` | `createCampView` | `#se-exploration-content`. safe-zone 전체 야영지, camp-action 뒤에도 유지 |
+| A `js/aircraft-repair.mjs` | `createAircraftRepairView` | `#se-exploration-content`. 항공기 정비 전체 화면 |
+| B `js/safe-zone.mjs` | `createSafeZoneView` | `#se-panel-content`. camp-action.area별 보관/휴식/치료 창 |
 | B `js/result.mjs` | `createResultView` | `#se-panel-content` |
 
 - root는 **이미 존재하는 HTMLElement**로 전달한다. View는 자기 root 하위만 생성/변경한다. 다른 View import, window 전역 상태, 외부 DOM querySelector, 다른 담당자의 DOM ID 접근 금지. document.createElement는 허용한다.
@@ -473,6 +482,7 @@ interface View {
 | START_GAME | 현재 screen이 있으면 로컬 시작 화면 복귀(screen/result=null), 없으면 `client.act("POST","/api/games")` |
 | EXPLORE | `client.act("POST",base+"/explorations",{locationId})` |
 | MOVE_ITEM | `client.act("PATCH",base+"/items/"+batchId+"/storage",{storage})` |
+| MOVE_ITEMS | `client.act("PATCH",base+"/items/storage",{batchIds,storage})` |
 | CLEAN_ITEM | `client.act("POST",base+"/items/"+batchId+"/clean")` |
 | DISCARD_ITEM | `client.act("DELETE",base+"/items/"+batchId)` |
 | REPAIR_PART | `client.act("POST",base+"/repairs/"+partId)` |
@@ -498,10 +508,13 @@ interface View {
 
 #### 닫기·방 지나치기 책임
 
-X·Escape·일반 닫기와 탐색의 돌아가기는 호스트의 navigate(null) 한 경로로 처리한다. 오버레이 배경 클릭만으로는 닫지 않는다. A가 공통 헤더·X와 전체 탐색의 돌아가기·포커스 관리를 제공하며 B는 별도 X를 중복 생성하지 않는다. 탐색 페이지에는 dialog/aria-modal이나 Tab 포커스 trap을 적용하지 않는다. 탐색 보상과 비밀의 방도 같은 전체 화면을 사용하며, 안전지대와 최종 결과는 기존 모달 규칙을 사용한다.
+X·Escape·일반 닫기와 탐색의 돌아가기는 호스트의 navigate(null) 한 경로로 처리한다. 오버레이 배경 클릭만으로는 닫지 않는다. A가 공통 헤더·X와 전체 탐색의 돌아가기·포커스 관리를 제공하며 B는 별도 X를 중복 생성하지 않는다. 탐색 페이지에는 dialog/aria-modal이나 Tab 포커스 trap을 적용하지 않는다. 탐색 보상과 비밀의 방도 같은 전체 화면을 사용하며, 안전지대 야영지·항공기 정비도 전체 화면이며, 야영지의 보관/휴식/치료와 최종 결과는 모달을 사용한다.
 
 - 전체 탐색 화면: X 대신 돌아가기. navigate(null)로 숲 메인에 복귀하며 시간·체력·서버 데이터 변경 없음. 요청 중에도 복귀 가능하며 이미 보낸 탐색은 취소하지 않음.
-- 일반 창/결과 창: 즉시 로컬 닫기. 서버 변경 없음.
+- 안전지대 safe-zone: 별도 전체 화면. 돌아가기는 메인으로 로컬 복귀.
+- camp-action과 aircraft-repair: X/Escape/돌아가기는 야영지 safe-zone으로 로컬 복귀. 이 복귀에는 GET이나 변경 요청이 없어서 오프라인·pending 중에도 나갈 수 있다.
+- exploration-choice: X/Escape는 오염 도시 exploration으로 로컬 복귀. 조회/변경 없이 해당 건물 버튼에 포커스 복귀.
+- 최종 결과 창: 즉시 로컬 닫기. 서버 변경 없음.
 - 비밀의 방 창의 방이 미개방이고 immediateAvailable=true이며 RUNNING, 그리고 idle·pending없음이면: 위치ID를 캡처→창은 즉시 닫기→DEFER_ROOM을 **호스트에서1회** 실행. View.destroy에서 defer하지 않는다. 다시 방문 가능 상태는 다음 snapshot으로 갱신한다.
 - 이미 개방/즉시 기회 종료/게임 종료 상태면 단순 닫기. remembered/revisit 상세 닫기에 불필요한 defer를 만들지 않는다.
 - busy 또는 hasPending 중 X는 언제나 로컬 닫기만 한다. 진행 중 요청을 abort하거나 defer를 병렬/예약 전송하지 않는다. 닫아도 결과 확인은 전역 재시도/메시지에서 계속한다. 성공 응답이 와도 닫은 일반 창을 멋대로 다시 열지 않는다(새 terminal 결과 자동 표시만 예외).
@@ -511,7 +524,7 @@ X·Escape·일반 닫기와 탐색의 돌아가기는 호스트의 navigate(null
 
 ### C6. DOM·CSS·이미지 공통 규격
 
-A가 아래 host 구조를 제공한다. B는 #se-panel-content 아래만 변경한다. 탐색 선택·탐색 보상·비밀의 방은 #se-exploration-page 전체 화면이며, 안전지대·최종 결과는 기존 오버레이를 사용한다. main/HUD는 두 표면 밖에 남는다.
+A가 아래 host 구조를 제공한다. B는 #se-panel-content 아래만 변경한다. 탐색 선택·탐색 보상·비밀의 방은 #se-exploration-page 전체 화면이며, 안전지대 야영지·항공기 정비도 같은 전체 화면 영역을 사용한다. 보관/휴식/치료 모달은 야영지를 남긴 채 기존 오버레이에 표시하고, 최종 결과도 기존 오버레이를 사용한다. main/HUD는 두 표면 밖에 남는다.
 
 ```html
 <div id="se-app">
@@ -621,6 +634,54 @@ Git 공통:
 - 두 브랜치를 따로 main에 합치기보다, 먼저 A 브랜치에서 두 화면을 통합 검증하고 그 후 main 반영을 결정한다. main 병합/원격 푸시는 사람이 승인한 범위에서만 수행한다.
 - 이 문서 요청은 명세서 작성이며 자동 브랜치 생성·프론트 구현·커밋·푸시를 요구한 것은 아니다.
 
+
+#### 야영지·항공기 화면 계약 — v1.9
+
+safe-zone은 숲속 비행기 야영지이다. camp.mjs의 보관함/휴식/치료 지점은 camp-action으로, 정비 지점은 aircraft-repair로 이동한다. 이동 자체는 비용이 없고 정상 진입 때 최신 screen을 읽는다. 하위 창을 닫으면 야영지 해당 버튼으로 포커스가 복귀한다.
+
+camp-action에서는 safe-zone.mjs가 area별 필요한 기능만 보여준다. storage는 휴대품·상자·세척·폐기, rest는 상태·휴식, treatment는 상태·의료 키트이다. createSafeZoneView는 독립 개발 페이지에서 area 없는 전체 관리 보기도 유지한다. 수리/탈출의 운영 UI는 aircraft-repair.mjs가 담당한다.
+
+항공기 도안에는 서버가 선택한4개 partId만 표시한다. 아이콘은 상태와 무관하게 정보 조회 가능하며 실제 수리/탈출 버튼은 서버 allowed와 flags로 제한한다. 완료 아이콘은 체크로 바뀐다. 부품 완성만으로 탈출하지 않고 기존 ESCAPE를 명시적으로 실행한다.
+
+캠프 모달 뒤 전체 화면은 inert로 만들어 키보드/포인터 조작을 막는다. HUD는 화면 밖 별도 영역에서 유지한다. 오래된 import/GET이 현재 화면을 다시 열지 않도록 revision을 확인한다. 새 서버/API/타이머는 추가하지 않는다.
+
+
+#### 넓은 모달·도시 건물 선택 — v1.9
+
+탐색은 오염 도시 배경의6개 건물 버튼이다. 건물을 누르면 exploration-choice로 지역 하나의 큰 사진·설명·재료 후보·선택하기를 표시한다. 공통 비용/확률은 인벤토리 위 설명 패널에서만 표시한다. 수색 정보 보기에는 서버 변경이 없으며 ‘선택하기’를 눌러야 기존 EXPLORE를 보낸다. 체력이 부족해도 정보 진입은 가능하고 실행 버튼만 server canExplore/flags로 막는다. 발견한 방 ? 규칙은 유지한다.
+
+모달은 #se-overlay가 화면 전체 입력을 차단하고 #se-main과 배경 page를 inert 처리한다. 어두운 블러 배경, 가운데 콘텐츠 높이의 창을 사용하며 보관함은 넓은3열(휴대품/상자/선택 재료), 휴식·치료는 내용 높이로 맞춘다. 일반 상태는 세 해상도에서 스크롤 없이 표시한다. 매우 긴 예외 문구에는 접근 가능한 overflow를 남긴다.
+
+공통 #se-messages와 #se-retry는 모달이 열리면 .se-dialog__footer로 이동한다. 닫히면 #se-app으로 되돌린다. 하나의 DOM/리스너만 사용하며 다시 시도는 모달 내부 포커스 순서에 포함된다. 새 게임 버튼은 모달 뒤에서 조작할 수 없다. 정비 도안은 상세 창 쪽으로 정렬하고16px 간격, 상세 창은 넓고 콘텐츠 높이로 표시한다.
+
+탐색 공통 안내는 main.mjs의 인벤토리 스택 바로 위에 같은400px 폭의 role=note 설명 패널로 표시한다. 도시 상단 안내와 지역 수색 창의 공통 비용/확률 중복은 제거한다. 수색 창은1120px까지 넓히고 사진은 기본310px/낮은 화면260px 이상, 선택 버튼54px 이상으로 표시한다. 기한 경고·실행 불가 이유는 유지한다.
+
+
+#### 행동 완료·다중 선택
+
+REST/TREAT가 성공하고 최신 screen까지 확인되면 camp-action은 야영지로 복귀한다. 보관함 이동·세척·폐기와 REPAIR_PART 완료는 현재 창/정비 화면을 유지하고 최신 상태만 갱신한다. 400/409 오류나 응답 미확정은 유지한다. RETRY로 확인한 성공도 같은 규칙이다. 화면을 이미 떠났다면 늦은 완료가 다시 열거나 다른 화면을 닫지 않는다. FAILED/SUCCESS 최종 결과와 EXPLORE/OPEN_ROOM 보상 확인 흐름은 우선 유지한다.
+
+재료는 batchId Set을 클릭으로 토글한다. 여러 묶음은 같은 출발 위치일 때 MOVE_ITEMS로 일괄 이동한다. 혼합 출발/전체 공간 부족은 비활성·이유 표시. CLEAN 합치기 여유를 고려하되 최종 권한은 서버다. 세척/폐기도 여러 묶음을 선택해 CLEAN_ITEMS/DISCARD_ITEMS로 한 요청에 처리한다. 두 작업은 양쪽 저장소를 함께 선택할 수 있다. 세척액이 선택 묶음 수보다 적으면 실행 버튼 비활성 및 부족 문구. 폐기는 모든 이름·수량 확인 후 요청한다. 선택 변경/사라진 ID/새 판은 폐기 확인을 취소한다. 새 판과 사라진 batchId는 선택에서 제거한다. CLEAN은 청록 테두리와 ✓ 세척 완료로 표시하고 선택 테두리와 구분한다.
+
+체력은 새 게임15/최대15. V7 적용 시 기존 판의 잔여 체력은 그대로 보존한다. 휴식·미리보기는15 상한이며 행동 비용은 유지한다.
+
+
+#### 세척 보급·결과 메시지 — v1.9
+
+세척액 최대8, 일반 탐색 획득80%, 시작1회분. 세척은1h/체력0/액1이며 체력0에서 가능하다. 방 보상의 획득량도8까지만 채운다. V8은 기존 보유량을 유지한다. 모든 비용/게이지/확률은 서버 필드로 표시한다.
+
+최종 결과(result)에서는 공통 footer의 행동 대화/메시지를 숨겨 통계와 새 게임이 스크롤 없이 보이게 한다. 네트워크 미확정으로 RETRY가 필요한 동안에는 footer를 유지하여 확인 수단을 없애지 않는다. 일반 행동 창은 기존 메시지/다시 시도를 유지한다.
+
+
+
+#### 공통 HUD·일괄 처리·휴식 문구 — v1.9
+
+모든 화면은 기존 안전지대와 같은 HUD 스타일을 사용한다. 생존 상태320px, 인벤토리400px, 패딩10px 12px 및 항목·글자 크기를 통일한다. 탐색 안내 유무는 HUD 자체 크기에 영향을 주지 않는다.
+
+CLEAN_ITEMS {batchIds} → POST /api/games/{id}/items/clean, DISCARD_ITEMS {batchIds} → DELETE /api/games/{id}/items (JSON). 중복 없는 양의 ID 1~20개. 기존 단일 명령도 유지. 공통 Context.dispatch는 두 명령도 Idempotency-Key/스냅샷 확인/RETRY 규칙을 적용한다. 세척은 선택 묶음당1h/액1/체력0. 모든 선택을 먼저 세척한 뒤 합치고 시간 진행; 세척액 부족 등 오류 시 전체 취소. selectedCareAvailability가 사전 차단하며 서버가 최종 검증한다. 폐기는 추가 시간·체력 없이 전체 수량 통계 갱신. 성공·실패·미확정 모두 저장소 창 유지, 게임 종료는 결과 화면 우선.
+
+휴식은 restSummary로 ‘체력 소모 0’을 생략하고 실제 회복량, 시간, 오염 변화, 기한 경고를 유지한다. 다른 행동의 비용 표시에는 영향이 없다.
+
 <!-- COMMON-END -->
 
 ## B1. 팀원 담당 범위와 파일
@@ -681,7 +742,7 @@ CSS는 `/css/safe-zone.css`, `/css/result.css`를 가져온다. 개발 페이지
 | 우측 수리 | 선택된 부품, 재료 보유/필요량, 완료 상태 | `state.repairs`와 `actions.repairs` |
 | 우측 하단 | 완료 n/4, 탈출 버튼·제한 이유 | `actions.escape` |
 
-로컬 상태는 선택 휴식 시간(초기6h), 선택 batchId, 폐기 확인 정도만 둔다. 새 screen에서 선택한 batchId가 사라지면 선택과 폐기 확인을 해제한다. 같은 이름의 다른 묶음으로 자동 대체하지 않는다. gameId가 바뀌면 모든 선택을 초기화한다. render가 호출될 때마다 휴식 시간을 초기값으로 되돌리지 않는다.
+로컬 상태는 선택 휴식 시간(초기6h), 선택 batchId의 Set, 단일 묶음 폐기 확인만 둔다. 클릭으로 Set에 추가/해제한다. 새 screen에서 사라진 batchId는 Set에서 제거하고 해당 폐기 확인도 해제한다. 같은 이름의 다른 묶음으로 자동 대체하지 않는다. gameId가 바뀌면 모든 선택을 초기화한다. render가 호출될 때마다 휴식 시간을 초기값으로 되돌리지 않는다.
 
 선택 재료가 없으면 ‘재료를 선택하세요’를 표시한다. 시간 선택이나 재료 선택만으로 서버 변경 요청을 보내지 않는다.
 
@@ -790,7 +851,7 @@ CSS는 `/css/safe-zone.css`, `/css/result.css`를 가져온다. 개발 페이지
 먼저 경로·AGENTS.md·Git 상태·기준 커밋을 확인하고 기존 변경을 보존하라. 기준 커밋을 fetch할 수 없으면 다른 API로 추측하지 말고 A에게 알리라.
 제품 파일은 safe-zone.mjs/result.mjs/safe-zone.css/result.css와 소유 assets다. 독립 실행은 /dev/safe-zone.html과 dev/safe-zone-preview.mjs에서 준비하라.
 index.html/app.mjs/common.css/A 화면/백엔드/DB/기존 game-api.mjs를 수정하지 마라. 새 프레임워크·의존성·빌드 방식도 추가하지 마라.
-공통 계약v1.3의 createSafeZoneView(root, context), createResultView(root, context)를 named export하고 render(screen, flags)/destroy()를 반환하라.
+공통 계약v1.9의 createSafeZoneView(root, context), createResultView(root, context)를 named export하고 render(screen, flags)/destroy()를 반환하라.
 각 View는 자기 root만 렌더링하고 통신은 context.dispatch로만 처리하라. 제품 View에 fetch/client/UUID/자동 재시도/다른 View import를 넣지 마라.
 안전지대는 상태·휴식·치료, 양쪽 인벤토리·이동·세척·폐기,4개 수리·탈출을 구현하라. 결과는 서버 성공/실패와 전체 통계·방/열쇠 통계를 표시하라.
 현재 백엔드16개API·미리보기·불가 이유·만료·병합·치료 기한·중복 방지는 이미 있다. 프론트에서 시간·오염·재료·성공을 직접 변경하지 마라.
@@ -800,3 +861,24 @@ allowed=false는 비활성, projected.status=FAILED는 경고하되 allowed=true
 실제 서버/개발 페이지·브라우저·완료 기준·빌드/테스트를 확인하고 변경 파일·검증·미검증·인계 메모를 보고하라.
 커밋·푸시·main 병합은 별도 요청 전 수행하지 마라.
 ```
+
+## 현재 구현·검증 기록 — 2026-10-27
+
+safe-zone.mjs/result.mjs와 범위별 CSS, /dev/safe-zone.html 및 preview host를 구현하고 기존 앱에 연결했다. 모듈 이름·Context·API 경로 변경 없이 동적 import로 연결된다. 별도 B 브랜치/merge는 사용자의 역할 통합 요청에 따라 수행하지 않았다.
+
+- 재료를 batchId로 선택하고 묶음 전체 이동·세척·폐기한다. 폐기는 확인과 취소가 있다. 사라진 batchId와 새 판은 선택/확인을 해제한다.
+- 휴식1~8시간·실제 회복량·오염 변화·만료 예정과 실패 위험을 표시한다. 정상 치료 및 기한 초과 시 키트 보존/질병 유지도 projected에 따라 표시한다.
+- 양쪽 저장소 CLEAN 합산 재료로4개 부품을 수리하며 완성 후 별도 탈출이 필요하다.
+- 최종 성공/실패 원인·소요 시간·수리 내역·21개 통계, 결과 재열기와 시작 화면 복귀를 연결했다.
+- MySQL115개·JS55개·JAR 빌드 통과. 실제 브라우저의 기본/실패/재시도/키보드/3해상도 검증 완료.
+- 실제 HTTP 흐름 검증 중 특정 수리 재료와 기한은 기록한 테스트 판에 SQL로 준비했다. 자연 획득만으로 탈출하는 난이도는 미검증이다.
+
+[파일 설명·CRUD·검증 범위](Scrap_Escape_안전지대_학습가이드.md). 최종 그림과 플레이 밸런스, 순위/별도 결과 보존 정책은 남아 있다.
+
+### 운영 배치 변경 — 2026-10-27
+
+기존3열 전체 관리 화면은 독립 개발 페이지에서 유지한다. 운영 안전지대는 전체 야영지로 바뀌며, 보관/휴식/치료를 camp-action.area에 따라 분리한 모달로 사용한다. 새로운 정비 전체 화면은 별도 aircraft-repair.mjs가 담당한다. B의 재료 처리/휴식/치료 로직·Context·API는 유지한다. [현행 화면 흐름](Scrap_Escape_야영지_화면_학습가이드.md).
+
+### 창 배치 조정 — 2026-10-27
+
+운영 모달은 HUD를 피하는 고정 높이 대신 화면 중앙의 넓은 콘텐츠 높이로 변경됐다. 보관함은 휴대품/상자/선택 재료를 가로로 나누고 휴식·치료는 남는 높이를 제거한다. 최종 통계는6열이다. 메시지/재시도는 공통 모달 footer에 들어가므로 B View가 이를 중복 생성하지 않는다. [레이아웃 검증](Scrap_Escape_도시선택_창배치_학습가이드.md).

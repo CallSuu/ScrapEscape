@@ -62,7 +62,7 @@ class IdempotencyIntegrationTest {
         var id=fresh();String key=key();var request=post(path(id)+"/explorations").header("Idempotency-Key",key).contentType(MediaType.APPLICATION_JSON).content("{\"locationId\":1}");
         var first=mvc.perform(request).andExpect(status().isOk()).andExpect(header().string("Idempotency-Replayed","false")).andReturn().getResponse().getContentAsString();
         var second=mvc.perform(request).andExpect(status().isOk()).andExpect(header().string("Idempotency-Replayed","true")).andReturn().getResponse().getContentAsString();
-        assertEquals(mapper.readTree(first),mapper.readTree(second));assertEquals(6,service.state(id).elapsedHours());assertEquals(8,service.state(id).stamina());assertEquals(1,service.state(id).statistics().explorations());
+        assertEquals(mapper.readTree(first),mapper.readTree(second));assertEquals(6,service.state(id).elapsedHours());assertEquals(13,service.state(id).stamina());assertEquals(1,service.state(id).statistics().explorations());
     }
     @Test void sameKeyIsGlobalAndCannotBeReusedOnAnotherGame() throws Exception {
         var a=fresh();var b=fresh();String key=key();rest(a,key,1);
