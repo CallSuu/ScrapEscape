@@ -84,7 +84,7 @@ class GameServiceIntegrationTest {
         assertThrows(GameException.class,()->service.move(s.gameId(),b,Storage.INVENTORY));assertEquals(1,service.state(s.gameId()).chest().size());
     }
     @Test void cleansEntireBatchAndProtectsItDuringHourFortyEight() {
-        var s=fresh();long b=batch(s.gameId(),1,4,"DIRTY","CHEST",0);updateTime(s.gameId(),47);
+        var s=fresh();long b=batch(s.gameId(),1,4,"DIRTY","CHEST",0);jdbc.update("UPDATE game SET cleaner_amount=4 WHERE game_id=?",s.gameId().toString());updateTime(s.gameId(),47);
         var cleaned=service.clean(s.gameId(),b).state();assertEquals(Condition.CLEAN,cleaned.chest().get(0).condition());
         assertEquals(48,cleaned.elapsedHours());assertEquals(0,cleaned.cleanerAmount());assertEquals(15,cleaned.stamina());
         assertEquals(4,cleaned.statistics().cleaned());
@@ -96,9 +96,9 @@ class GameServiceIntegrationTest {
         var discarded=service.discard(s.gameId(),b).state();assertEquals(0,count(s.gameId()));assertEquals(2,discarded.statistics().discarded());
     }
     @Test void cleanerAndRestNeverExceedCaps() {
-        var s=fresh();jdbc.update("UPDATE game SET cleaner_amount=8,stamina=9 WHERE game_id=?",s.gameId().toString());
+        var s=fresh();jdbc.update("UPDATE game SET cleaner_amount=10,stamina=9 WHERE game_id=?",s.gameId().toString());
         random.set(0,0,0);var result=service.explore(s.gameId(),1);assertTrue(result.loot().cleanerFound());assertEquals(0,result.loot().cleanerAdded());
-        var rested=service.rest(s.gameId(),6).state();assertEquals(15,rested.stamina());assertEquals(8,rested.cleanerAmount());
+        var rested=service.rest(s.gameId(),6).state();assertEquals(15,rested.stamina());assertEquals(10,rested.cleanerAmount());
     }
     @Test void unavailableCleanerCannotConsumeTime() {
         var s=fresh();long b=batch(s.gameId(),1,2,"DIRTY","CHEST",0);
@@ -106,7 +106,7 @@ class GameServiceIntegrationTest {
         assertThrows(GameException.class,()->service.clean(s.gameId(),b));assertEquals(0,service.state(s.gameId()).elapsedHours());
     }
     @Test void washedStacksMergeButDirtyStacksKeepSeparateAges() {
-        var s=fresh();batch(s.gameId(),1,2,"CLEAN","CHEST",0);long b=batch(s.gameId(),1,3,"DIRTY","CHEST",0);
+        var s=fresh();batch(s.gameId(),1,2,"CLEAN","CHEST",0);long b=batch(s.gameId(),1,3,"DIRTY","CHEST",0);jdbc.update("UPDATE game SET cleaner_amount=3 WHERE game_id=?",s.gameId().toString());
         var cleaned=service.clean(s.gameId(),b).state();assertEquals(1,cleaned.chest().size());assertEquals(5,cleaned.chest().get(0).quantity());
         batch(s.gameId(),1,2,"DIRTY","INVENTORY",1);batch(s.gameId(),1,3,"DIRTY","INVENTORY",2);
         assertEquals(2,service.state(s.gameId()).inventory().size());
@@ -203,7 +203,7 @@ class GameServiceIntegrationTest {
     }
     @Test void cleanBatchesPackIntoSixWithoutLosingOverflow() {
         var s=fresh();batch(s.gameId(),1,4,"CLEAN","CHEST",0);
-        long b=batch(s.gameId(),1,4,"DIRTY","CHEST",0);
+        long b=batch(s.gameId(),1,4,"DIRTY","CHEST",0);jdbc.update("UPDATE game SET cleaner_amount=4 WHERE game_id=?",s.gameId().toString());
         var state=service.clean(s.gameId(),b).state();
         assertEquals(List.of(6,2),state.chest().stream().map(Item::quantity).toList());
         assertEquals(8,state.chest().stream().mapToInt(Item::quantity).sum());
@@ -244,14 +244,14 @@ class GameServiceIntegrationTest {
         } finally {executor.shutdownNow();}
     }
 
-    @Test void cleanerProbabilityIsEightyPercentAtExactBoundary() {
-        for(int roll:new int[]{0,79,80,99}) {
+    @Test void cleanerRewardsUseSeventyThirtyAtExactBoundary() {
+        for(int roll:new int[]{0,69,70,99}) {
             var s=fresh();random.set(0,0,roll,99,99,99);
             var r=service.explore(s.gameId(),1);
-            assertEquals(roll<80,r.loot().cleanerFound());
-            assertEquals(roll<80?1:0,r.loot().cleanerAdded());
-            assertEquals(8,r.state().cleanerCapacity());
-            assertEquals(80,service.locations(s.gameId()).get(0).cleanerProbabilityPercent());
+            assertTrue(r.loot().cleanerFound());
+            assertEquals(roll<70?1:2,r.loot().cleanerAdded());
+            assertEquals(10,r.state().cleanerCapacity());
+            assertEquals(100,service.locations(s.gameId()).get(0).cleanerProbabilityPercent());
         }
     }
 

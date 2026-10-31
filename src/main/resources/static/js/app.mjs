@@ -23,7 +23,7 @@ export function createAppController({ clientOptions = {}, onRender = () => {}, o
       navigation++;
       changePanel({ name: 'exploration-result', locationId: action.locationId, activity: action.type, receipt });
     } else if (action.type === 'DEFER_ROOM' && panel?.name === 'secret-room' && panel.locationId === action.locationId) {
-      navigation++; changePanel(null);
+      navigation++; changePanel({name:'exploration'});
     } else if (['REST','TREAT'].includes(action.type) &&
       panel?.name === 'camp-action' && screen.state.status === 'RUNNING') {
       navigation++; changePanel({ name:'safe-zone' });
@@ -59,7 +59,7 @@ export function createAppController({ clientOptions = {}, onRender = () => {}, o
             const room = screen.state.secrets.rooms.find(r => r.locationId === found?.roomLocationId);
             if (completed.activity === 'EXPLORE' && found?.roomDiscovered && room && !room.opened)
               changePanel({ name: 'secret-room', locationId: room.locationId, fromDiscovery: true });
-            else changePanel(null);
+            else changePanel({name:'exploration'});
           }
           return { ok: true, screen, result: null };
         }
@@ -128,7 +128,7 @@ export function createAppController({ clientOptions = {}, onRender = () => {}, o
         const room = screen?.state.secrets.rooms.find(r => r.locationId === previous?.locationId);
         const defer = previous?.name === 'secret-room' && room?.immediateAvailable && !room.opened &&
           screen.state.status === 'RUNNING' && !flags.busy && !flags.hasPending;
-        changePanel(null);
+        changePanel(previous?.name==='secret-room'?{name:'exploration'}:null);
         if (defer) await context.dispatch({ type: 'DEFER_ROOM', locationId: previous.locationId });
         return;
       }

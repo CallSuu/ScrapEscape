@@ -14,7 +14,7 @@ export function explorationSharedInfo(locations, state) {
       (state.diseased ? '질병 비용 포함' : '발병 ' + first.diseaseProbabilityAfterExploration + '%') +
       (first.stormExposureHours > 0 ? ' · 폭풍 노출 ' + first.stormExposureHours + 'h 포함' : ''),
     rewards: '재료 ' + first.rewards.map(r => r.quantity + '개 ' + r.probabilityPercent + '%').join(' / ') +
-      ' · 세척액 ' + first.cleanerProbabilityPercent + '% · 열쇠 ' + state.secrets.keyProbabilityPercent +
+      ' · 세척액 ' + (first.cleanerRewards || []).map(r=>r.quantity+'개 '+r.probabilityPercent+'%').join(' / ') + ' · 열쇠 ' + state.secrets.keyProbabilityPercent +
       '% · 방 발견 ' + state.secrets.discoveryProbabilityPercent + '%',
     risk: locations.some(card => explorationDeadlineRisk(card, state)) ? '탐색 완료 시 생존 또는 치료 기한 초과 위험' : ''
   };

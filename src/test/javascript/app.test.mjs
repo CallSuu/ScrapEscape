@@ -113,10 +113,10 @@ test('zero loot keeps the successful empty exploration message and refreshed emp
  await c.dispatch({type:'START_GAME'});const result=await c.dispatch({type:'EXPLORE',locationId:1});
  assert.equal(result.ok,true);assert.equal(c.getScreen().state.elapsedHours,6);assert.equal(c.getScreen().state.inventory.length,0);assert.equal(messages.at(-1),'구석까지 뒤졌지만 쓸 만한 부품은 없었습니다.');
 });
-test('exploration opens reward screen and confirmation returns to main without another request',async()=>{
+test('exploration opens reward screen and confirmation returns to exploration without another request',async()=>{
  const {c,calls}=setup();await c.dispatch({type:'START_GAME'});await c.navigate({name:'exploration'});await c.dispatch({type:'EXPLORE',locationId:6});
  assert.equal(c.getPanel().name,'exploration-result');assert.equal(c.getPanel().locationId,6);const before=calls.length;
- const result=await c.dispatch({type:'ACK_EXPLORATION_RESULT'});assert.equal(result.ok,true);assert.equal(c.getPanel(),null);assert.equal(calls.length,before);
+ const result=await c.dispatch({type:'ACK_EXPLORATION_RESULT'});assert.equal(result.ok,true);assert.deepEqual(c.getPanel(),{name:'exploration'});assert.equal(calls.length,before);
 });
 test('discovery choice waits until loot confirmation and neither confirmation nor reading uses a key',async()=>{
  const {c,screen,calls}=setup({fetch:async(path,o,s)=>o.method==='GET'?reply(s):path==='/api/games'?reply(s.state):reply({message:'발견',state:s.state,loot:{materials:[]},secretFindings:{roomDiscovered:true,roomLocationId:1,keysAdded:0}})});
@@ -137,10 +137,10 @@ test('failed expedition shows its loot before final ending, then confirmation op
  const {c}=setup({fetch:async(path,o,s)=>{if(o.method==='GET')return reply(s);if(path==='/api/games')return reply(s.state);s.state.status='FAILED';s.state.failureReason='TIME_LIMIT';return reply({message:'기한초과',state:s.state,loot:{materials:[]}});}});
  await c.dispatch({type:'START_GAME'});await c.dispatch({type:'EXPLORE',locationId:1});assert.equal(c.getPanel().name,'exploration-result');await c.dispatch({type:'ACK_EXPLORATION_RESULT'});assert.equal(c.getPanel().name,'result');
 });
-test('room admission returns a room reward screen and later deferral returns main once',async()=>{
+test('room admission returns a room reward screen and later deferral returns exploration once',async()=>{
  const {c,screen,calls}=setup();screen.state.secrets.rooms=[{locationId:1,opened:false,immediateAvailable:false}];await c.dispatch({type:'START_GAME'});await c.navigate({name:'secret-room',locationId:1});
- await c.dispatch({type:'OPEN_ROOM',locationId:1,mode:'REVISIT'});assert.equal(c.getPanel().name,'exploration-result');assert.equal(c.getPanel().activity,'OPEN_ROOM');await c.dispatch({type:'ACK_EXPLORATION_RESULT'});assert.equal(c.getPanel(),null);
- await c.navigate({name:'secret-room',locationId:1});await c.dispatch({type:'DEFER_ROOM',locationId:1});assert.equal(c.getPanel(),null);assert.equal(calls.filter(r=>r.path.endsWith('/defer')).length,1);
+ await c.dispatch({type:'OPEN_ROOM',locationId:1,mode:'REVISIT'});assert.equal(c.getPanel().name,'exploration-result');assert.equal(c.getPanel().activity,'OPEN_ROOM');await c.dispatch({type:'ACK_EXPLORATION_RESULT'});assert.deepEqual(c.getPanel(),{name:'exploration'});
+ await c.navigate({name:'secret-room',locationId:1});await c.dispatch({type:'DEFER_ROOM',locationId:1});assert.deepEqual(c.getPanel(),{name:'exploration'});assert.equal(calls.filter(r=>r.path.endsWith('/defer')).length,1);
 });
 test('receipt survives a successful expedition whose screen refresh needs retry without repeating POST',async()=>{
  let failRefresh=false,explorationPosts=0;const {c,panels}=setup({fetch:async(path,o,s)=>{

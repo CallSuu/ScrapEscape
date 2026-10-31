@@ -19,9 +19,10 @@ test('shorter exploration remains allowed before both deadlines',()=>{
 test('shared header includes common costs and probabilities but not hospital-only kit reward',async()=>{
  const {explorationSharedInfo}=await import('../../main/resources/static/js/exploration.mjs');
  const {default:fs}=await import('node:fs');const screen=JSON.parse(fs.readFileSync(new URL('../../../docs/api/examples/SE-16.json',import.meta.url))).response.body;
+ screen.locations.forEach(c=>c.cleanerRewards=[{quantity:1,probabilityPercent:70},{quantity:2,probabilityPercent:30}]);
  const info=explorationSharedInfo(screen.locations,screen.state);
  assert.match(info.cost,/시간 6h/);assert.match(info.cost,/체력 2/);assert.match(info.cost,/오염 \+10/);
- assert.match(info.rewards,/0개 5%/);assert.match(info.rewards,/세척액 80%/);assert.match(info.rewards,/열쇠 10%/);
+ assert.match(info.rewards,/0개 5%/);assert.match(info.rewards,/세척액 1개 70% \/ 2개 30%/);assert.match(info.rewards,/열쇠 10%/);
  assert.doesNotMatch(info.rewards,/키트/);assert.equal(info.risk,'');
 });
 test('shared header refreshes night disease costs and warns without blocking cards',async()=>{

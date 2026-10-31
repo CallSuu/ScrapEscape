@@ -24,4 +24,9 @@ class GameRulesTest {
         for(int c=0;c<=100;c++)assertEquals(c<60?0:c<80?30:c<90?40:60,GameRules.diseaseProbability(c));
     }
 
+    @Test void cleanerRewardsHaveSeventyThirtyBucketsAndRestReducesFivePerHour() {
+        int[] counts=new int[3];for(int i=0;i<100;i++)counts[GameRules.cleanerReward(i)]++;
+        assertArrayEquals(new int[]{0,70,30},counts);assertEquals(10,GameRules.CLEANER_CAPACITY);
+        assertEquals(10,GameRules.restDecontamination(2));assertEquals(20,GameRules.restDecontamination(4));assertEquals(40,GameRules.restDecontamination(8));
+    }
 }

@@ -54,12 +54,12 @@ public final class GameModels {
     public record RewardProbability(int quantity,int probabilityPercent) {}
     public record LocationCard(long locationId,String name,String description,List<Candidate> materials,
                                int durationHours,int staminaCost,List<RewardProbability> rewards,
-                               int cleanerProbabilityPercent,boolean canExplore,String unavailableReason,
+                               int cleanerProbabilityPercent,List<RewardProbability> cleanerRewards,boolean canExplore,String unavailableReason,
                                int medicalKitReward,int baseContamination,int consecutiveContamination,
                                int stormExposureHours,int stormContamination,int expectedContaminationIncrease,
                                int diseaseProbabilityAfterExploration,SecretRoomCard secretRoom) {
         LocationCard withSecretRoom(SecretRoomCard room) {
-            return new LocationCard(locationId,name,description,materials,durationHours,staminaCost,rewards,cleanerProbabilityPercent,
+            return new LocationCard(locationId,name,description,materials,durationHours,staminaCost,rewards,cleanerProbabilityPercent,cleanerRewards,
                 canExplore,unavailableReason,medicalKitReward,baseContamination,consecutiveContamination,stormExposureHours,
                 stormContamination,expectedContaminationIncrease,diseaseProbabilityAfterExploration,room);
         }

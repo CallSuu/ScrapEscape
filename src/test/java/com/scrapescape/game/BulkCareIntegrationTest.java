@@ -32,18 +32,18 @@ class BulkCareIntegrationTest {
     String body(long... ids) throws Exception {return json.writeValueAsString(Map.of("batchIds",ids));}
     void supply(UUID id,int amount){jdbc.update("UPDATE game SET cleaner_amount=?,stamina=0 WHERE game_id=?",amount,id.toString());}
     @Test void cleanerShortageRollsBackAllSelectedBatches() throws Exception {
-        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,2,3,"DIRTY","CHEST");supply(id,1);
+        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,2,3,"DIRTY","CHEST");supply(id,4);
         mvc.perform(post("/api/games/"+id+"/items/clean").contentType(MediaType.APPLICATION_JSON).content(body(a,b))).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("INSUFFICIENT_CLEANER"));
-        assertEquals(0,service.state(id).elapsedHours());assertEquals(1,service.state(id).cleanerAmount());assertEquals(0,service.state(id).statistics().cleaned());
+        assertEquals(0,service.state(id).elapsedHours());assertEquals(4,service.state(id).cleanerAmount());assertEquals(0,service.state(id).statistics().cleaned());
     }
     @Test void cleansBothStoragesAtZeroStaminaAndProtectsSelectedExpiringBatches() throws Exception {
-        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,2,3,"DIRTY","CHEST"),c=batch(id,3,1,"DIRTY","CHEST");supply(id,2);jdbc.update("UPDATE game SET elapsed_hours=47 WHERE game_id=?",id.toString());
+        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,2,3,"DIRTY","CHEST"),c=batch(id,3,1,"DIRTY","CHEST");supply(id,5);jdbc.update("UPDATE game SET elapsed_hours=47 WHERE game_id=?",id.toString());
         mvc.perform(post("/api/games/"+id+"/items/clean").contentType(MediaType.APPLICATION_JSON).content(body(a,b))).andExpect(status().isOk()).andExpect(jsonPath("$.state.elapsedHours").value(49)).andExpect(jsonPath("$.state.stamina").value(0)).andExpect(jsonPath("$.state.cleanerAmount").value(0)).andExpect(jsonPath("$.state.statistics.cleaned").value(5));
         assertEquals("UNUSABLE",jdbc.queryForObject("SELECT item_condition FROM item_batch WHERE batch_id=?",String.class,c));
         assertEquals(2,jdbc.queryForObject("SELECT COUNT(*) FROM item_batch WHERE game_id=? AND item_condition='CLEAN'",Integer.class,id.toString()));
     }
     @Test void cleanReplayWorksAfterMergedBatchIsDeleted() throws Exception {
-        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,1,3,"DIRTY","INVENTORY");supply(id,2);var key=UUID.randomUUID().toString();String path="/api/games/"+id+"/items/clean",payload=body(a,b);
+        var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY"),b=batch(id,1,3,"DIRTY","INVENTORY");supply(id,5);var key=UUID.randomUUID().toString();String path="/api/games/"+id+"/items/clean",payload=body(a,b);
         var first=mvc.perform(post(path).header("Idempotency-Key",key).contentType(MediaType.APPLICATION_JSON).content(payload)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         var second=mvc.perform(post(path).header("Idempotency-Key",key).contentType(MediaType.APPLICATION_JSON).content(payload)).andExpect(status().isOk()).andExpect(header().string("Idempotency-Replayed","true")).andReturn().getResponse().getContentAsString();assertEquals(json.readTree(first),json.readTree(second));assertEquals(1,service.state(id).inventory().size());assertEquals(5,service.state(id).inventory().get(0).quantity());
     }
@@ -65,5 +65,15 @@ class BulkCareIntegrationTest {
         mvc.perform(post("/api/games/"+id+"/items/clean").contentType(MediaType.APPLICATION_JSON).content(body(a,b))).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("NOT_CLEANABLE"));assertEquals(0,service.state(id).statistics().cleaned());
         jdbc.update("UPDATE game SET status='FAILED',failure_reason='TIME_LIMIT' WHERE game_id=?",id.toString());
         mvc.perform(delete("/api/games/"+id+"/items").contentType(MediaType.APPLICATION_JSON).content(body(a,b))).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("GAME_ENDED"));assertEquals(1,service.state(id).inventory().size());
+    }
+    @Test void singleBatchUsesOneCleanerPerMaterialAndRejectsShortageAtomically() throws Exception {
+        var id=fresh();long a=batch(id,1,3,"DIRTY","INVENTORY");supply(id,2);
+        mvc.perform(post("/api/games/"+id+"/items/"+a+"/clean")).andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("INSUFFICIENT_CLEANER"));
+        assertEquals(0,service.state(id).elapsedHours());assertEquals(2,service.state(id).cleanerAmount());assertEquals(0,service.state(id).statistics().cleaned());
+        supply(id,3);mvc.perform(post("/api/games/"+id+"/items/"+a+"/clean")).andExpect(status().isOk()).andExpect(jsonPath("$.state.cleanerAmount").value(0)).andExpect(jsonPath("$.state.elapsedHours").value(1));
+    }
+    @Test void recipesAllTotalSevenAndIronQuantitiesAreReduced() {
+        var id=fresh();assertEquals(List.of(7,7,7,7,7,7,7),jdbc.queryForList("SELECT SUM(required_quantity) FROM recipe GROUP BY part_id ORDER BY part_id",Integer.class));
+        for(var part:service.state(id).repairs())assertEquals(7,part.ingredients().stream().mapToInt(GameModels.Ingredient::requiredQuantity).sum());
     }
 }

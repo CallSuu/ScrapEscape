@@ -1,8 +1,8 @@
 {
-  "note": "실제 HTTP 응답. 체력15·세척액 최대8/탐색80%·세척 체력0 규칙의 테스트 판. 특정 재료·키트·방·수리 조건은 이 판에만 준비했으며 검증 후 삭제한다.",
+  "note": "2026-10-31 실제 HTTP 응답. 테스트 판에 필요한 재료·자원을 준비했다. 세척액 최대10, 탐색 지급1회분70%/2회분30%, 세척은 재료개수만큼 액 사용·묶음당1h·체력0, 휴식 시간당 오염5 감소, 조합별 총7개. 검증 후 이 판만 삭제.",
   "request": {
     "method": "PATCH",
-    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/items/4413/storage",
+    "path": "/api/games/834d2ab9-54f1-4d30-b734-7e7d8ae49945/items/5507/storage",
     "body": {
       "storage": "CHEST"
     }
@@ -12,7 +12,7 @@
     "body": {
       "message": "재료의 보관 위치를 변경했습니다.",
       "state": {
-        "gameId": "930f2f5b-efc3-4298-9335-7cf12032d35f",
+        "gameId": "834d2ab9-54f1-4d30-b734-7e7d8ae49945",
         "status": "RUNNING",
         "elapsedHours": 6,
         "day": 1,
@@ -21,17 +21,17 @@
         "night": false,
         "stamina": 13,
         "maxStamina": 15,
-        "cleanerAmount": 2,
-        "cleanerCapacity": 8,
+        "cleanerAmount": 10,
+        "cleanerCapacity": 10,
         "inventoryCapacity": 4,
         "chestCapacity": 16,
         "inventory": [],
         "chest": [
           {
-            "batchId": 4413,
+            "batchId": 5507,
             "materialId": 1,
             "name": "철 조각",
-            "quantity": 4,
+            "quantity": 3,
             "storage": "CHEST",
             "acquiredHour": 6,
             "condition": "DIRTY",
@@ -39,38 +39,6 @@
           }
         ],
         "repairs": [
-          {
-            "partId": 1,
-            "name": "엔진 시동 장치",
-            "repaired": false,
-            "canCraft": false,
-            "ingredients": [
-              {
-                "materialId": 1,
-                "name": "철 조각",
-                "requiredQuantity": 3,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 2,
-                "name": "기어",
-                "requiredQuantity": 2,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 3,
-                "name": "구리 전선",
-                "requiredQuantity": 2,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 7,
-                "name": "배터리 셀",
-                "requiredQuantity": 1,
-                "availableQuantity": 0
-              }
-            ]
-          },
           {
             "partId": 2,
             "name": "동력 전달 장치",
@@ -80,7 +48,7 @@
               {
                 "materialId": 1,
                 "name": "철 조각",
-                "requiredQuantity": 3,
+                "requiredQuantity": 2,
                 "availableQuantity": 0
               },
               {
@@ -98,14 +66,20 @@
             ]
           },
           {
-            "partId": 3,
-            "name": "연료 공급 장치",
+            "partId": 5,
+            "name": "비행 제어 장치",
             "repaired": false,
             "canCraft": false,
             "ingredients": [
               {
-                "materialId": 1,
-                "name": "철 조각",
+                "materialId": 3,
+                "name": "구리 전선",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 4,
+                "name": "회로 기판",
                 "requiredQuantity": 2,
                 "availableQuantity": 0
               },
@@ -116,14 +90,8 @@
                 "availableQuantity": 0
               },
               {
-                "materialId": 6,
-                "name": "고무 부품",
-                "requiredQuantity": 3,
-                "availableQuantity": 0
-              },
-              {
-                "materialId": 8,
-                "name": "필터",
+                "materialId": 10,
+                "name": "신호 모듈",
                 "requiredQuantity": 1,
                 "availableQuantity": 0
               }
@@ -138,7 +106,7 @@
               {
                 "materialId": 3,
                 "name": "구리 전선",
-                "requiredQuantity": 3,
+                "requiredQuantity": 2,
                 "availableQuantity": 0
               },
               {
@@ -160,6 +128,32 @@
                 "availableQuantity": 0
               }
             ]
+          },
+          {
+            "partId": 7,
+            "name": "기체 보강 장치",
+            "repaired": false,
+            "canCraft": false,
+            "ingredients": [
+              {
+                "materialId": 1,
+                "name": "철 조각",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 6,
+                "name": "고무 부품",
+                "requiredQuantity": 2,
+                "availableQuantity": 0
+              },
+              {
+                "materialId": 9,
+                "name": "내열 합금",
+                "requiredQuantity": 3,
+                "availableQuantity": 0
+              }
+            ]
           }
         ],
         "statistics": {
@@ -167,7 +161,7 @@
           "dayExplorations": 1,
           "nightExplorations": 0,
           "emptyExplorations": 0,
-          "collected": 2,
+          "collected": 3,
           "cleaned": 0,
           "discarded": 0,
           "repairedParts": 0,
@@ -186,8 +180,8 @@
         "consecutiveExplorations": 1,
         "currentStorm": null,
         "nextStorm": {
-          "startHour": 26,
-          "endHour": 28
+          "startHour": 48,
+          "endHour": 49
         },
         "treatment": {
           "allowed": true,
@@ -204,16 +198,55 @@
         "failureReason": null,
         "rulesVersion": 2,
         "secrets": {
-          "keyAmount": 1,
+          "keyAmount": 0,
           "keyCapacity": 2,
           "keyProbabilityPercent": 10,
           "discoveryProbabilityPercent": 15,
-          "rooms": [],
+          "rooms": [
+            {
+              "locationId": 6,
+              "locationName": "병원",
+              "buttonLabel": "?",
+              "discoveredHour": 6,
+              "opened": false,
+              "immediateAvailable": false,
+              "immediate": {
+                "allowed": false,
+                "unavailableReason": "즉시 입장 기회가 끝났습니다. 기억한 방으로 다시 방문하세요.",
+                "durationHours": 1,
+                "staminaCost": 1,
+                "keyCost": 1,
+                "baseContamination": 0,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 0,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 4,
+                "deadlineRisk": false
+              },
+              "revisit": {
+                "allowed": false,
+                "unavailableReason": "비밀의 열쇠가 없습니다.",
+                "durationHours": 4,
+                "staminaCost": 2,
+                "keyCost": 1,
+                "baseContamination": 10,
+                "stormExposureHours": 0,
+                "stormContamination": 0,
+                "expectedContaminationIncrease": 10,
+                "possibleExtraContamination": 15,
+                "rewardFreeSlots": 4,
+                "deadlineRisk": false
+              },
+              "openedHour": null,
+              "lastVisit": null
+            }
+          ],
           "statistics": {
-            "discoveredRooms": 0,
+            "discoveredRooms": 1,
             "openedRooms": 0,
-            "unopenedRooms": 0,
-            "keysAcquired": 1,
+            "unopenedRooms": 1,
+            "keysAcquired": 0,
             "keysUsed": 0,
             "goodOutcomes": 0,
             "badOutcomes": 0,

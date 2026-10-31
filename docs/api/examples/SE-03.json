@@ -1,8 +1,8 @@
 {
-  "note": "실제 HTTP 응답. 체력15·세척액 최대8/탐색80%·세척 체력0 규칙의 테스트 판. 특정 재료·키트·방·수리 조건은 이 판에만 준비했으며 검증 후 삭제한다.",
+  "note": "2026-10-31 실제 HTTP 응답. 테스트 판에 필요한 재료·자원을 준비했다. 세척액 최대10, 탐색 지급1회분70%/2회분30%, 세척은 재료개수만큼 액 사용·묶음당1h·체력0, 휴식 시간당 오염5 감소, 조합별 총7개. 검증 후 이 판만 삭제.",
   "request": {
     "method": "GET",
-    "path": "/api/games/930f2f5b-efc3-4298-9335-7cf12032d35f/locations",
+    "path": "/api/games/834d2ab9-54f1-4d30-b734-7e7d8ae49945/locations",
     "body": null
   },
   "response": {
@@ -49,7 +49,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -102,7 +112,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -155,7 +175,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -208,7 +238,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -261,7 +301,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 0,
@@ -309,7 +359,17 @@
             "probabilityPercent": 45
           }
         ],
-        "cleanerProbabilityPercent": 80,
+        "cleanerProbabilityPercent": 100,
+        "cleanerRewards": [
+          {
+            "quantity": 1,
+            "probabilityPercent": 70
+          },
+          {
+            "quantity": 2,
+            "probabilityPercent": 30
+          }
+        ],
         "canExplore": true,
         "unavailableReason": null,
         "medicalKitReward": 1,

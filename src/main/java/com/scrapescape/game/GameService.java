@@ -92,7 +92,7 @@ public class GameService {
             int firstQuantity=1+random.nextInt(total-1);
             generated.put(first,firstQuantity);generated.put(candidates.get(secondIndex),total-firstQuantity);
         }
-        boolean cleanerFound=random.nextInt(100)<GameRules.CLEANER_PROBABILITY_PERCENT;int cleanerAdded=cleanerFound&&g.cleaner()<GameRules.CLEANER_CAPACITY?1:0;
+        boolean cleanerFound=true;int cleanerAdded=Math.min(GameRules.cleanerReward(random.nextInt(100)),GameRules.CLEANER_CAPACITY-g.cleaner());
         var found=new ArrayList<MaterialLoot>();int collected=0;
         for(var entry:generated.entrySet()) {
             int accepted=free>0?entry.getValue():0;
@@ -107,7 +107,7 @@ public class GameService {
         repo.contaminate(id,increase,exposure,newlyDiseased,g.elapsed()+hours);repo.finish(id);
         String message=total==0?"구석까지 뒤졌지만 쓸 만한 부품은 없었습니다.":"재료 "+collected+"개를 가져왔습니다.";
         if(total>collected)message+=" 공간이 부족해 "+(total-collected)+"개는 현장에 두고 왔습니다.";
-        if(cleanerFound)message+=cleanerAdded==1?" 세척액 1회분도 얻었습니다.":" 세척액 통이 가득 찼습니다.";
+        message+=cleanerAdded>0?" 세척액 "+cleanerAdded+"회분도 얻었습니다.":" 세척액 통이 가득 찼습니다.";
         if(location==6)message+=medicalAdded==1?" 의료 키트 1개를 얻었습니다.":" 의료 키트 보유량이 가득 찼습니다.";
         if(exposure>0)message+=" 폭풍에 "+exposure+"시간 노출되어 오염도가 추가로 "+(exposure*5)+" 증가했습니다.";
         if(newlyDiseased)message+=" 질병이 발생했습니다. 72시간 안에 치료하세요.";
@@ -159,13 +159,14 @@ public class GameService {
     }
     @Transactional public ActionResult cleanMany(UUID id,List<Long> batchIds) {
         Game g=running(id);var batches=selectedBatches(g,batchIds);
-        if(g.cleaner()<batches.size())throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
+        int cleanerCost=batches.stream().mapToInt(Item::quantity).sum();
+        if(g.cleaner()<cleanerCost)throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
         for(var batch:batches)if(batch.condition()!=Condition.DIRTY||g.elapsed()-batch.acquiredHour()>=48)
             throw GameException.conflict("NOT_CLEANABLE","세척할 수 없는 재료가 포함되어 있습니다.");
         // Clean every selected row before merging or advancing time, which may remove rows.
         for(var batch:batches)repo.clean(id,batch);
         for(var batch:batches)repo.mergeClean(g,batch.materialId(),batch.storage());
-        repo.progress(id,batches.size(),0,-batches.size());repo.finish(id);
+        repo.progress(id,batches.size(),0,-cleanerCost);repo.finish(id);
         return result(id,"선택한 재료 "+batches.size()+"묶음을 세척했습니다.",null);
     }
     @Transactional public ActionResult discardMany(UUID id,List<Long> batchIds) {
@@ -177,9 +178,9 @@ public class GameService {
         Game g=running(id);Item batch=repo.item(g,batchId);
         if(batch.condition()!=Condition.DIRTY||g.elapsed()-batch.acquiredHour()>=48)
             throw GameException.conflict("NOT_CLEANABLE","이 재료는 세척할 수 없습니다.");
-        if(g.cleaner()<1)throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
+        if(g.cleaner()<batch.quantity())throw GameException.conflict("INSUFFICIENT_CLEANER","세척액이 부족합니다.");
         repo.clean(id,batch);repo.mergeClean(g,batch.materialId(),batch.storage());
-        repo.progress(id,1,0,-1);repo.finish(id);
+        repo.progress(id,1,0,-batch.quantity());repo.finish(id);
         return result(id,batch.name()+" "+batch.quantity()+"개를 세척했습니다.",null);
     }
     @Transactional public ActionResult discard(UUID id,long batchId) {
@@ -205,7 +206,7 @@ public class GameService {
     }
     @Transactional public ActionResult rest(UUID id,int hours) {
         if(hours<1||hours>8)throw invalid("휴식 시간은 1~8시간이어야 합니다.");
-        running(id);repo.progress(id,hours,GameRules.restRecovery(hours),0);if(hours>=4)repo.restHealth(id);repo.finish(id);
+        running(id);repo.progress(id,hours,GameRules.restRecovery(hours),0);repo.restHealth(id,hours);repo.finish(id);
         return result(id,hours+"시간 휴식했습니다.",null);
     }
     @Transactional public ActionResult treat(UUID id) {

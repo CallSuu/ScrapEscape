@@ -42,8 +42,8 @@ class DatabaseMigrationIntegrationTest {
             assertEquals(0,flyway.migrate().migrationsExecuted);
             String capProbe=UUID.randomUUID().toString();db.update("INSERT INTO game(game_id,rules_version) VALUES (?,2)",capProbe);
             assertEquals(15,db.queryForObject("SELECT stamina FROM game WHERE game_id=?",Integer.class,capProbe));
-            db.update("UPDATE game SET stamina=15,cleaner_amount=8 WHERE game_id=?",capProbe);
-            assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET cleaner_amount=9 WHERE game_id=?",capProbe));
+            db.update("UPDATE game SET stamina=15,cleaner_amount=10 WHERE game_id=?",capProbe);
+            assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET cleaner_amount=11 WHERE game_id=?",capProbe));
             assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET stamina=16 WHERE game_id=?",capProbe));
             if(legacy) {
                 assertEquals(12,db.queryForObject("SELECT elapsed_hours FROM game WHERE game_id=?",Integer.class,game));
@@ -67,7 +67,7 @@ class DatabaseMigrationIntegrationTest {
             db.update("INSERT INTO game(game_id,rules_version,elapsed_hours,stamina,contamination) VALUES (?,2,12,7,25)",id);
             db.update("UPDATE game SET cleaner_amount=4 WHERE game_id=?",id);
             db.update("INSERT INTO item_batch(game_id,material_id,quantity,storage_type,acquired_hour,item_condition) VALUES (?,1,4,'INVENTORY',6,'DIRTY')",id);
-            var flyway=Flyway.configure().dataSource(target).load();assertEquals(4,flyway.migrate().migrationsExecuted);
+            var flyway=Flyway.configure().dataSource(target).load();assertEquals(6,flyway.migrate().migrationsExecuted);
             assertEquals(0,db.queryForObject("SELECT secret_key_amount FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(12,db.queryForObject("SELECT elapsed_hours FROM game WHERE game_id=?",Integer.class,id));
             assertEquals(7,db.queryForObject("SELECT stamina FROM game WHERE game_id=?",Integer.class,id));
@@ -79,4 +79,24 @@ class DatabaseMigrationIntegrationTest {
         } finally {jdbc.execute("DROP DATABASE "+schema);}
     }
 
+    @Test void versionEightUpgradePreservesProgressAndOnlyUpdatesUnrepairedRunningRecipes() {
+        String schema="scrap_escape_test_migration_"+UUID.randomUUID().toString().replace("-","");jdbc.execute("CREATE DATABASE "+schema+" CHARACTER SET utf8mb4");
+        try {
+            String catalog=jdbc.queryForObject("SELECT DATABASE()",String.class);String url=datasource.getJdbcUrl().replace("/"+catalog,"/"+schema);assertNotEquals(datasource.getJdbcUrl(),url);
+            var target=new DriverManagerDataSource(url,datasource.getUsername(),datasource.getPassword());Flyway.configure().dataSource(target).target("8").load().migrate();var db=new JdbcTemplate(target);
+            String active=UUID.randomUUID().toString(),ended=UUID.randomUUID().toString();
+            for(String id:List.of(active,ended)) {
+                db.update("INSERT INTO game(game_id,rules_version,elapsed_hours,stamina,cleaner_amount) VALUES (?,2,12,7,8)",id);
+                db.update("INSERT INTO game_repair(game_id,part_id,part_name,repaired) VALUES (?,1,'engine',TRUE),(?,2,'drive',FALSE)",id,id);
+                db.update("INSERT INTO game_recipe SELECT ?,part_id,material_id,required_quantity FROM recipe WHERE part_id IN (1,2)",id);
+            }
+            db.update("UPDATE game SET status='FAILED',failure_reason='TIME_LIMIT' WHERE game_id=?",ended);
+            assertEquals(2,Flyway.configure().dataSource(target).load().migrate().migrationsExecuted);
+            assertEquals(8,db.queryForObject("SELECT cleaner_amount FROM game WHERE game_id=?",Integer.class,active));assertEquals(12,db.queryForObject("SELECT elapsed_hours FROM game WHERE game_id=?",Integer.class,active));
+            assertEquals(7,db.queryForObject("SELECT SUM(required_quantity) FROM game_recipe WHERE game_id=? AND part_id=2",Integer.class,active));
+            assertEquals(8,db.queryForObject("SELECT SUM(required_quantity) FROM game_recipe WHERE game_id=? AND part_id=1",Integer.class,active));
+            assertEquals(8,db.queryForObject("SELECT SUM(required_quantity) FROM game_recipe WHERE game_id=? AND part_id=2",Integer.class,ended));
+            db.update("UPDATE game SET cleaner_amount=10 WHERE game_id=?",active);assertThrows(org.springframework.dao.DataAccessException.class,()->db.update("UPDATE game SET cleaner_amount=11 WHERE game_id=?",active));
+        } finally {jdbc.execute("DROP DATABASE "+schema);}
+    }
 }

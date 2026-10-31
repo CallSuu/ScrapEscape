@@ -47,8 +47,8 @@ class ScreenIntegrationTest {
         var id=fresh();jdbc.update("UPDATE game SET stamina=8,contamination=25,consecutive_explorations=3 WHERE game_id=?",id.toString());
         var rests=screen(id).path("actions").path("rests");
         assertEquals(11,rests.get(2).path("preview").path("projected").path("stamina").asInt());
-        assertEquals(25,rests.get(2).path("preview").path("projected").path("contamination").asInt());
-        var p=rests.get(5).path("preview").path("projected");assertEquals(15,p.path("stamina").asInt());assertEquals(15,p.path("contamination").asInt());
+        assertEquals(10,rests.get(2).path("preview").path("projected").path("contamination").asInt());
+        var p=rests.get(5).path("preview").path("projected");assertEquals(15,p.path("stamina").asInt());assertEquals(0,p.path("contamination").asInt());
         service.rest(id,6);matches(p,id);assertEquals(0,service.state(id).consecutiveExplorations());
     }
     @Test void deadlinesWarnWithoutBlockingAndKeepTimeLimitPriority() throws Exception {
@@ -68,7 +68,7 @@ class ScreenIntegrationTest {
     }
     @Test void cleaningAtFortyEightProtectsChosenBatchAndWarnsAboutOthers() throws Exception {
         var id=fresh();long a=batch(id,1,2,"DIRTY","INVENTORY",0),b=batch(id,2,1,"DIRTY","CHEST",0);
-        jdbc.update("UPDATE game SET elapsed_hours=47 WHERE game_id=?",id.toString());var s=screen(id);var p=item(s,a).path("clean").path("projected");
+        jdbc.update("UPDATE game SET elapsed_hours=47,cleaner_amount=2 WHERE game_id=?",id.toString());var s=screen(id);var p=item(s,a).path("clean").path("projected");
         assertEquals(1,p.path("expiringBatchIds").size());assertEquals(b,p.path("expiringBatchIds").get(0).asLong());service.clean(id,a);matches(p,id);
         assertEquals("NOT_CLEANABLE",item(screen(id),b).path("clean").path("unavailableCode").asText());
     }
@@ -104,7 +104,7 @@ class ScreenIntegrationTest {
     }
     @Test void zeroStaminaCanCleanWithMatchingPreviewAndNoStaminaCost() throws Exception {
         var id=fresh();long b=batch(id,1,4,"DIRTY","INVENTORY",0);
-        jdbc.update("UPDATE game SET stamina=0,cleaner_amount=1 WHERE game_id=?",id.toString());
+        jdbc.update("UPDATE game SET stamina=0,cleaner_amount=4 WHERE game_id=?",id.toString());
         var preview=item(screen(id),b).path("clean");assertTrue(preview.path("allowed").asBoolean());
         assertEquals(0,preview.path("staminaCost").asInt());assertEquals(1,preview.path("durationHours").asInt());
         var result=service.clean(id,b);assertEquals(0,result.state().stamina());assertEquals(1,result.state().elapsedHours());assertEquals(0,result.state().cleanerAmount());

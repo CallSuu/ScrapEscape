@@ -243,3 +243,8 @@ curl -i -X POST "http://localhost:8080/api/games/$GAME_ID/rests" \
 `POST /api/games/{id}/items/clean`, `DELETE /api/games/{id}/items`는 모두 JSON `{"batchIds":[실제ID1,실제ID2]}`를 받는다. Idempotency-Key를 행동마다 발급하고 재시도에는 같은 값을 유지한다. 세척은 선택 묶음 수만큼 액과 시간이 필요하며 액 부족409 INSUFFICIENT_CLEANER는 전체 취소다. 폐기는 확인 후 전체 삭제하며 추가 시간·체력 비용이 없다. 예시: examples/SE-18.json, examples/SE-19.json. 기존SE-01~17 예시는 해당 기존 동작을 검증한 기록이다.
 
 현재 Java/MySQL130개·JavaScript72개 통과. 상세 검증 기록은 backend 구현현황의 2026-10-28 추가 항목을 참고한다. 개인 DB가 아닌 scrap_escape_test에서 검증했다.
+
+
+## 2026-10-31 최신 규칙
+
+V9/V10을 적용한 뒤 실행한다. 세척은 재료1개당액1·묶음당1h이며 cap10, 탐색보급1개70%/2개30%, 휴식 시간당오염5 감소, 조합별 총7개다. 비용0은 응답 필드에는 남고 화면 표시에서만 생략한다. 현재 SE-01~19 예시는 실제 최신 응답이며 LocationCard.cleanerRewards가 추가됐다. 기존 종료 데이터의 Idempotency-Key 응답은 원래 실행 당시 스냅샷일 수 있으므로 이후 /screen을 다시 읽는다.

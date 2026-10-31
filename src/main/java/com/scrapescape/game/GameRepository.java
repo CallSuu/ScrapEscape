@@ -81,7 +81,7 @@ public class GameRepository {
         List<RewardProbability> probabilities=night?List.of(new RewardProbability(0,5),new RewardProbability(2,20),new RewardProbability(3,35),new RewardProbability(4,40)):
             List.of(new RewardProbability(0,5),new RewardProbability(1,15),new RewardProbability(2,35),new RewardProbability(3,45));
         return jdbc.query("SELECT * FROM location ORDER BY location_id",(r,n)->new LocationCard(r.getLong("location_id"),
-            r.getString("name"),r.getString("description"),candidates(r.getLong("location_id")),hours,cost,probabilities,GameRules.CLEANER_PROBABILITY_PERCENT,reason==null,reason,
+            r.getString("name"),r.getString("description"),candidates(r.getLong("location_id")),hours,cost,probabilities,GameRules.CLEANER_PROBABILITY_PERCENT,List.of(new RewardProbability(1,70),new RewardProbability(2,30)),reason==null,reason,
             r.getLong("location_id")==6?1:0,10,consecutive,exposure,5*exposure,increase,
             g.diseased()?0:GameRules.diseaseProbability(Math.min(100,g.contamination()+increase)),null));
     }
@@ -113,8 +113,8 @@ public class GameRepository {
             WHERE game_id=?
             """,increase,increase,exposure,newlyDiseased,newlyDiseased,finishedHour,newlyDiseased?1:0,id.toString());
     }
-    void restHealth(UUID id) {
-        jdbc.update("UPDATE game SET contamination=GREATEST(0,contamination-10),consecutive_explorations=0 WHERE game_id=?",id.toString());
+    void restHealth(UUID id,int hours) {
+        jdbc.update("UPDATE game SET contamination=GREATEST(0,contamination-?),consecutive_explorations=IF(?,0,consecutive_explorations) WHERE game_id=?",GameRules.restDecontamination(hours),hours>=4,id.toString());
     }
     void treat(Game g) {
         jdbc.update("""

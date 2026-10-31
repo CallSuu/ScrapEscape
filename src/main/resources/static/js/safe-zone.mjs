@@ -40,24 +40,28 @@ export function selectedCareAvailability(screen, batchIds, action) {
   if (!screen || !batchIds.length) return blocked('재료를 선택하세요.');
   const selections = batchIds.map(id => safeSelection(screen,id));
   if (selections.some(s => !s)) return blocked('재료 목록이 바뀌었습니다. 다시 선택하세요.');
-  if (action === 'clean' && screen.state.cleanerAmount < batchIds.length)
-    return blocked('세척액이 부족합니다. 선택 ' + batchIds.length + '묶음 / 보유 ' + screen.state.cleanerAmount + '회분');
+  const cleanerCost = selections.reduce((n,s)=>n+s.item.quantity,0);
+  if (action === 'clean' && screen.state.cleanerAmount < cleanerCost)
+    return blocked('세척액이 부족합니다. 필요 ' + cleanerCost + '회분 / 보유 ' + screen.state.cleanerAmount + '회분');
   const denied = selections.find(s => !s.actions[action]?.allowed);
   return denied ? blocked(denied.actions[action]?.unavailableReason || '실행할 수 없는 재료가 포함되어 있습니다.') : { allowed:true, unavailableReason:null };
 }
 
 export function restSummary(preview, screen) {
-  return actionSummary(preview, screen).replace(' · 체력 소모 0', '');
+  return actionSummary(preview, screen);
 }
 
 export function actionSummary(preview, screen) {
   if (!preview) return '';
-  const texts = ['시간 ' + preview.durationHours + 'h', '체력 소모 ' + preview.staminaCost];
+  const texts = [];
+  if (preview.durationHours > 0) texts.push('시간 ' + preview.durationHours + 'h');
+  if (preview.staminaCost > 0) texts.push('체력 소모 ' + preview.staminaCost);
   const p = preview.projected;
   if (p && screen) {
     const signed = n => n >= 0 ? '+' + n : String(n);
     texts.push('완료 ' + (Math.floor((8 + p.elapsedHours) / 24) + 1) + '일 · ' + String((8 + p.elapsedHours) % 24).padStart(2, '0') + ':00');
-    texts.push('체력 ' + signed(p.stamina - screen.state.stamina), '오염 ' + signed(p.contamination - screen.state.contamination));
+    if (p.stamina !== screen.state.stamina) texts.push('체력 ' + signed(p.stamina - screen.state.stamina));
+    if (p.contamination !== screen.state.contamination) texts.push('오염 ' + signed(p.contamination - screen.state.contamination));
     if (p.expiringBatchIds.length) texts.push('다른 미세척 재료 ' + p.expiringBatchIds.length + '묶음 사용 불가 예정');
     if (p.status === 'FAILED') texts.push('⚠ ' + (p.failureReason === 'UNTREATED_DISEASE' ? '질병 치료 기한 초과' : '생존 제한 시간 초과') + '로 생존 실패 예정');
   }
@@ -75,7 +79,7 @@ export function createSafeZoneView(root, context) {
   let gameId = null, selectedIds = new Set(), discardIds = [], hours = 6, gridSignature = '', repairSignature = '';
   root.innerHTML = `<section class="se-safe" aria-label="비행기 안전지대">
     <aside class="se-safe__survival"><section><h3>생존 상태</h3><p data-info="status"></p><p data-info="supplies"></p></section>
-      <section><h3>휴식</h3><label>휴식 시간 <select data-action="hours" aria-label="휴식 시간"></select></label><p class="se-safe__muted">6시간 이상 휴식 시 체력 회복 보너스</p><p data-info="rest-preview"></p><button type="button" data-action="rest">휴식하기</button><p class="se-safe__reason" data-info="rest-reason"></p></section>
+      <section><h3>휴식</h3><label>휴식 시간 <select data-action="hours" aria-label="휴식 시간"></select></label><p class="se-safe__muted">6시간 이상 휴식 시 체력 회복 보너스 · 시간당 오염도 5 감소</p><p data-info="rest-preview"></p><button type="button" data-action="rest">휴식하기</button><p class="se-safe__reason" data-info="rest-reason"></p></section>
       <section><h3>치료</h3><p class="se-safe__muted">정상 치료 시 키트 1개 · 질병 제거 · 오염 최대60 감소</p><p data-info="treat-preview"></p><button type="button" data-action="treat">의료 키트 사용</button><p class="se-safe__reason" data-info="treat-reason"></p></section>
     </aside>
     <section class="se-safe__storage"><h3 data-info="inventory-count"></h3><div class="se-safe__slots" data-grid="inventory"></div><h3 data-info="chest-count"></h3><div class="se-safe__slots se-safe__slots--chest" data-grid="chest"></div>
@@ -159,7 +163,7 @@ export function createSafeZoneView(root, context) {
       info('item-reason').textContent = [...new Set(reasons.filter(Boolean))].join(' ');
       button('clean').textContent = selectedIds.size>1?'선택 '+selectedIds.size+'묶음 세척':'세척';
       button('discard').textContent = selectedIds.size>1?'선택 '+selectedIds.size+'묶음 폐기':'폐기';
-      info('clean-preview').textContent = selectedIds.size ? '선택 '+selectedIds.size+'묶음 전체 세척 · 세척액 '+selectedIds.size+'회분 · 시간 '+selectedIds.size+'h · 체력 소모 없음' : '';
+      info('clean-preview').textContent = selectedIds.size ? '선택 '+selectedIds.size+'묶음 전체 세척 · 세척액 '+selected.reduce((n,i)=>n+i.quantity,0)+'회분 · 시간 '+selectedIds.size+'h' : '';
       root.querySelector('.se-safe__discard').hidden = !discardIds.length;
       info('discard-confirm').textContent = discardIds.length ? selected.map(i=>i.name+' ×'+i.quantity).join(' / ')+' — 선택한 '+selected.length+'묶음 전체를 폐기할까요? 되돌릴 수 없습니다.' : '';
       apply('confirm-discard', discardIds.length ? discard : null, flags);

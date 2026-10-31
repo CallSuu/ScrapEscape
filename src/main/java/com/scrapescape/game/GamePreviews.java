@@ -13,7 +13,7 @@ final class GamePreviews {
         var batches=items.stream().map(b->{
             Storage to=b.storage()==Storage.INVENTORY?Storage.CHEST:Storage.INVENTORY;
             String clean=b.condition()!=Condition.DIRTY||b.expiresInHours()==null||b.expiresInHours()<=0?"NOT_CLEANABLE":
-                s.cleanerAmount()<1?"INSUFFICIENT_CLEANER":null;
+                s.cleanerAmount()<b.quantity()?"INSUFFICIENT_CLEANER":null;
             long occupied=items.stream().filter(i->i.storage()==to).count();
             int headroom=b.condition()==Condition.CLEAN?items.stream().filter(i->i.storage()==to&&i.condition()==Condition.CLEAN&&i.materialId()==b.materialId())
                 .mapToInt(i->s.stackLimit()-i.quantity()).sum():0;
@@ -34,8 +34,8 @@ final class GamePreviews {
         boolean diseased=s.diseased();
         String failure=action==Action.MOVE||action==Action.DISCARD?null:end>=GameRules.DEADLINE?"TIME_LIMIT":
             s.treatmentRemainingHours()!=null&&hours>=s.treatmentRemainingHours()?"UNTREATED_DISEASE":null;
-        if(action==Action.REST){stamina=Math.min(s.maxStamina(),stamina+GameRules.restRecovery(hours));if(hours>=4)contamination=Math.max(0,contamination-10);}
-        if(action==Action.CLEAN)cleaner--;
+        if(action==Action.REST){stamina=Math.min(s.maxStamina(),stamina+GameRules.restRecovery(hours));contamination=Math.max(0,contamination-GameRules.restDecontamination(hours));}
+        if(action==Action.CLEAN)cleaner-=selected.quantity();
         if(action==Action.TREAT&&failure==null){kits--;diseased=false;contamination=Math.max(0,contamination-60);}
         Status status=failure!=null?Status.FAILED:action==Action.ESCAPE?Status.SUCCESS:Status.RUNNING;
         List<Long> expiring=Stream.concat(s.inventory().stream(),s.chest().stream())

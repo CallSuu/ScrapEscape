@@ -35,8 +35,8 @@ class SurvivalExpansionIntegrationTest {
     }
     @Test void longRestReducesContaminationAndResetsConsecutiveButDoesNotCure() {
         var id=fresh();jdbc.update("UPDATE game SET contamination=70,consecutive_explorations=3,diseased=TRUE,disease_started_hour=0 WHERE game_id=?",id.toString());
-        service.rest(id,3);assertEquals(70,value(id,"contamination"));assertEquals(3,value(id,"consecutiveExplorations"));
-        service.rest(id,4);assertEquals(60,value(id,"contamination"));assertEquals(0,value(id,"consecutiveExplorations"));
+        service.rest(id,3);assertEquals(55,value(id,"contamination"));assertEquals(3,value(id,"consecutiveExplorations"));
+        service.rest(id,4);assertEquals(35,value(id,"contamination"));assertEquals(0,value(id,"consecutiveExplorations"));
         assertTrue(mapper.valueToTree(service.state(id)).get("diseased").asBoolean());assertEquals(65,value(id,"treatmentRemainingHours"));
     }
     @Test void diseaseCostsTimeAndStaminaWithoutBlockingExploration() {
@@ -59,7 +59,7 @@ class SurvivalExpansionIntegrationTest {
         var id=fresh();jdbc.update("DELETE FROM radiation_storm WHERE game_id=?",id.toString());
         jdbc.update("INSERT INTO radiation_storm(game_id,start_hour,end_hour) VALUES (?,2,4)",id.toString());
         random.set(0,0,99,99);service.explore(id,1);assertEquals(20,value(id,"contamination"));
-        service.rest(id,4);assertEquals(10,value(id,"contamination"));
+        service.rest(id,4);assertEquals(0,value(id,"contamination"));
     }
     @Test void escapeRequiresAllRepairsAndIsExplicit() throws Exception {
         var id=fresh();mvc.perform(post("/api/games/"+id+"/escape")).andExpect(status().isConflict());
