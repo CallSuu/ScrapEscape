@@ -13,3 +13,9 @@
 .se-result__restart:focus-visible { outline: 3px solid #b5d783; outline-offset: 4px; }
 
 @media(max-height:760px) { .se-result__title { font-size: 28px; } .se-result__stats { gap: 7px; margin-block: 12px; } .se-result__stats > div { padding: 6px 8px; } .se-result__stats dd { font-size: 20px; } }
+
+.se-result__hero { min-height:180px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; padding:20px 28px; text-align:right; border:1px solid #75846a; border-radius:12px; background:linear-gradient(90deg,#0c181218,#0c1812e8 70%),url('/assets/endings/success.png') center 10% / cover; text-shadow:0 2px 8px #000; }
+.se-result[data-outcome='FAILED'] .se-result__hero { background-image:linear-gradient(90deg,#18101218,#181012ed 70%),url('/assets/endings/failed.png'); border-color:#856b63; background-position:center 45%; }
+.se-result__hero .se-result__reason { max-width:65%; }
+.se-result__hero .se-result__title { font-size:38px; }
+@media(max-height:760px) { .se-result__hero { min-height:125px; padding:12px 22px; } .se-result__hero .se-result__title { font-size:30px; } .se-result__hero p { margin-block:3px; } .se-result__stats { gap:5px; margin-block:10px; } .se-result__stats > div { padding:4px 6px; } .se-result__stats dd { font-size:18px; } }

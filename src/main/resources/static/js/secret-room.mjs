@@ -50,7 +50,7 @@ export function createSecretRoomView(root, context) {
       const enterReason=applyActionAvailability(find('enter'),choices.enter,flags);
       const laterReason=applyActionAvailability(find('later'),choices.later,flags);
       find('reason').textContent=[...new Set([enterReason,laterReason].filter(Boolean))].join(' ');
-      find('hint').textContent=screen.state.secrets.keyAmount===0?'두 선택에는 열쇠가 필요합니다. 위의 메인으로 돌아가기로 나갈 수 있고, 방 위치는 계속 기억합니다.':'나중에 들어가기는 열쇠를 소비하지 않습니다. 위치는 기억한 상태로 남습니다.';
+      find('hint').textContent=screen.state.secrets.keyAmount===0?'두 선택에는 열쇠가 필요합니다. 위의 돌아가기 버튼으로 나갈 수 있고, 방 위치는 계속 기억합니다.':'나중에 들어가기는 열쇠를 소비하지 않습니다. 위치는 기억한 상태로 남습니다.';
     },
     destroy(){abort.abort();root.replaceChildren();}
   };

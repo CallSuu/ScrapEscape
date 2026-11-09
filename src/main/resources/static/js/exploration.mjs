@@ -1,3 +1,4 @@
+import { itemIcon } from './item-icons.mjs';
 import { applyActionAvailability } from './game-api.mjs';
 
 export function explorationDeadlineRisk(card, state) {
@@ -35,10 +36,9 @@ export function createExplorationChoiceView(root, context) {
     const card = element('article', 'se-explore__card'); card.dataset.location = String(locationId);
     const picture = element('div', 'se-explore__picture');
     const image = element('img', 'se-explore__image'); image.width = 160; image.height = 90;
-    if ([1, 2, 3, 4, 5, 6].includes(locationId)) image.src = '/assets/main/city-district.png';
+    if ([1, 2, 3, 4, 5, 6].includes(locationId)) image.src = '/assets/locations/location-' + locationId + '.png';
     else image.hidden = true;
-    const [x,y] = buildingPositions[locationId] || [50,50];
-    image.style.transformOrigin = ((x*3-50)/2)+'% '+((y*3-50)/2)+'%';
+
     image.addEventListener('error', () => { image.hidden = true; }, { signal: abort.signal });
     picture.append(image);
     const name = element('h3', 'se-explore__name'), description = element('p', 'se-explore__description');
@@ -73,7 +73,11 @@ export function createExplorationChoiceView(root, context) {
         if (!cards.has(location.locationId)) cards.set(location.locationId, createCard(location.locationId));
         const n = cards.get(location.locationId);
         n.name.textContent = location.name; n.image.alt = location.name + ' 주변 오염 도시 일러스트'; n.description.textContent = location.description;
-        n.materials.textContent = '재료 후보 · ' + location.materials.map(m => m.name).join(' · ');
+        n.materials.replaceChildren();
+        const caption=element('span','se-explore__materials-label','획득 가능한 재료');
+        const candidates=element('span','se-explore__material-list');
+        for(const material of location.materials) { const candidate=element('span','se-explore__material-name');candidate.append(itemIcon(material.materialId),element('span','',material.name));candidates.append(candidate); }
+        n.materials.append(caption,candidates);
         n.description.title = location.description; n.materials.title = n.materials.textContent;
         n.supplies.textContent = location.medicalKitReward > 0 ? '의료 키트 ' + location.medicalKitReward + '개 확정 · 보유 한도 내' : '';
         n.supplies.hidden = !location.medicalKitReward;
@@ -94,10 +98,11 @@ export function createExplorationChoiceView(root, context) {
 const buildingPositions = { 1:[20,34], 2:[50,34], 3:[80,34], 4:[20,65], 5:[50,65], 6:[80,65] };
 export function createExplorationView(root, context) {
   const abort = new AbortController(), sites = new Map();
-  root.innerHTML = `<section class="se-city" aria-label="오염 도시의 탐색 건물"><div class="se-city__sites"></div></section>`;
+  root.innerHTML = `<section class="se-city" aria-label="오염 도시의 탐색 건물"><button type="button" class="se-city__guide" data-city-guide>ⓘ 탐색 안내</button><div class="se-city__sites"></div></section>`;
   const container = root.querySelector('.se-city__sites');
   root.addEventListener('click', event => {
     const target = event.target.closest('button'); if (!target || !root.contains(target) || target.disabled) return;
+    if (target.hasAttribute('data-city-guide')) { void context.navigate({name:'exploration-guide'}); return; }
     const locationId = Number(target.dataset.cityLocation), location = context.getScreen()?.locations.find(c=>c.locationId===locationId); if (!location) return;
     if (target.dataset.cityRoom) { if (location.secretRoom && !location.secretRoom.opened) void context.navigate({name:'secret-room',locationId}); }
     else void context.navigate({name:'exploration-choice',locationId});
@@ -116,4 +121,9 @@ export function createExplorationView(root, context) {
     },
     destroy(){abort.abort();sites.clear();root.replaceChildren();}
   };
+}
+
+export function createExplorationGuideView(root, context) {
+  root.innerHTML='<section class="se-exploration-guide"><p class="se-exploration-guide__intro">출발 시각과 현재 상태에 따른 탐색 정보입니다.</p><h3>소요 시간과 위험</h3><p data-guide="cost"></p><h3>획득 확률</h3><p data-guide="rewards"></p><p class="se-explore__reason" data-guide="risk"></p><p>재료가 0개여도 탐색은 완료됩니다. 휴대 공간이 부족한 재료는 현장에 남습니다. 비밀의 방 입장은 별도로 선택합니다.</p></section>';
+  return { render(screen) { if(!screen)return;const info=explorationSharedInfo(screen.locations,screen.state);for(const key of ['cost','rewards','risk'])root.querySelector('[data-guide="'+key+'"]').textContent=info[key]; }, destroy(){root.replaceChildren();} };
 }

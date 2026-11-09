@@ -1,3 +1,4 @@
+import { itemIcon } from './item-icons.mjs';
 import { explorationSharedInfo } from './exploration.mjs';
 
 export function createMainView(root, context) {
@@ -14,11 +15,14 @@ export function createMainView(root, context) {
       <p class="se-main__hint">버튼을 눌러 행동할 때만 시간이 흐릅니다.</p>
     </section>
     <div class="se-main__playing" hidden>
+      <div class="se-main__clock-stack">
       <section class="se-main__clock se-main__hud" aria-label="시간과 생존 기한">
         <p class="se-main__eyebrow">현재 위치 · 숲의 불시착 지점</p>
         <div class="se-main__clock-line"><strong data-value="clock"></strong><span data-value="period"></span></div>
         <p data-value="deadline"></p><p class="se-main__storm" data-value="storm"></p>
       </section>
+      <aside class="se-main__exploration-note" aria-label="탐색 안내" role="note" hidden><strong>탐색 안내</strong><p data-value="exploration-cost"></p><p data-value="exploration-rewards"></p><p class="se-main__exploration-risk" data-value="exploration-risk"></p></aside>
+      </div>
       <nav class="se-main__places" aria-label="행동할 장소">
         <button class="se-main__place se-main__place--safe" type="button" data-panel="safe-zone"><span class="se-main__place-icon" aria-hidden="true">✈</span><span><small>FOREST CAMP</small><strong>안전지대</strong><em>비행기 · 보관 · 정비</em></span></button>
         <button class="se-main__place se-main__place--city" type="button" data-panel="exploration"><span class="se-main__place-icon" aria-hidden="true">⌖</span><span><small>ABANDONED CITY</small><strong>탐색 지역</strong><em>재료 · 보급품 · 숨겨진 방</em></span></button>
@@ -30,7 +34,7 @@ export function createMainView(root, context) {
         <p data-value="disease"></p><p class="se-main__muted" data-value="consecutive"></p>
       </section>
       <div class="se-main__inventory-stack">
-      <aside class="se-main__exploration-note" aria-label="탐색 안내" role="note" hidden><strong>탐색 안내</strong><p data-value="exploration-cost"></p><p data-value="exploration-rewards"></p><p class="se-main__exploration-risk" data-value="exploration-risk"></p></aside>
+
       <section class="se-main__inventory se-main__hud" aria-label="휴대품">
         <h2>휴대 인벤토리 <span data-value="slots"></span></h2>
         <div class="se-main__slots"></div>
@@ -55,13 +59,16 @@ export function createMainView(root, context) {
     render(screen, flags) {
       const panel = context.getPanel(), atLocation = ['exploration-result', 'secret-room'].includes(panel?.name);
       const location = screen?.locations.find(l => l.locationId === panel?.locationId);
-      root.dataset.scene = ['safe-zone','camp-action','aircraft-repair'].includes(panel?.name) ? 'forest-camp' : atLocation ? 'location' : ['exploration','exploration-choice'].includes(panel?.name) ? 'city' : 'camp';
+      root.dataset.scene = ['safe-zone','camp-action','aircraft-repair'].includes(panel?.name) ? 'forest-camp' : atLocation ? 'location' : ['exploration','exploration-choice','exploration-guide'].includes(panel?.name) ? 'city' : 'camp';
       const imageId = [1, 2, 3, 4, 5, 6].includes(location?.locationId) ? location.locationId : 1;
-      root.style.setProperty('--se-location-image', 'url("/assets/locations/location-' + imageId + '.svg")');
+      const locationBackground = panel?.name === 'exploration-result'
+        ? '/assets/locations/scavenge-result.png'
+        : '/assets/locations/location-' + imageId + '.png';
+      root.style.setProperty('--se-location-image', 'url("' + locationBackground + '")');
       root.querySelector('.se-main__clock .se-main__eyebrow').textContent = atLocation ? '현재 위치 · ' + (location?.name || '탐색지') : root.dataset.scene === 'forest-camp' ? '현재 위치 · 숲속 야영지' : root.dataset.scene === 'city' ? '현재 위치 · 오염 도시 입구' : '현재 위치 · 숲의 불시착 지점';
       root.querySelector('.se-main__welcome').hidden = Boolean(screen);
       root.querySelector('.se-main__playing').hidden = !screen;
-      const showExplorationNote = Boolean(screen && ['exploration','exploration-choice'].includes(panel?.name));
+      const showExplorationNote = false;
       root.querySelector('.se-main__exploration-note').hidden = !showExplorationNote;
       if (showExplorationNote) {
         const info = explorationSharedInfo(screen.locations, screen.state);
@@ -97,13 +104,14 @@ export function createMainView(root, context) {
           label.textContent = item.name + ' ×' + item.quantity;
           detail.textContent = item.condition === 'DIRTY' ? '미세척 · ' + item.expiresInHours + 'h' : item.condition === 'CLEAN' ? '✓ 세척 완료' : '사용 불가';
           tile.dataset.urgency = item.condition === 'UNUSABLE' || item.condition === 'DIRTY' && item.expiresInHours <= 6 ? 'danger' : item.condition === 'DIRTY' && item.expiresInHours <= 12 ? 'warning' : 'normal';
-          tile.append(label, detail);
+          tile.append(itemIcon(item.materialId), label, detail);
         }
         slots.append(tile);
       }
       get('cleaner').textContent = '세척액 ' + s.cleanerAmount + '/' + s.cleanerCapacity;
       get('medical').textContent = '키트 ' + s.medicalKitAmount + '/' + s.medicalKitCapacity;
       get('keys').textContent = '열쇠 ' + s.secrets.keyAmount + '/' + s.secrets.keyCapacity;
+      for (const [field,icon] of [['cleaner','cleaner'],['medical','medical'],['keys','key']]) get(field).prepend(itemIcon(icon));
       root.querySelector('[data-action="results"]').hidden = s.status === 'RUNNING';
     },
     destroy() { abort.abort(); root.replaceChildren(); }

@@ -49,3 +49,23 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--se-col
 
 #se-app:is([data-page='exploration'],[data-page='exploration-choice']) #se-exploration-content { inset: 0; }
 #se-app[data-page='exploration-choice'] .se-dialog { width: min(1120px,100%); }
+
+/* Shared replaceable item artwork; text remains the accessible item label. */
+.se-item-icon { width:40px; height:40px; object-fit:contain; flex-shrink:0; vertical-align:middle; }
+.se-main__item .se-item-icon { width:28px; height:28px; margin-inline:auto; }
+.se-safe__item .se-item-icon { display:block; margin-inline:auto; }
+.se-aircraft__ingredients .se-item-icon, .se-safe__part .se-item-icon { width:22px; height:22px; margin-right:5px; }
+.se-receipt__icon .se-item-icon { width:64px; height:64px; }
+
+.se-main__supplies .se-item-icon { width:18px; height:18px; margin-right:3px; }
+
+/* Shared finish for the survival interface. */
+button { box-shadow:inset 0 1px 0 #ffffff0b; }
+button:not(:disabled):hover { border-color:#b6c895; }
+button:active:not(:disabled) { filter:brightness(.92); }
+button:disabled { filter:saturate(.45); }
+.se-main__hud { box-shadow:0 8px 24px #0003,inset 0 1px #ffffff08; }
+.se-main__supplies > span { display:inline-flex; align-items:center; }
+.se-main__item { text-align:center; }
+.se-main__item strong { line-height:1.3; }
+@media(prefers-reduced-motion:no-preference) { button { transition:background-color .15s,border-color .15s; } }

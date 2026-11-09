@@ -1,9 +1,10 @@
+import { itemIcon } from './item-icons.mjs';
 const icons = { 1:'🔩', 2:'⚙️', 3:'🔌', 4:'💾', 5:'🧩', 6:'🛞', 7:'🔋', 8:'▤', 9:'🧱', 10:'📡' };
 
 export function explorationRewardItems(receipt) {
   const loot = receipt?.loot;
   const items = (loot?.materials || []).filter(m => m.collectedQuantity > 0).map(m =>
-    ({ name: m.name, quantity: m.collectedQuantity, icon: icons[m.materialId] || '🔧', unit: '개' }));
+    ({ name: m.name, quantity: m.collectedQuantity, materialId:m.materialId, icon: icons[m.materialId] || '🔧', unit: '개' }));
   if (loot?.cleanerAdded > 0) items.push({ name: '세척액', quantity: loot.cleanerAdded, icon: '🧴', unit: '회분' });
   if (loot?.medicalKitsAdded > 0) items.push({ name: '의료 키트', quantity: loot.medicalKitsAdded, icon: '✚', unit: '개' });
   if (receipt?.secretFindings?.keysAdded > 0) items.push({ name: '비밀의 열쇠', quantity: receipt.secretFindings.keysAdded, icon: '🔑', unit: '개' });
@@ -13,7 +14,7 @@ export function explorationRewardItems(receipt) {
 export function createExplorationResultView(root, context) {
   const abort = new AbortController();
   root.innerHTML = `<section class="se-receipt" aria-label="획득 결과">
-    <p class="se-receipt__eyebrow">이번에 가져온 물품</p>
+    <header class="se-receipt__header"><p class="se-receipt__eyebrow">SCAVENGE REPORT</p><h3 class="se-receipt__title">탐색 완료</h3><p class="se-receipt__location"></p></header>
     <div class="se-receipt__items"></div>
     <p class="se-receipt__empty" hidden>가져온 물품이 없습니다. 빈손이어도 탐색 시간과 체력은 소모됩니다.</p>
     <div class="se-receipt__details"><p class="se-receipt__left"></p><p class="se-receipt__caps"></p><p class="se-receipt__loss"></p><p class="se-receipt__message"></p></div>
@@ -26,13 +27,17 @@ export function createExplorationResultView(root, context) {
       const panel = context.getPanel(), receipt = panel?.receipt;
       find('confirm').disabled = flags.busy || flags.hasPending || !receipt;
       if (!receipt) { find('message').textContent = '확인할 탐색 결과가 없습니다.'; return; }
+      const location = screen?.locations.find(l=>l.locationId===panel.locationId);
+      find('title').textContent = panel.activity === 'OPEN_ROOM' ? '비밀의 방 확인 완료' : '탐색 완료';
+      find('location').textContent = (location?.name || '탐색 지역') + ' · 이번에 가져온 물품';
       const items = explorationRewardItems(receipt), list = find('items'); list.replaceChildren();
       for (const item of items) {
-        const tile = document.createElement('article'); tile.className = 'se-receipt__item';
-        const icon = document.createElement('span'); icon.className = 'se-receipt__icon'; icon.textContent = item.icon; icon.setAttribute('aria-hidden','true');
+        const tile = document.createElement('article'); tile.className = 'se-receipt__item'; tile.dataset.kind = item.materialId ? 'material' : 'supply';
+        const icon = document.createElement('span'); icon.className = 'se-receipt__icon'; icon.append(itemIcon(item.materialId || (item.name==='세척액'?'cleaner':item.name==='의료 키트'?'medical':'key'))); icon.setAttribute('aria-hidden','true');
         const count = document.createElement('strong'); count.className = 'se-receipt__count'; count.textContent = '×' + item.quantity;
-        const name = document.createElement('span'); name.className = 'se-receipt__name'; name.textContent = item.name + ' · ' + item.quantity + item.unit;
-        tile.append(icon, count, name); list.append(tile);
+        const name = document.createElement('span'); name.className = 'se-receipt__name'; name.textContent = item.name;
+        const kind=document.createElement('small');kind.className='se-receipt__kind';kind.textContent=item.materialId?'재료 · 미세척':item.unit==='회분'?'세척 보급품':'보급품';
+        tile.append(icon, count, name, kind); list.append(tile);
       }
       find('empty').hidden = items.length > 0;
       const left = (receipt.loot?.materials || []).filter(m => m.quantity > m.collectedQuantity).map(m => m.name + ' ' + (m.quantity-m.collectedQuantity) + '개');
@@ -40,7 +45,6 @@ export function createExplorationResultView(root, context) {
       const caps = [], loot = receipt.loot;
       if (loot?.cleanerFound && !loot.cleanerAdded) caps.push('세척액 통이 가득 차 추가하지 못했습니다.');
       if (receipt.secretFindings?.keyFound && !receipt.secretFindings.keysAdded) caps.push('열쇠 보유량이 가득 차 추가하지 못했습니다.');
-      const location = screen?.locations.find(l=>l.locationId===panel.locationId);
       if ((panel.activity === 'EXPLORE' && location?.medicalKitReward > 0 || receipt.secretRoom?.outcome === 'MEDICAL_KIT') && !loot?.medicalKitsAdded)
         caps.push('의료 키트 보유량이 가득 차 추가하지 못했습니다.');
       find('caps').textContent = caps.join(' ');

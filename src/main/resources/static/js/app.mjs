@@ -118,7 +118,7 @@ export function createAppController({ clientOptions = {}, onRender = () => {}, o
     },
     async navigate(target) {
       if (target === null && panel?.name === 'exploration-result') { await context.dispatch({ type: 'ACK_EXPLORATION_RESULT' }); return; }
-      if (target === null && panel?.name === 'exploration-choice') { navigation++; changePanel({ name:'exploration' }); return; }
+      if (target === null && ['exploration-choice','exploration-guide'].includes(panel?.name)) { navigation++; changePanel({ name:'exploration' }); return; }
       if (target === null && ['camp-action', 'aircraft-repair'].includes(panel?.name)) {
         navigation++; changePanel({ name: 'safe-zone' }); return;
       }
@@ -133,7 +133,7 @@ export function createAppController({ clientOptions = {}, onRender = () => {}, o
         return;
       }
       if (!screen) { onMessage('게임을 먼저 시작하세요.'); return; }
-      if (!['safe-zone', 'camp-action', 'aircraft-repair', 'exploration', 'exploration-choice', 'secret-room', 'result'].includes(target.name) || target.name === 'camp-action' && !['storage','rest','treatment'].includes(target.area)) { onMessage('알 수 없는 화면입니다.'); return; }
+      if (!['safe-zone', 'camp-action', 'aircraft-repair', 'exploration', 'exploration-choice', 'exploration-guide', 'secret-room', 'result'].includes(target.name) || target.name === 'camp-action' && !['storage','rest','treatment'].includes(target.area)) { onMessage('알 수 없는 화면입니다.'); return; }
       if (!flags.busy && !flags.hasPending) {
         const response = await context.dispatch({ type: 'REFRESH' });
         if (!response.ok || revision !== navigation) return;
@@ -158,6 +158,7 @@ function mountApp() {
     'aircraft-repair': ['aircraft-repair', 'createAircraftRepairView'],
     exploration: ['exploration', 'createExplorationView'],
     'exploration-choice': ['exploration', 'createExplorationChoiceView'],
+    'exploration-guide': ['exploration', 'createExplorationGuideView'],
     'exploration-result': ['exploration-result', 'createExplorationResultView'],
     'secret-room': ['secret-room', 'createSecretRoomView'],
     result: ['result', 'createResultView']
@@ -180,12 +181,12 @@ function mountApp() {
       view?.destroy(); backgroundView?.destroy(); view = null; backgroundView = null;
       modalContent.replaceChildren(); pageContent.replaceChildren();
       const hadSurface = !overlay.hidden || !page.hidden;
-      const campDialog = panel?.name === 'camp-action', cityDialog = panel?.name === 'exploration-choice';
+      const campDialog = panel?.name === 'camp-action', cityDialog = ['exploration-choice','exploration-guide'].includes(panel?.name);
       const isScene = ['safe-zone', 'aircraft-repair', 'exploration', 'exploration-result', 'secret-room'].includes(panel?.name);
       const camp = ['safe-zone', 'camp-action', 'aircraft-repair'].includes(panel?.name);
       app.dataset.page = panel?.name || 'camp';
       app.dataset.modalArea = campDialog ? panel.area : '';
-      const heading = panel?.name === 'safe-zone' || campDialog ? '숲속 야영지' : panel?.name === 'aircraft-repair' ? '비행기 정비' : ['exploration','exploration-choice'].includes(panel?.name) ? '오염 도시 탐색' : panel?.name === 'secret-room' ? (panel.fromDiscovery ? '비밀의 방을 발견했다' : '기억한 비밀의 방') : panel?.activity === 'OPEN_ROOM' ? '비밀의 방 결과' : '탐색 결과';
+      const heading = panel?.name === 'safe-zone' || campDialog ? '숲속 야영지' : panel?.name === 'aircraft-repair' ? '비행기 정비' : ['exploration','exploration-choice','exploration-guide'].includes(panel?.name) ? '오염 도시 탐색' : panel?.name === 'secret-room' ? (panel.fromDiscovery ? '비밀의 방을 발견했다' : '기억한 비밀의 방') : panel?.activity === 'OPEN_ROOM' ? '비밀의 방 결과' : '탐색 결과';
       document.title = panel ? 'Scrap Escape · ' + (panel.name === 'result' ? '게임 결과' : heading) : 'Scrap Escape';
       if (!panel) {
         overlay.hidden = true; page.hidden = true; page.inert = false; mainRoot.inert = false;
@@ -203,7 +204,7 @@ function mountApp() {
         document.querySelector('#se-page-location').textContent = camp ? '숲의 불시착 지점 · 안전지대' : location?.name || '오염 도시 입구';
         pageTitle.textContent = heading;
       }
-      if (!overlay.hidden) { title.textContent = campDialog ? areaNames[panel.area] : cityDialog ? (context.getScreen()?.locations.find(l=>l.locationId===panel.locationId)?.name || '탐색 지역') + ' · 수색 정보' : '게임 결과'; title.focus(); }
+      if (!overlay.hidden) { title.textContent = campDialog ? areaNames[panel.area] : panel.name==='exploration-guide' ? '탐색 안내' : cityDialog ? (context.getScreen()?.locations.find(l=>l.locationId===panel.locationId)?.name || '탐색 지역') + ' · 수색 정보' : '게임 결과'; title.focus(); }
       else pageTitle.focus();
       async function load(name, content) {
         const loading = document.createElement('p'); loading.textContent = '화면을 준비하고 있습니다.'; content.append(loading);

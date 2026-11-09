@@ -56,3 +56,26 @@
 .se-safe__item[data-condition='CLEAN'] { border: 2px solid #68d5ce; box-shadow: inset 0 0 12px #60cfc31a; }
 .se-safe__item[data-condition='CLEAN'] small { color: #a4efdf; }
 .se-safe__item[aria-pressed='true'] { background: #3d5434; outline-width: 3px; }
+
+/* Camp workspaces share materials and controls, with distinct action accents. */
+.se-safe { --se-work-border:#687567; --se-work-brass:#d6be8c; }
+.se-safe__survival > section, .se-safe__selection { background:linear-gradient(145deg,#23362bf5,#14231df5); border-color:var(--se-work-border); box-shadow:inset 0 1px #d6be8c14,0 8px 24px #0002; }
+.se-safe__survival h3 { display:flex; align-items:center; gap:10px; padding-bottom:10px; border-bottom:1px solid #b5c5ac30; }
+.se-safe__space-icon { width:32px; font-size:30px; line-height:1; color:var(--se-work-brass); }
+.se-safe__treatment h3 .se-item-icon { width:32px; height:32px; }
+.se-safe__selection-help { color:#a8b9a7; font-size:10px; }
+.se-safe__selection h3 { color:#ead5ab; }
+.se-safe__item { background:linear-gradient(145deg,#2d3b32,#1a2822); border-color:#617165; box-shadow:inset 0 1px #ffffff0a; }
+.se-safe__empty { background:repeating-linear-gradient(135deg,#19271e77 0 8px,#1c2b2277 8px 16px); color:#9baa99; }
+.se-safe button:not(:disabled):hover { border-color:#d6be8c; background-color:#344a3b; }
+.se-safe__item[aria-pressed='true'] { border-color:#d6be8c; outline-color:#d6be8c; box-shadow:inset 0 0 16px #d6be8c16; }
+.se-safe__item[data-condition='CLEAN'] { border-color:#68d5ce; }
+.se-safe [data-action='clean'], .se-safe [data-action='rest'] { background:#42604a; border-color:#7d9973; font-weight:700; }
+.se-safe [data-action='treat'] { background:#405d59; border-color:#78a49a; font-weight:700; }
+.se-safe [data-action='discard'], .se-safe [data-action='confirm-discard'] { background:#563b32; border-color:#a87e6d; }
+.se-safe [data-info='rest-preview'], .se-safe [data-info='treat-preview'], .se-safe [data-info='clean-preview'] { padding:8px 10px; border-left:2px solid #b8c99a; background:#0c191340; font-size:12px; line-height:1.65; }
+.se-safe [data-info='clean-preview']:empty { display:none; }
+.se-safe__reason:empty { display:none; }
+.se-safe__discard { border-left:3px solid #d19c82; }
+.se-safe select { background:#16281f; border-color:#839575; }
+@media(prefers-reduced-motion:no-preference) { .se-safe button { transition:border-color .15s,background-color .15s; } }

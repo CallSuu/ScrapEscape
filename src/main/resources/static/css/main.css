@@ -79,3 +79,8 @@
 
 .se-main__item[data-condition='CLEAN'] { border: 2px solid #68d5ce; box-shadow: inset 0 0 10px #60cfc31a; }
 .se-main__item[data-condition='CLEAN'] small { color: #a4efdf; }
+
+.se-main__clock-stack { position:absolute; left:24px; top:20px; width:360px; display:flex; flex-direction:column; gap:10px; }
+.se-main__clock-stack .se-main__clock { position:relative; left:auto; top:auto; width:100%; }
+.se-main__clock-stack .se-main__exploration-note { padding:9px 12px; font-size:10px; line-height:1.45; }
+.se-main__clock-stack .se-main__exploration-note::after { display:none; }

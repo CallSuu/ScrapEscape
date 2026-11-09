@@ -1,3 +1,4 @@
+import { itemIcon } from './item-icons.mjs';
 import { applyActionAvailability } from './game-api.mjs';
 
 export function safeSelection(screen, batchId) {
@@ -79,8 +80,8 @@ export function createSafeZoneView(root, context) {
   let gameId = null, selectedIds = new Set(), discardIds = [], hours = 6, gridSignature = '', repairSignature = '';
   root.innerHTML = `<section class="se-safe" aria-label="비행기 안전지대">
     <aside class="se-safe__survival"><section><h3>생존 상태</h3><p data-info="status"></p><p data-info="supplies"></p></section>
-      <section><h3>휴식</h3><label>휴식 시간 <select data-action="hours" aria-label="휴식 시간"></select></label><p class="se-safe__muted">6시간 이상 휴식 시 체력 회복 보너스 · 시간당 오염도 5 감소</p><p data-info="rest-preview"></p><button type="button" data-action="rest">휴식하기</button><p class="se-safe__reason" data-info="rest-reason"></p></section>
-      <section><h3>치료</h3><p class="se-safe__muted">정상 치료 시 키트 1개 · 질병 제거 · 오염 최대60 감소</p><p data-info="treat-preview"></p><button type="button" data-action="treat">의료 키트 사용</button><p class="se-safe__reason" data-info="treat-reason"></p></section>
+      <section class="se-safe__rest"><h3><span class="se-safe__space-icon" aria-hidden="true">☾</span>휴식 공간</h3><label>휴식 시간 <select data-action="hours" aria-label="휴식 시간"></select></label><p class="se-safe__muted">6시간 이상 휴식 시 체력 회복 보너스 · 시간당 오염도 5 감소</p><p data-info="rest-preview"></p><button type="button" data-action="rest">휴식하기</button><p class="se-safe__reason" data-info="rest-reason"></p></section>
+      <section class="se-safe__treatment"><h3><img class="se-item-icon" src="/assets/items/medical.svg" alt="">치료 공간</h3><p class="se-safe__muted">정상 치료 시 키트 1개 · 질병 제거 · 오염 최대60 감소</p><p data-info="treat-preview"></p><button type="button" data-action="treat">의료 키트 사용</button><p class="se-safe__reason" data-info="treat-reason"></p></section>
     </aside>
     <section class="se-safe__storage"><h3 data-info="inventory-count"></h3><div class="se-safe__slots" data-grid="inventory"></div><h3 data-info="chest-count"></h3><div class="se-safe__slots se-safe__slots--chest" data-grid="chest"></div>
       <section class="se-safe__selection" aria-live="polite"><h3 data-info="selected">재료를 선택하세요</h3><p data-info="item-detail"></p><div class="se-safe__item-actions"><button type="button" data-action="move">이동</button><button type="button" data-action="clean">세척</button><button type="button" data-action="discard">폐기</button></div><p data-info="clean-preview"></p><p class="se-safe__reason" data-info="item-reason"></p>
@@ -149,7 +150,7 @@ export function createSafeZoneView(root, context) {
             const tile = make('button', undefined, 'se-safe__item'); tile.type = 'button'; tile.dataset.batch = item.batchId; tile.dataset.condition = item.condition;
             const label = make('strong', item.name + ' ×' + item.quantity), detail = make('small', item.condition === 'DIRTY' ? '미세척 · ' + item.expiresInHours + 'h 남음' : item.condition === 'CLEAN' ? '✓ 세척 완료' : '사용 불가');
             tile.dataset.urgency = item.condition === 'UNUSABLE' || item.condition === 'DIRTY' && item.expiresInHours <= 6 ? 'danger' : item.condition === 'DIRTY' && item.expiresInHours <= 12 ? 'warning' : 'normal';
-            tile.append(label, detail); grid.append(tile);
+            tile.append(itemIcon(item.materialId), label, detail); grid.append(tile);
           }
           for (let i = items.length; i < capacity; i++) grid.append(make('span', '빈칸', 'se-safe__empty'));
         }
@@ -181,7 +182,7 @@ export function createSafeZoneView(root, context) {
         const card = root.querySelector('[data-part-card="' + part.partId + '"]');
         card.querySelector('h4').textContent = part.name + (part.repaired ? ' · 수리 완료' : '');
         const list = card.querySelector('ul'); list.replaceChildren();
-        for (const ingredient of part.ingredients) { const li = make('li', ingredient.name + ' ' + ingredient.availableQuantity + '/' + ingredient.requiredQuantity); li.dataset.enough = String(ingredient.availableQuantity >= ingredient.requiredQuantity); list.append(li); }
+        for (const ingredient of part.ingredients) { const li = make('li', ingredient.name + ' ' + ingredient.availableQuantity + '/' + ingredient.requiredQuantity); li.dataset.enough = String(ingredient.availableQuantity >= ingredient.requiredQuantity); li.prepend(itemIcon(ingredient.materialId)); list.append(li); }
         const p = screen.actions.repairs.find(r => r.partId === part.partId)?.preview;
         card.querySelector('[data-preview]').textContent = part.repaired ? '장착 완료' : actionSummary(p, screen);
         card.querySelector('[data-reason]').textContent = applyActionAvailability(card.querySelector('button'), p || unavailable, flags) || '';

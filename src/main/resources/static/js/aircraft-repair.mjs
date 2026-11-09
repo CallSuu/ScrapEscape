@@ -1,3 +1,4 @@
+import { itemIcon } from './item-icons.mjs';
 import { applyActionAvailability } from './game-api.mjs';
 import { actionSummary } from './safe-zone.mjs';
 const positions = { 1:{x:35.8,y:37}, 2:{x:64.2,y:42}, 3:{x:50,y:56}, 4:{x:68,y:55}, 5:{x:50,y:83}, 6:{x:50,y:23}, 7:{x:29,y:55} };
@@ -39,7 +40,7 @@ export function createAircraftRepairView(root, context) {
       const part = s.repairs.find(p=>p.partId===selectedId), preview=screen.actions.repairs.find(p=>p.partId===selectedId)?.preview;
       info('name').textContent=part?.name || '수리 위치를 선택하세요'; info('state').textContent=part?.repaired?'수리·장착 완료':'미수리 · 양쪽 저장소의 세척 완료 재료 사용';
       const ingredients=root.querySelector('.se-aircraft__ingredients'); ingredients.replaceChildren();
-      for(const ingredient of part?.ingredients||[]){const li=document.createElement('li');li.textContent=ingredient.name+' '+ingredient.availableQuantity+' / '+ingredient.requiredQuantity;li.dataset.enough=String(ingredient.availableQuantity>=ingredient.requiredQuantity);ingredients.append(li);}
+      for(const ingredient of part?.ingredients||[]){const li=document.createElement('li');li.textContent=ingredient.name+' '+ingredient.availableQuantity+' / '+ingredient.requiredQuantity;li.dataset.enough=String(ingredient.availableQuantity>=ingredient.requiredQuantity);li.prepend(itemIcon(ingredient.materialId));ingredients.append(li);}
       info('preview').textContent=part?.repaired?'이 부품은 이미 장착했습니다.':actionSummary(preview,screen);
       info('reason').textContent=applyActionAvailability(button('repair'),preview||{allowed:false,unavailableReason:'수리 위치를 선택하세요.'},flags)||'';
       info('count').textContent='수리 완료 '+s.repairs.filter(p=>p.repaired).length+' / '+s.repairs.length;

@@ -17,7 +17,7 @@ export function resultSummary(state) {
 
 export function createResultView(root, context) {
   const abort = new AbortController();
-  root.innerHTML = `<section class="se-result"><p class="se-result__eyebrow">SCRAP ESCAPE · 이번 생존 기록</p><h3 class="se-result__title"></h3><p class="se-result__reason"></p><p class="se-result__time"></p><p class="se-result__repairs"></p><dl class="se-result__stats"></dl><button type="button" class="se-result__restart">새 게임</button></section>`;
+  root.innerHTML = `<section class="se-result"><header class="se-result__hero"><p class="se-result__eyebrow">SCRAP ESCAPE · 이번 생존 기록</p><h3 class="se-result__title"></h3><p class="se-result__reason"></p><p class="se-result__time"></p></header><p class="se-result__repairs"></p><dl class="se-result__stats"></dl><button type="button" class="se-result__restart">새 게임</button></section>`;
   const find = name => root.querySelector('.se-result__' + name);
   find('restart').addEventListener('click', () => { void context.dispatch({ type: 'START_GAME' }); }, { signal: abort.signal });
   return {
